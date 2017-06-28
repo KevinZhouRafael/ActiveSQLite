@@ -68,40 +68,10 @@ open class DBModel: NSObject{
         return [String:String]()
     }
     
-    func recursionProperties() -> [(String?,Any)]{
-        
-        var properties = [(String?,Any)]()
-        var mirror: Mirror? = Mirror(reflecting: self)
-        repeat {
-            for case let (key?, value) in mirror!.children {
-                
-                let mir = Mirror(reflecting:value)
-                
-                switch mir.subjectType {
-                    
-                case _ as String.Type, _ as  ImplicitlyUnwrappedOptional<String>.Type,_ as String?.Type,_ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type,_ as NSNumber?.Type,
-                     _ as NSDate.Type, _ as ImplicitlyUnwrappedOptional<NSDate>.Type,_ as NSDate?.Type:
-                    
-                    properties.append((key, value))
-                    
-                    break
-              
-                default: break
-                    
-                }
-                
-            }
-            mirror = mirror?.superclassMirror
-        } while mirror != nil
-        
-        
-        return properties.sorted(by: {
-            if $0.0 == "id" {
-                return true
-            }
-            return $0.0! < $1.0!
-        } )
+    class func transientProperties() -> [String]{
+        return [String]()
     }
+    
     
     func recursionPropertiesOnlyColumn() -> [(String?,Any)]{
         
@@ -143,12 +113,16 @@ open class DBModel: NSObject{
         } )
     }
     
-    func recursionPropertiesWithMapper() -> [(String?,String?,Any)]{
+    func recursionProperties() -> [(String?,String?,Any)]{
         
         var properties = [(String?,String?,Any)]()
         var mirror: Mirror? = Mirror(reflecting: self)
         repeat {
             for case let (key?, value) in mirror!.children {
+                
+                if (type(of:self)).transientProperties().contains(key)  {
+                    continue
+                }
                 
                 let mir = Mirror(reflecting:value)
                 
@@ -190,8 +164,13 @@ open class DBModel: NSObject{
         var des = "**DB Model**：" + super.description + "->"
         //        var des = "**DB Model**" + NSStringFromClass(type(of:self)) + "-> "
         
-        for case let (key?, value) in recursionProperties(){
-            des += "\(key) = \(value), "
+        for case let (attribute?,column?, value) in recursionProperties(){
+//            if attribute == "created_at" || attribute == "updated_at" {
+//                des += "\(attribute) = \((value as! NSNumber).int64Value), " 毫秒。直接输出有三位小数点，看起来刚好是秒。
+//            }else{
+                des += "\(attribute) = \(value), "
+//            }
+        
         }
         return des
     }

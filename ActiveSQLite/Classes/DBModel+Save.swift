@@ -177,7 +177,7 @@ extension DBModel{
     func setters( skips:[String] = ["id"])->[Setter]{
         var setters = [Setter]()
         
-        for case let (attribute?,column?, value) in recursionPropertiesWithMapper() {
+        for case let (attribute?,column?, value) in recursionProperties() {
             
             //skip primary key
             if skips.contains(attribute){

@@ -17,15 +17,16 @@ class ProductM:DBModel{
     var desc:String?
     var code:NSNumber?
     var publish_date:NSDate?
+    
+    var version:NSNumber?
 
-    //需要query Table 达式Query，添加staticattribute ，不Query则不添加。
     static let name = Expression<String>("product_name")
     static let price = Expression<NSNumber>("product_price")
     static let desc = Expression<String?>("desc")
     static let code = Expression<NSNumber?>("code")
     
     
-    //Tests升级，新增 Column
+    //Tests add column
     var type:NSNumber?
     static let type = Expression<NSNumber>("type")
     
@@ -42,5 +43,10 @@ class ProductM:DBModel{
     override class func mapper() -> [String:String]{
         return ["name":"product_name","price":"product_price"];
     }
+    
+    override class func transientProperties() -> [String]{
+        return ["version"]
+    }
+
     
 }

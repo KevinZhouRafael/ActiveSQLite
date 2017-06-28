@@ -34,7 +34,7 @@ public extension DBModel{
         do{
             try db.run(Table(nameOfTable).create(ifNotExists: true) { t in
                 
-                for case let (attribute?,column?, value) in self.init().recursionPropertiesWithMapper() {
+                for case let (attribute?,column?, value) in self.init().recursionProperties() {
                     
                     let mir = Mirror(reflecting:value)
                     
@@ -138,7 +138,7 @@ public extension DBModel{
     }
     
     private class func addColumnReturnSQL(t:Table,columnName newAttributeName:String)->String?{
-        for case let (attribute?,column?, value) in self.init().recursionPropertiesWithMapper() {
+        for case let (attribute?,column?, value) in self.init().recursionProperties() {
             
             if newAttributeName != attribute {
                 continue

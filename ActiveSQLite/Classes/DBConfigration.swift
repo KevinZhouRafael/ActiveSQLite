@@ -24,7 +24,8 @@ open class DBConfigration{
         
         if dbPath == nil || dbPath!.isEmpty {
             NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
-            dbPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first! + "/" + bundleName() + "-ActiveSQLite.db"
+            dbPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first! + "/ActiveSQLite.db"
+//            dbPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first! + "/" + bundleName() + "-ActiveSQLite.db"
         }
         
         if !FileManager.default.fileExists(atPath: dbPath!) {
@@ -47,7 +48,7 @@ open class DBConnection{
 
         let dbPath = DBConfigration.getDBPath()!
         
-        LogDebug(dbPath)
+        LogInfo(dbPath)
         db = try! Connection(dbPath)
         
 //        #if DEBUG

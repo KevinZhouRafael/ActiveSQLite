@@ -345,58 +345,6 @@ public extension DBModel{
         
         return expression([attribute:value])
         
-//        var expressions = Array<SQLite.Expression<Bool?>>()
-//        
-//        for case let (key?, v) in recursionProperties() {
-//            
-//            if key == attribute {
-//                let mir = Mirror(reflecting:v)
-//                
-//                switch mir.subjectType {
-//                    
-//                case _ as String.Type, _ as  ImplicitlyUnwrappedOptional<String>.Type:
-//                    expressions.append(Expression<Bool?>(Expression<String>(key) == value as! String))
-//                case _ as String?.Type:
-//                    expressions.append(Expression<String?>(key) == value as! String?)
-//                    
-//                case _ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type:
-//                    
-//                    if (type(of: self)).doubleTypeProperties().contains(key) {
-//                        expressions.append(Expression<Bool?>(Expression<Double>(key) == value as! Double))
-//                    }else{
-//                        expressions.append(Expression<Bool?>(Expression<NSNumber>(key) == value as! NSNumber))
-//                    }
-//                    
-//                case _ as NSNumber?.Type:
-//                    
-//                    if type(of: self).doubleTypeProperties().contains(key) {
-//                        expressions.append(Expression<Double?>(key) == value as? Double)
-//                        
-//                    }else{
-//                        expressions.append(Expression<NSNumber?>(key) == value as? NSNumber)
-//                        
-//                    }
-//                    
-//                case _ as NSDate.Type, _ as  ImplicitlyUnwrappedOptional<NSDate>.Type:
-//                    expressions.append(Expression<Bool?>(Expression<NSDate>(key) == value as! NSDate))
-//                case _ as NSDate?.Type:
-//                    expressions.append(Expression<NSDate?>(key) == value as! NSDate?)
-//                    
-//                default: break
-//                    
-//                }
-//                
-//                break
-//            }
-//            
-//        }
-//        
-//        if expressions.count > 0 {
-//            return expressions.reduce(expressions.first!) { $0 && $1 }
-//        }else{
-//            return expressions.first
-//        }
-        
     }
     
     func expression(_ attributeAndValueDic:Dictionary<String,Any?>)->SQLite.Expression<Bool?>?{
@@ -404,7 +352,7 @@ public extension DBModel{
         
         var expressions = Array<SQLite.Expression<Bool?>>()
         
-        for case let (attribute?,column?, v) in recursionPropertiesWithMapper() {
+        for case let (attribute?,column?, v) in recursionProperties() {
             
             if attributeAndValueDic.keys.contains(attribute) {
                 
@@ -462,7 +410,7 @@ public extension DBModel{
         
         var expressibles = [Expressible]()
         
-        for case let (attribute?,column?, v) in recursionPropertiesWithMapper() {
+        for case let (attribute?,column?, v) in recursionProperties() {
             
             if attributeAndAscDic.keys.contains(attribute) {
                 
@@ -513,7 +461,7 @@ public extension DBModel{
     //MARK: - Build
     func buildFromRow(row:Row){
         
-        for case let (attribute?,column?, value) in recursionPropertiesWithMapper() {
+        for case let (attribute?,column?, value) in recursionProperties() {
 //            let s = "Attribute ：\(attribute) Value：\(value),   " +
 //                    "Mirror: \(Mirror(reflecting:value)),  " +
 //                    "Mirror.subjectType: \(Mirror(reflecting:value).subjectType),    " +
