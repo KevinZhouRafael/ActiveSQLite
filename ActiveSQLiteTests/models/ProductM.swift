@@ -35,7 +35,7 @@ class ProductM:DBModel{
         return "Product"
     }
 
-    override class func doubleTypeProperties() -> [String]{
+    override func doubleTypeProperties() -> [String]{
         
         return ["price"]
     }

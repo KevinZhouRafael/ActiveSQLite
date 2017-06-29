@@ -9,84 +9,101 @@
 import Foundation
 import SQLite
 
-public extension DBModel{
-    
-//    func initDB(){
-//        db = DBConnection.sharedConnection.db
-//    }
-    
+
+public protocol CreateColumnsProtocol {
+     func createColumns(t:TableBuilder)
+}
+
+extension DBModel{
     
 
-    
     class var nameOfTable: String{
         return NSStringFromClass(self).components(separatedBy: ".").last!
     }
-    // use nameOfTable
+
     func tableName() -> String{
         return type(of: self).nameOfTable
 //        return NSStringFromClass(type(of:self)).components(separatedBy: ".").last!
     }
 
-     func createTable(){
-        type(of: self).createTable()
-    }
-     class func createTable(){
+   internal  func createTable(){
+//        type(of: self).createTable()
+    
         do{
-            try db.run(Table(nameOfTable).create(ifNotExists: true) { t in
+            try DBModel.db.run(Table(tableName()).create(ifNotExists: true) { t in
                 
-                for case let (attribute?,column?, value) in self.init().recursionProperties() {
+
+                if self is CreateColumnsProtocol {
+                    (self as! CreateColumnsProtocol).createColumns(t: t)
+                }else{
+                    autoCreateColumns(t)
+                }
+                
+                //                let s = recusionProperties(t)
+                //                (s["definitions"] as! [Expressible]).count
+                //
+                //                let create1: Method = class_getClassMethod(self, #selector(DBModel.createTable))
+                //                let create2: Method = class_getClassMethod(self, #selector(self.createTable))
+                //
+
+                
+            })
+            
+            LogInfo("Create  Table \(tableName()) success")
+        }catch let e{
+            LogError("Create  Table \(tableName())failure：\(e.localizedDescription)")
+        }
+
+    }
+    class func createTable(){
+        self.init().createTable()
+    }
+    
+    internal  func autoCreateColumns(_ t:TableBuilder){
+        for case let (attribute?,column?, value) in self.recursionProperties() {
+            
+            let mir = Mirror(reflecting:value)
+            
+            switch mir.subjectType {
+                
+            case _ as String.Type, _ as  ImplicitlyUnwrappedOptional<String>.Type:
+                t.column(Expression<String>(column), defaultValue: "")
+            case _ as String?.Type:
+                t.column(Expression<String?>(column))
+                
+                
+            case _ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type:
+                
+                if doubleTypeProperties().contains(attribute) {
+                    t.column(Expression<Double>(column), defaultValue: 0.0)
+                }else{
                     
-                    let mir = Mirror(reflecting:value)
-                    
-                    switch mir.subjectType {
-                        
-                    case _ as String.Type, _ as  ImplicitlyUnwrappedOptional<String>.Type:
-                        t.column(Expression<String>(column), defaultValue: "")
-                    case _ as String?.Type:
-                        t.column(Expression<String?>(column))
-                        
-                        
-                    case _ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type:
-                        
-                        if doubleTypeProperties().contains(attribute) {
-                            t.column(Expression<Double>(column), defaultValue: 0.0)
-                        }else{
-                            
-                            if attribute == "id" {
-                                t.column(Expression<NSNumber>(column), primaryKey: .autoincrement)
-                            }else{
-                                t.column(Expression<NSNumber>(column), defaultValue: 0)
-                            }
-                            
-                        }
-                        
-                    case _ as NSNumber?.Type:
-                        
-                        if doubleTypeProperties().contains(attribute) {
-                            t.column(Expression<Double?>(column))
-                        }else{
-                            t.column(Expression<NSNumber?>(column))
-                        }
-                        
-                    case _ as NSDate.Type, _ as  ImplicitlyUnwrappedOptional<NSDate>.Type:
-                        t.column(Expression<NSDate>(column), defaultValue: NSDate(timeIntervalSince1970: 0))
-                    case _ as NSDate?.Type:
-                        t.column(Expression<NSDate?>(column))
-                        
-                    default: break
-                        
+                    if attribute == "id" {
+                        t.column(Expression<NSNumber>(column), primaryKey: .autoincrement)
+                    }else{
+                        t.column(Expression<NSNumber>(column), defaultValue: 0)
                     }
                     
                 }
                 
+            case _ as NSNumber?.Type:
                 
-            })
+                if doubleTypeProperties().contains(attribute) {
+                    t.column(Expression<Double?>(column))
+                }else{
+                    t.column(Expression<NSNumber?>(column))
+                }
+                
+            case _ as NSDate.Type, _ as  ImplicitlyUnwrappedOptional<NSDate>.Type:
+                t.column(Expression<NSDate>(column), defaultValue: NSDate(timeIntervalSince1970: 0))
+            case _ as NSDate?.Type:
+                t.column(Expression<NSDate?>(column))
+                
+            default: break
+                
+            }
             
-            LogInfo("Create  Table \(nameOfTable) success")
-        }catch let e{
-            LogError("Create  Table \(nameOfTable)failure：\(e.localizedDescription)")
         }
-        
     }
     
      class func dropTable()->Bool{
@@ -123,7 +140,7 @@ public extension DBModel{
                 let t = Table(nameOfTable)
                 
                 for columnName in columnNames {
-                    try self.db.run(addColumnReturnSQL(t: t, columnName: columnName)!)
+                    try self.db.run(self.init().addColumnReturnSQL(t: t, columnName: columnName)!)
                 }
 
             }
@@ -137,8 +154,8 @@ public extension DBModel{
         }
     }
     
-    private class func addColumnReturnSQL(t:Table,columnName newAttributeName:String)->String?{
-        for case let (attribute?,column?, value) in self.init().recursionProperties() {
+    private func addColumnReturnSQL(t:Table,columnName newAttributeName:String)->String?{
+        for case let (attribute?,column?, value) in self.recursionProperties() {
             
             if newAttributeName != attribute {
                 continue

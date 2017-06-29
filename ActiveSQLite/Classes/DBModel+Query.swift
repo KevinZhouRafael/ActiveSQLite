@@ -368,7 +368,7 @@ public extension DBModel{
                     
                 case _ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type:
                     
-                    if (type(of: self)).doubleTypeProperties().contains(attribute) {
+                    if self.doubleTypeProperties().contains(attribute) {
                         expressions.append(Expression<Bool?>(Expression<Double>(column) == value as! Double))
                     }else{
                         expressions.append(Expression<Bool?>(Expression<NSNumber>(column) == value as! NSNumber))
@@ -376,7 +376,7 @@ public extension DBModel{
                     
                 case _ as NSNumber?.Type:
                     
-                    if type(of:self).doubleTypeProperties().contains(attribute) {
+                    if self.doubleTypeProperties().contains(attribute) {
                         expressions.append(Expression<Double?>(column) == value as? Double)
                         
                     }else{
@@ -426,7 +426,7 @@ public extension DBModel{
                     
                 case _ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type:
                     
-                    if (type(of: self)).doubleTypeProperties().contains(attribute) {
+                    if self.doubleTypeProperties().contains(attribute) {
                         expressibles.append((isAsc ? Expression<Double>(column).asc : Expression<Double>(column).desc))
                     }else{
                         expressibles.append((isAsc ? Expression<NSNumber>(column).asc : Expression<NSNumber>(column).desc))
@@ -434,7 +434,7 @@ public extension DBModel{
                     
                 case _ as NSNumber?.Type:
                     
-                    if (type(of: self)).doubleTypeProperties().contains(attribute) {
+                    if self.doubleTypeProperties().contains(attribute) {
                         expressibles.append((isAsc ? Expression<Double?>(column).asc : Expression<Double?>(column).desc))
                         
                     }else{
@@ -487,7 +487,7 @@ public extension DBModel{
                 
             case _ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type:
                 
-                if (type(of: self)).doubleTypeProperties().contains(attribute) {
+                if self.doubleTypeProperties().contains(attribute) {
                     setValue(NSNumber(value:row.get(Expression<Double>(column))) , forKey: attribute)
                 }else{
                     setValue(row.get(Expression<NSNumber>(column)) , forKey: attribute)
@@ -495,7 +495,7 @@ public extension DBModel{
                 
             case _ as NSNumber?.Type:
                 
-                if (type(of: self)).doubleTypeProperties().contains(attribute) {
+                if self.doubleTypeProperties().contains(attribute) {
                     if let v = row.get(Expression<Double?>(column)) {
                         setValue(NSNumber(value:v), forKey: attribute)
                     }

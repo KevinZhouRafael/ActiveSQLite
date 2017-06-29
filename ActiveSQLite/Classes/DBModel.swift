@@ -60,7 +60,7 @@ open class DBModel: NSObject{
         super.init()
     }
     
-    class func doubleTypeProperties() -> [String]{
+    func doubleTypeProperties() -> [String]{
         return [String]()
     }
     
@@ -164,9 +164,9 @@ open class DBModel: NSObject{
         var des = "**DB Model**：" + super.description + "->"
         //        var des = "**DB Model**" + NSStringFromClass(type(of:self)) + "-> "
         
-        for case let (attribute?,column?, value) in recursionProperties(){
+        for case let (attribute?, column?, value) in recursionProperties(){
 //            if attribute == "created_at" || attribute == "updated_at" {
-//                des += "\(attribute) = \((value as! NSNumber).int64Value), " 毫秒。直接输出有三位小数点，看起来刚好是秒。
+//                des += "\(attribute) = \((value as! NSNumber).int64Value), "
 //            }else{
                 des += "\(attribute) = \(value), "
 //            }
@@ -177,4 +177,16 @@ open class DBModel: NSObject{
     
 }
 
+func recusionProperties(_ obj:Any) -> [String:Any] {
+    var properties = [String:Any]()
+    var mirror: Mirror? = Mirror(reflecting: obj)
+    repeat {
+        for case let (key?, value) in mirror!.children {
+            properties[key] = value
+        }
+        mirror = mirror?.superclassMirror
+    } while mirror != nil
+    
+    return properties
+}
 

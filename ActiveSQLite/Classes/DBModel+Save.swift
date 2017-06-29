@@ -202,7 +202,7 @@ extension DBModel{
                 
             case _ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type:
                 
-                if (type(of: self)).doubleTypeProperties().contains(attribute) {
+                if self.doubleTypeProperties().contains(attribute) {
                     setters.append(Expression<Double>(column) <- value as! Double)
                 }else{
                     setters.append(Expression<NSNumber>(column) <- value as! NSNumber)
@@ -210,7 +210,7 @@ extension DBModel{
                 
             case _ as NSNumber?.Type:
                 
-                if (type(of: self)).doubleTypeProperties().contains(attribute) {
+                if self.doubleTypeProperties().contains(attribute) {
                     if let v = value as? Double {
                         setters.append(Expression<Double?>(column) <- v)
                     }else{
