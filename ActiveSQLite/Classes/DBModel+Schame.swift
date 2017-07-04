@@ -120,37 +120,36 @@ extension DBModel{
 
     //MARK: - Alter Table
     //MARK: - Rename Table
-     class func renameTable(oldName:String, newName:String)->Bool{
+     class func renameTable(oldName:String, newName:String)throws{
         do{
             try db.run(Table(oldName).rename(Table(newName)))
             LogInfo("alter name of table from \(oldName) to \(newName) success")
-            return true
             
         }catch{
             LogError("alter name of table from \(oldName) to \(newName) failure：\(error.localizedDescription)")
-            return false
+            throw error
         }
         
     }
     
     //MARK: - Add Column
-     class func addColumn(_ columnNames:[String]) -> Bool {
+     class func addColumn(_ columnNames:[String])throws {
         do{
-            try self.db.transaction {
+            try db.savepoint("savepointname_\(nameOfTable)_addColumn_\(NSDate().timeIntervalSince1970 * 1000)", block: {
+//            try self.db.transaction {
                 let t = Table(nameOfTable)
                 
                 for columnName in columnNames {
                     try self.db.run(self.init().addColumnReturnSQL(t: t, columnName: columnName)!)
                 }
 
-            }
-           
+//            }
+            })
             LogInfo("Add \(columnNames) columns to \(nameOfTable) table success")
-            return true
-            
+
         }catch{
             LogError("Add \(columnNames) columns to \(nameOfTable) table failure")
-            return false
+            throw error
         }
     }
     
@@ -209,28 +208,27 @@ extension DBModel{
     
     // MARK: - CREATE INDEX
     
-     class func createIndex(_ columns: Expressible...) -> Bool {
+     class func createIndex(_ columns: Expressible...)throws {
         do{
             try db.run(Table(nameOfTable).createIndex(columns))
             LogInfo("Create \(columns) indexs on \(nameOfTable) table success")
-            return true
+            
             
         }catch{
             LogError("Create \(columns) indexs on \(nameOfTable) table failure")
-            return false
+            throw error
         }
     }
     
-     class func createIndex(_ columns: [Expressible], unique: Bool = false, ifNotExists: Bool = false) -> Bool {
+     class func createIndex(_ columns: [Expressible], unique: Bool = false, ifNotExists: Bool = false)throws {
         do{
 
             try db.run(Table(nameOfTable).createIndex(columns, unique: unique, ifNotExists: ifNotExists))
             LogInfo("Create \(columns) indexs on \(nameOfTable) table success")
-            return true
             
         }catch{
             LogError("Create \(columns) indexs on \(nameOfTable) table failure")
-            return false
+            throw error
         }
     }
     

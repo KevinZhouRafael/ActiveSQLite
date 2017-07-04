@@ -294,49 +294,49 @@ public extension DBModel{
     }
     
     //MARK: - Delete
-    func runDelete()->Bool{
+    func runDelete()throws{
         do {
             if try DBModel.db.run(query!.delete()) > 0 {
                 LogInfo("Delete rows of \(type(of: self).nameOfTable) success")
-                return true
+                
             } else {
                 LogWarn("Delete rows of \(type(of: self).nameOfTable) failure。")
-                return false
+                
             }
         } catch {
             LogError("Delete rows of \(type(of: self).nameOfTable) failure。")
-            return false
+            throw error
         }
     }
     
-    func delete()->Bool{
+    func delete() throws{
         guard id != nil else {
-            return false
+            return
         }
         
         let query = Table(type(of: self).nameOfTable).where(Expression<NSNumber>("id") == id)
         do {
             if try DBModel.db.run(query.delete()) > 0 {
                 LogInfo("Delete  \(type(of: self).nameOfTable)，id:\(id)  success")
-                return true
+                
             } else {
                 LogWarn("Delete \(type(of: self).nameOfTable) failure，haven't found id:\(id) 。")
-                return false
+                
             }
         } catch {
             LogError("Delete failure: \(error)")
-            return false
+            throw error
         }
     }
     
-    public class func deleteAll()->Bool{
+    public class func deleteAll() throws{
         do{
             try db.run(Table(nameOfTable).delete())
             LogInfo("Delete all rows of \(nameOfTable) success")
-            return true
+            
         }catch{
             LogError("Delete all rows of \(nameOfTable) failure: \(error)")
-            return false
+            throw error
         }
     }
 

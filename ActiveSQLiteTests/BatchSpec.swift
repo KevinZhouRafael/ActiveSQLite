@@ -26,9 +26,10 @@ class BatchSpec: QuickSpec {
                 products.append(p)
             }
             
-            let b = ProductM.insertBatch(models: products)
-            XCTAssertTrue(b, "batch insert success")
-            expect(b).to(equal(true))
+            
+            try! ProductM.insertBatch(models: products)
+
+
             
             for (index,product) in products.enumerated(){
                 XCTAssertTrue(product.id.intValue > 0)
@@ -48,7 +49,7 @@ class BatchSpec: QuickSpec {
                     product.name = "new name \(index)"
                 }
                 
-                XCTAssertTrue(ProductM.updateBatch(models: products),"batch Update  success")
+                try! ProductM.updateBatch(models: products)
                 
                 for (index,product) in products.enumerated(){
                     XCTAssertEqual(product.name, "new name \(index)")

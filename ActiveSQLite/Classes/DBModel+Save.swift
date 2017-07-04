@@ -13,7 +13,7 @@ extension DBModel{
     
     //MARK: - Insert
     //can't insert reduplicate ids
-    func insert() {
+    func insert()throws {
         createTable()
         do {
 
@@ -35,18 +35,20 @@ extension DBModel{
             LogInfo("Insert row of \(rowid) into \(tableName()) table success ")
         }catch{
             LogError("Insert row into \(tableName()) table failure: \(error)")
-            
+            throw error
         }
         
     }
     
-    class func insertBatch(models:[DBModel])->Bool{
+    class func insertBatch(models:[DBModel])throws{
         createTable()
         
         //id，created_at,updated_at
         var autoInsertValues = [(NSNumber,NSNumber,NSNumber)]()
         do{
-            try db.transaction {
+            
+//            try db.transaction {
+            try db.savepoint("savepointname_\(nameOfTable)_insertbatch_\(NSDate().timeIntervalSince1970 * 1000)", block: {
                 for model in models{
                     
                     let timeinterval = NSNumber(value:NSDate().timeIntervalSince1970 * 1000)
@@ -54,7 +56,7 @@ extension DBModel{
                     var settersInsert = model.setters(skips: ["id","created_at","updated_at"])
                     settersInsert.append(Expression<NSNumber>("created_at") <- timeinterval)
                     settersInsert.append(Expression<NSNumber>("updated_at") <- timeinterval)
-
+                    
                     if model.id != nil {
                         settersInsert.append(Expression<NSNumber>("id") <- model.id)
                     }
@@ -64,26 +66,28 @@ extension DBModel{
                     autoInsertValues.append((id,timeinterval,timeinterval))
                     
                 }
-            }
-            
-            for i in 0 ..< models.count {
-                models[i].id = autoInsertValues[i].0
-                models[i].created_at = autoInsertValues[i].1
-                models[i].updated_at = autoInsertValues[i].2
-            }
-            
+
+                for i in 0 ..< models.count {
+                    models[i].id = autoInsertValues[i].0
+                    models[i].created_at = autoInsertValues[i].1
+                    models[i].updated_at = autoInsertValues[i].2
+                }
+//            }
+            })
+        
             LogInfo("Batch insert rows(\(models)) into \(nameOfTable) table success")
-            return true
+
         }catch{
             LogError("Batch insert rows into \(nameOfTable) table failure:\(error)")
-            return false
+            throw error
+            
         }
         
     }
     
     //MARK: - Update
     //Update By id
-    func update() {
+    func update() throws {
         do {
             
             let timeinterval = NSNumber(value:NSDate().timeIntervalSince1970 * 1000)
@@ -102,16 +106,18 @@ extension DBModel{
             }
         } catch {
             LogError(" Update \(tableName()) table failure: \(error)")
+            throw error
         }
         
         
     }
     
-    class func updateBatch(models:[DBModel])->Bool{
+    class func updateBatch(models:[DBModel]) throws{
         //updated_at
         var autoUpdateValues = [(NSNumber)]()
         do{
-            try db.transaction {
+            try db.savepoint("savepointname_\(nameOfTable)_updateBatch\(NSDate().timeIntervalSince1970 * 1000)", block: {
+//            try db.transaction {
                 for model in models{
                     
                     let timeinterval = NSNumber(value:NSDate().timeIntervalSince1970 * 1000)
@@ -125,17 +131,17 @@ extension DBModel{
                     autoUpdateValues.append((timeinterval))
                     
                 }
-            }
             
             for i in 0 ..< models.count {
                 models[i].updated_at = autoUpdateValues[i]
             }
             
+            })
             LogInfo("batch Update \(models) on \(nameOfTable) table success")
-            return true
+
         }catch{
             LogError("batch Update \(nameOfTable) table failure\(error)")
-            return false
+            throw error
         }
 
     }
@@ -144,7 +150,7 @@ extension DBModel{
     
     //MARK: - Save
     //insert if table have't the row，Update if table have the row
-    func save(){
+    func save() throws{
         createTable()
         do {
             let timeinterval = NSNumber(value:NSDate().timeIntervalSince1970 * 1000)
@@ -169,12 +175,12 @@ extension DBModel{
             LogInfo("Insert row of \(rowid) into \(tableName()) table success ")
         }catch{
             LogError("Insert into \(tableName()) table failure: \(error)")
-            
+            throw error
         }
     }
 
     //MARK: - Common
-    func setters( skips:[String] = ["id"])->[Setter]{
+    internal func setters( skips:[String] = ["id"])->[Setter]{
         var setters = [Setter]()
         
         for case let (attribute?,column?, value) in recursionProperties() {

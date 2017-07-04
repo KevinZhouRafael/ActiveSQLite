@@ -23,11 +23,11 @@ class JoinSpec: QuickSpec {
             
             let u = Users()
             u.name = "Peter"
-            u.save()
+            try! u.save()
             
             let u2 = Users()
             u2.name = "Paul"
-            u2.save()
+            try! u2.save()
             
             for i in 0 ..< 5{
                 let p = Posts()
@@ -37,7 +37,7 @@ class JoinSpec: QuickSpec {
                     p.user_id = u2.id
                 }
                 p.title = "Title\(i)"
-                p.save()
+                try! p.save()
             }
             
             

@@ -27,6 +27,8 @@
 		56A778331F02568200829FDF /* ProductM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56A778291F02568200829FDF /* ProductM.swift */; };
 		56A778341F02568200829FDF /* Users.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56A7782A1F02568200829FDF /* Users.swift */; };
 		56A778351F02568200829FDF /* NSDateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56A7782B1F02568200829FDF /* NSDateSpec.swift */; };
+		56D0EF801F0B3F2300167862 /* ActiveSQLite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56D0EF7F1F0B3F2300167862 /* ActiveSQLite.swift */; };
+		56D0EF831F0B41B700167862 /* TranscationSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56D0EF821F0B41B700167862 /* TranscationSpec.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,6 +64,8 @@
 		56A778291F02568200829FDF /* ProductM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductM.swift; sourceTree = "<group>"; };
 		56A7782A1F02568200829FDF /* Users.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Users.swift; sourceTree = "<group>"; };
 		56A7782B1F02568200829FDF /* NSDateSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSDateSpec.swift; sourceTree = "<group>"; };
+		56D0EF7F1F0B3F2300167862 /* ActiveSQLite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActiveSQLite.swift; sourceTree = "<group>"; };
+		56D0EF821F0B41B700167862 /* TranscationSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TranscationSpec.swift; sourceTree = "<group>"; };
 		7429F113C8806133664CE661 /* Pods-ActiveSQLite.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActiveSQLite.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActiveSQLite/Pods-ActiveSQLite.release.xcconfig"; sourceTree = "<group>"; };
 		7CA31C07CCF30E66E5EDC423 /* Pods_ActiveSQLite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ActiveSQLite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1A16EA1F835F96173888272 /* Pods-ActiveSQLite.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActiveSQLite.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActiveSQLite/Pods-ActiveSQLite.debug.xcconfig"; sourceTree = "<group>"; };
@@ -141,6 +145,7 @@
 				56A778211F02568200829FDF /* AlterSpec.swift */,
 				56A7782B1F02568200829FDF /* NSDateSpec.swift */,
 				56A778241F02568200829FDF /* ConfigrationSpec.swift */,
+				56D0EF821F0B41B700167862 /* TranscationSpec.swift */,
 			);
 			path = ActiveSQLiteTests;
 			sourceTree = "<group>";
@@ -148,6 +153,7 @@
 		56A778161F02567900829FDF /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				56D0EF7F1F0B3F2300167862 /* ActiveSQLite.swift */,
 				56A778171F02567900829FDF /* DBConfigration.swift */,
 				56A778181F02567900829FDF /* DBModel+Query.swift */,
 				56A778191F02567900829FDF /* DBModel+Save.swift */,
@@ -377,6 +383,7 @@
 				56A7781C1F02567900829FDF /* DBConfigration.swift in Sources */,
 				56A7781F1F02567900829FDF /* DBModel+Schame.swift in Sources */,
 				56A7781E1F02567900829FDF /* DBModel+Save.swift in Sources */,
+				56D0EF801F0B3F2300167862 /* ActiveSQLite.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -393,6 +400,7 @@
 				56A778351F02568200829FDF /* NSDateSpec.swift in Sources */,
 				56A7782D1F02568200829FDF /* BatchSpec.swift in Sources */,
 				56A7782C1F02568200829FDF /* AlterSpec.swift in Sources */,
+				56D0EF831F0B41B700167862 /* TranscationSpec.swift in Sources */,
 				56A7782F1F02568200829FDF /* ConfigrationSpec.swift in Sources */,
 				56A778321F02568200829FDF /* Posts.swift in Sources */,
 			);

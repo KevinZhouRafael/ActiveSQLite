@@ -35,7 +35,7 @@ class DBModelSpec: QuickSpec {
                         
                         model.name = "iPhone 7"
                         model.price = 1.2
-                        model.insert()
+                        try! model.insert()
                         debugPrint(model)
                     })
                     
@@ -43,7 +43,7 @@ class DBModelSpec: QuickSpec {
                         
                         model.name = "iMac"
                         model.price = 99.99
-                        model.update()
+                        try! model.update()
                         debugPrint(model)
                     })
 
@@ -51,7 +51,7 @@ class DBModelSpec: QuickSpec {
                         
                         model.name = "iPad"
                         model.price = 55.99
-                        model.save()
+                        try! model.save()
                         debugPrint(model)
 
                     })
@@ -61,7 +61,7 @@ class DBModelSpec: QuickSpec {
                         let m2 = ProductM()
                         m2.name = "iWatch"
                         m2.price = 10000
-                        m2.save()
+                        try! m2.save()
                     })
                     
                     describe("Query-Generic Types", {
@@ -119,7 +119,7 @@ class DBModelSpec: QuickSpec {
                             m.name = "Product\(i)"
                             m.price = 1.1
                             m.code = NSNumber(value:10 - i)
-                            m.save()
+                            try! m.save()
                         }
                         
                         describe("Expressible Order", {
@@ -156,7 +156,8 @@ class DBModelSpec: QuickSpec {
                     })
 
                     describe("Delete ", { 
-                        ProductM().where("name",value:"iWatch").runDelete()
+                        
+                        try! ProductM().where("name",value:"iWatch").runDelete()
                         expect(ProductM.findAll("name",value:"iWatch")?.count).to(equal(0))
                     })
 //

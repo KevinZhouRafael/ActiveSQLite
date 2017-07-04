@@ -27,7 +27,7 @@ class NSDateSpec: QuickSpec {
                 let currentDate = Date()
                 //下一个月
                 p.publish_date = NSDate(timeInterval: 3600 * 24 * 31, since: currentDate)
-                p.save()
+                try! p.save()
                 
                 
                 context("Query", closure: {

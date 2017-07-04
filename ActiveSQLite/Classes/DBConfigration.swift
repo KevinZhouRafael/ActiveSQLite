@@ -182,9 +182,7 @@ func LogError(_ message: Any = "",
               file: String = #file,
               line: Int = #line,
               function: String = #function) {
-    if DBConfigration.logLevel.rawValue >= LogLevel.error.rawValue {
-        print( "***[error]***-\(name(of: file))[\(line)]:\(function) --> \(message)")
-    }
+    print( "***[error]***-\(name(of: file))[\(line)]:\(function) --> \(message)")
     
 }
 
