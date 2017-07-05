@@ -2,7 +2,7 @@
 //  DBModel.swift
 //  ActiveSQLite
 //
-//  Created by kai zhou on 05/06/2017.
+//  Created by zhou kai on 05/06/2017.
 //  Copyright © 2017 wumingapie@gmail.com. All rights reserved.
 //
 
@@ -16,6 +16,7 @@ NSNumber    Double                  REAL
 String      String                  TEXT
 nil         nil                     NULL
             SQLite.Blob†	        BLOB //not used
+NSDate      Int64                   INTEGER
  */
 
 open class DBModel: NSObject{
@@ -51,7 +52,7 @@ open class DBModel: NSObject{
     //T! == ImplicitlyUnwrappedOptional<T>
     static var db:Connection!{
         get{
-            return DBConnection.sharedConnection.db
+            return ASConnection.sharedConnection.db
         }
     }
     var _query:QueryType?

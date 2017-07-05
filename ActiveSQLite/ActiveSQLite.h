@@ -2,8 +2,8 @@
 //  ActiveSQLite.h
 //  ActiveSQLite
 //
-//  Created by yuhan on 27/06/2017.
-//  Copyright © 2017 hereigns. All rights reserved.
+//  Created by zhou kai on 27/06/2017.
+//  Copyright © 2017 wumingapie@gmail.com. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

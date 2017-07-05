@@ -2,7 +2,7 @@
 //  DBModel+Schame.swift
 //  ActiveSQLite
 //
-//  Created by kai zhou on 08/06/2017.
+//  Created by zhou kai on 08/06/2017.
 //  Copyright © 2017 wumingapie@gmail.com. All rights reserved.
 //
 
@@ -26,7 +26,7 @@ extension DBModel{
 //        return NSStringFromClass(type(of:self)).components(separatedBy: ".").last!
     }
 
-   internal  func createTable(){
+   internal func createTable()throws{
 //        type(of: self).createTable()
     
         do{
@@ -46,17 +46,17 @@ extension DBModel{
                 //                let create2: Method = class_getClassMethod(self, #selector(self.createTable))
                 //
 
-                
             })
             
             LogInfo("Create  Table \(tableName()) success")
         }catch let e{
             LogError("Create  Table \(tableName())failure：\(e.localizedDescription)")
+            throw e
         }
 
     }
-    class func createTable(){
-        self.init().createTable()
+    class func createTable()throws{
+        try self.init().createTable()
     }
     
     internal  func autoCreateColumns(_ t:TableBuilder){
@@ -106,14 +106,14 @@ extension DBModel{
         }
     }
     
-     class func dropTable()->Bool{
+     class func dropTable()throws{
         do{
             try db.run(Table(nameOfTable).drop(ifExists: true))
             LogInfo("Delete  Table \(nameOfTable) success")
-            return true
+            
         }catch{
             LogError("Delete  Table \(nameOfTable)failure：\(error.localizedDescription)")
-            return false
+            throw error
         }
         
     }

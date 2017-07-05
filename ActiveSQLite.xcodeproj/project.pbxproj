@@ -12,7 +12,7 @@
 		56A778061F02561F00829FDF /* ActiveSQLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 56A777FC1F02561F00829FDF /* ActiveSQLite.framework */; };
 		56A7780B1F02561F00829FDF /* ActiveSQLiteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56A7780A1F02561F00829FDF /* ActiveSQLiteTests.swift */; };
 		56A7780D1F02561F00829FDF /* ActiveSQLite.h in Headers */ = {isa = PBXBuildFile; fileRef = 56A777FF1F02561F00829FDF /* ActiveSQLite.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		56A7781C1F02567900829FDF /* DBConfigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56A778171F02567900829FDF /* DBConfigration.swift */; };
+		56A7781C1F02567900829FDF /* ASConfigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56A778171F02567900829FDF /* ASConfigration.swift */; };
 		56A7781D1F02567900829FDF /* DBModel+Query.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56A778181F02567900829FDF /* DBModel+Query.swift */; };
 		56A7781E1F02567900829FDF /* DBModel+Save.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56A778191F02567900829FDF /* DBModel+Save.swift */; };
 		56A7781F1F02567900829FDF /* DBModel+Schame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56A7781A1F02567900829FDF /* DBModel+Schame.swift */; };
@@ -29,6 +29,8 @@
 		56A778351F02568200829FDF /* NSDateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56A7782B1F02568200829FDF /* NSDateSpec.swift */; };
 		56D0EF801F0B3F2300167862 /* ActiveSQLite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56D0EF7F1F0B3F2300167862 /* ActiveSQLite.swift */; };
 		56D0EF831F0B41B700167862 /* TranscationSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56D0EF821F0B41B700167862 /* TranscationSpec.swift */; };
+		56D0EF851F0BAB9000167862 /* ASLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56D0EF841F0BAB9000167862 /* ASLogger.swift */; };
+		56D0EF871F0BAC3400167862 /* ASConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56D0EF861F0BAC3400167862 /* ASConnection.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,7 +51,7 @@
 		56A778051F02561F00829FDF /* ActiveSQLiteTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ActiveSQLiteTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		56A7780A1F02561F00829FDF /* ActiveSQLiteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveSQLiteTests.swift; sourceTree = "<group>"; };
 		56A7780C1F02561F00829FDF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		56A778171F02567900829FDF /* DBConfigration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBConfigration.swift; sourceTree = "<group>"; };
+		56A778171F02567900829FDF /* ASConfigration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASConfigration.swift; sourceTree = "<group>"; };
 		56A778181F02567900829FDF /* DBModel+Query.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DBModel+Query.swift"; sourceTree = "<group>"; };
 		56A778191F02567900829FDF /* DBModel+Save.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DBModel+Save.swift"; sourceTree = "<group>"; };
 		56A7781A1F02567900829FDF /* DBModel+Schame.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DBModel+Schame.swift"; sourceTree = "<group>"; };
@@ -66,6 +68,8 @@
 		56A7782B1F02568200829FDF /* NSDateSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSDateSpec.swift; sourceTree = "<group>"; };
 		56D0EF7F1F0B3F2300167862 /* ActiveSQLite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActiveSQLite.swift; sourceTree = "<group>"; };
 		56D0EF821F0B41B700167862 /* TranscationSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TranscationSpec.swift; sourceTree = "<group>"; };
+		56D0EF841F0BAB9000167862 /* ASLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASLogger.swift; sourceTree = "<group>"; };
+		56D0EF861F0BAC3400167862 /* ASConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASConnection.swift; sourceTree = "<group>"; };
 		7429F113C8806133664CE661 /* Pods-ActiveSQLite.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActiveSQLite.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActiveSQLite/Pods-ActiveSQLite.release.xcconfig"; sourceTree = "<group>"; };
 		7CA31C07CCF30E66E5EDC423 /* Pods_ActiveSQLite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ActiveSQLite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1A16EA1F835F96173888272 /* Pods-ActiveSQLite.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActiveSQLite.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActiveSQLite/Pods-ActiveSQLite.debug.xcconfig"; sourceTree = "<group>"; };
@@ -154,7 +158,9 @@
 			isa = PBXGroup;
 			children = (
 				56D0EF7F1F0B3F2300167862 /* ActiveSQLite.swift */,
-				56A778171F02567900829FDF /* DBConfigration.swift */,
+				56A778171F02567900829FDF /* ASConfigration.swift */,
+				56D0EF841F0BAB9000167862 /* ASLogger.swift */,
+				56D0EF861F0BAC3400167862 /* ASConnection.swift */,
 				56A778181F02567900829FDF /* DBModel+Query.swift */,
 				56A778191F02567900829FDF /* DBModel+Save.swift */,
 				56A7781A1F02567900829FDF /* DBModel+Schame.swift */,
@@ -379,8 +385,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				56A778201F02567900829FDF /* DBModel.swift in Sources */,
+				56D0EF851F0BAB9000167862 /* ASLogger.swift in Sources */,
 				56A7781D1F02567900829FDF /* DBModel+Query.swift in Sources */,
-				56A7781C1F02567900829FDF /* DBConfigration.swift in Sources */,
+				56D0EF871F0BAC3400167862 /* ASConnection.swift in Sources */,
+				56A7781C1F02567900829FDF /* ASConfigration.swift in Sources */,
 				56A7781F1F02567900829FDF /* DBModel+Schame.swift in Sources */,
 				56A7781E1F02567900829FDF /* DBModel+Save.swift in Sources */,
 				56D0EF801F0B3F2300167862 /* ActiveSQLite.swift in Sources */,

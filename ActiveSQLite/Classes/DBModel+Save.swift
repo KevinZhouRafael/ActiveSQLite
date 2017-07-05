@@ -2,7 +2,7 @@
 //  DBModel+Insert&Update.swift
 //  ActiveSQLite
 //
-//  Created by kai zhou on 08/06/2017.
+//  Created by zhou kai on 08/06/2017.
 //  Copyright © 2017 wumingapie@gmail.com. All rights reserved.
 //
 
@@ -14,9 +14,10 @@ extension DBModel{
     //MARK: - Insert
     //can't insert reduplicate ids
     func insert()throws {
-        createTable()
+        
         do {
-
+            try createTable()
+            
             let timeinterval = NSNumber(value:NSDate().timeIntervalSince1970 * 1000)
             
             var settersInsert = setters(skips: ["id","created_at","updated_at"])
@@ -41,11 +42,13 @@ extension DBModel{
     }
     
     class func insertBatch(models:[DBModel])throws{
-        createTable()
+       
         
         //id，created_at,updated_at
         var autoInsertValues = [(NSNumber,NSNumber,NSNumber)]()
         do{
+            
+             try createTable()
             
 //            try db.transaction {
             try db.savepoint("savepointname_\(nameOfTable)_insertbatch_\(NSDate().timeIntervalSince1970 * 1000)", block: {
@@ -151,8 +154,9 @@ extension DBModel{
     //MARK: - Save
     //insert if table have't the row，Update if table have the row
     func save() throws{
-        createTable()
         do {
+            try createTable()
+            
             let timeinterval = NSNumber(value:NSDate().timeIntervalSince1970 * 1000)
             var created_at_value = timeinterval
             let updated_at_value = timeinterval

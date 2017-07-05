@@ -2,7 +2,7 @@
 //  NSDateSpec.swift
 //  ActiveSQLite
 //
-//  Created by yuhan on 21/06/2017.
+//  Created by zhou kai on 21/06/2017.
 //  Copyright © 2017 ios. All rights reserved.
 //
 
@@ -19,7 +19,7 @@ class NSDateSpec: QuickSpec {
         describe("Test Column of NSDate。 ") {
             describe("Save", {
                 
-                ProductM.dropTable()
+                try? ProductM.dropTable()
                 
                 let p = ProductM()
                 p.name = "Book"

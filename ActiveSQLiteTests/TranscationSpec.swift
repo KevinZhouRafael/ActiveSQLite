@@ -2,8 +2,8 @@
 //  TranscationSpec.swift
 //  ActiveSQLite
 //
-//  Created by yuhan on 04/07/2017.
-//  Copyright © 2017 hereigns. All rights reserved.
+//  Created by zhou kai on 04/07/2017.
+//  Copyright © 2017 wumingapie@gmail.com. All rights reserved.
 //
 
 import Quick
@@ -15,8 +15,8 @@ class TranscationSpec: QuickSpec {
     override func spec() {
         describe("Transcation Tests") {
             
-            ProductM.dropTable()
-            Users.dropTable()
+            try? ProductM.dropTable()
+            try? Users.dropTable()
             
             ActiveSQLite.save({ 
                 

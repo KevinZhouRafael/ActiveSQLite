@@ -2,7 +2,7 @@
 //  DBModelSpec.swift
 //  ActiveSQLite
 //
-//  Created by kai zhou on 05/06/2017.
+//  Created by zhou kai on 05/06/2017.
 //  Copyright © 2017 wumingapie@gmail.com. All rights reserved.
 //
 
@@ -16,19 +16,19 @@ class DBModelSpec: QuickSpec {
     override func spec() {
         describe("TestsDatabase ") {
             
-            DBConfigration.logLevel = .debug
+            ASConfigration.logLevel = .debug
             
             let model: ProductM = ProductM()
 
             describe("create Database ", {
                 
                 describe("Delete Table ", {
-                    ProductM.dropTable()
+                    try? ProductM.dropTable()
                 })
                 
                 describe("create Table ", {
                     
-                    ProductM.createTable()
+                    try? ProductM.createTable()
                     
                     
                     describe(" insert", {

@@ -2,7 +2,7 @@
 //  BatchSpec.swift
 //  ActiveSQLite
 //
-//  Created by kai zhou on 13/06/2017.
+//  Created by zhou kai on 13/06/2017.
 //  Copyright © 2017 wumingapie@gmail.com. All rights reserved.
 //
 
@@ -16,7 +16,7 @@ class BatchSpec: QuickSpec {
     override func spec() {
         describe("batch insert") {
             
-            ProductM.dropTable()
+            try? ProductM.dropTable()
             
             var products = [ProductM]()
             for i in 0 ..< 10 {

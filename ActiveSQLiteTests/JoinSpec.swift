@@ -2,7 +2,7 @@
 //  JoinSpec.swift
 //  ActiveSQLite
 //
-//  Created by kai zhou on 09/06/2017.
+//  Created by zhou kai on 09/06/2017.
 //  Copyright © 2017 wumingapie@gmail.com. All rights reserved.
 //
 
@@ -17,8 +17,8 @@ class JoinSpec: QuickSpec {
 
         describe("generate datas") {
             
-            Users.dropTable()
-            Posts.dropTable()
+            try? Users.dropTable()
+            try? Posts.dropTable()
             
             
             let u = Users()
@@ -49,7 +49,7 @@ class JoinSpec: QuickSpec {
                 let query = users.join(posts, on: Posts.user_id == users.namespace(Users.id)).filter(Posts.user_id == u.id)
                 
                 
-                let db = DBConnection.sharedConnection.db
+                let db = ASConnection.sharedConnection.db
                 
                 for result in try! db!.prepare(query) {
                    debugPrint("Results of join Query -> \(result)" )

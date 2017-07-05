@@ -2,7 +2,7 @@
 //  Users.swift
 //  ActiveSQLite
 //
-//  Created by kai zhou on 09/06/2017.
+//  Created by zhou kai on 09/06/2017.
 //  Copyright © 2017 wumingapie@gmail.com. All rights reserved.
 //
 
