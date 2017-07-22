@@ -31,6 +31,7 @@
 		56D0EF831F0B41B700167862 /* TranscationSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56D0EF821F0B41B700167862 /* TranscationSpec.swift */; };
 		56D0EF851F0BAB9000167862 /* ASLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56D0EF841F0BAB9000167862 /* ASLogger.swift */; };
 		56D0EF871F0BAC3400167862 /* ASConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56D0EF861F0BAC3400167862 /* ASConnection.swift */; };
+		56D0EF891F0C962600167862 /* SetterSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56D0EF881F0C962600167862 /* SetterSpec.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +71,7 @@
 		56D0EF821F0B41B700167862 /* TranscationSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TranscationSpec.swift; sourceTree = "<group>"; };
 		56D0EF841F0BAB9000167862 /* ASLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASLogger.swift; sourceTree = "<group>"; };
 		56D0EF861F0BAC3400167862 /* ASConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASConnection.swift; sourceTree = "<group>"; };
+		56D0EF881F0C962600167862 /* SetterSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetterSpec.swift; sourceTree = "<group>"; };
 		7429F113C8806133664CE661 /* Pods-ActiveSQLite.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActiveSQLite.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActiveSQLite/Pods-ActiveSQLite.release.xcconfig"; sourceTree = "<group>"; };
 		7CA31C07CCF30E66E5EDC423 /* Pods_ActiveSQLite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ActiveSQLite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1A16EA1F835F96173888272 /* Pods-ActiveSQLite.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActiveSQLite.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActiveSQLite/Pods-ActiveSQLite.debug.xcconfig"; sourceTree = "<group>"; };
@@ -150,6 +152,7 @@
 				56A7782B1F02568200829FDF /* NSDateSpec.swift */,
 				56A778241F02568200829FDF /* ConfigrationSpec.swift */,
 				56D0EF821F0B41B700167862 /* TranscationSpec.swift */,
+				56D0EF881F0C962600167862 /* SetterSpec.swift */,
 			);
 			path = ActiveSQLiteTests;
 			sourceTree = "<group>";
@@ -401,6 +404,7 @@
 			files = (
 				56A778331F02568200829FDF /* ProductM.swift in Sources */,
 				56A7780B1F02561F00829FDF /* ActiveSQLiteTests.swift in Sources */,
+				56D0EF891F0C962600167862 /* SetterSpec.swift in Sources */,
 				56A778341F02568200829FDF /* Users.swift in Sources */,
 				56A778311F02568200829FDF /* JoinSpec.swift in Sources */,
 				56A7782E1F02568200829FDF /* CommonConfiguration.swift in Sources */,

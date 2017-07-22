@@ -158,7 +158,44 @@ open class DBModel: NSObject{
         } )
     }
 
-    
+    func propertieColumnMap() -> [String:String]{
+        
+        var pcMap = [String:String]()
+        var mirror: Mirror? = Mirror(reflecting: self)
+        repeat {
+            for case let (key?, value) in mirror!.children {
+                
+                if (type(of:self)).transientProperties().contains(key)  {
+                    continue
+                }
+                
+                let mir = Mirror(reflecting:value)
+                
+                switch mir.subjectType {
+                    
+                case _ as String.Type, _ as  ImplicitlyUnwrappedOptional<String>.Type,_ as String?.Type,_ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type,_ as NSNumber?.Type,
+                     _ as NSDate.Type, _ as ImplicitlyUnwrappedOptional<NSDate>.Type,_ as NSDate?.Type:
+                    
+                    if let column = (type(of:self)).mapper()[key] {
+                        pcMap[key] = column
+                    }else{
+                        pcMap[key] = key
+                    }
+                    
+                    
+                    break
+                    
+                default: break
+                    
+                }
+                
+            }
+            mirror = mirror?.superclassMirror
+        } while mirror != nil
+        
+        
+        return pcMap
+    }
     
        
     override open var description: String{
@@ -178,16 +215,5 @@ open class DBModel: NSObject{
     
 }
 
-func recusionProperties(_ obj:Any) -> [String:Any] {
-    var properties = [String:Any]()
-    var mirror: Mirror? = Mirror(reflecting: obj)
-    repeat {
-        for case let (key?, value) in mirror!.children {
-            properties[key] = value
-        }
-        mirror = mirror?.superclassMirror
-    } while mirror != nil
-    
-    return properties
-}
+
 

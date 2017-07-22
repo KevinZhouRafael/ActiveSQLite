@@ -143,24 +143,34 @@ The "created\_at" and "updated\_at" columns' unit is ms.
 ### Mapper
 You can custom name of table, names of column and prevent save some properties into database.
 
-``` swift
+#### 1. Table name.
 
-//1. Table name.
-// Default table name is class name of Model.
+Default table name is class name of Model.
+
+``` swift
 // Set table name to "ProductTable"
 override class var nameOfTable: String{
     return "ProductTable"
 }
+```
 
-//2. Column name.
-// Default column name is same as properity name.
-// Set column name equals "product_name" when properity is "product"
-// Set column name equals "price_name" when properity is "price"
+#### 2. Column name.
+
+Default column name is same as properity name.
+
+``` swift
+//Set column name equals "product_name" when properity is "product"
+//Set column name equals "price_name" when properity is "price"
 override class func mapper() -> [String:String]{
     return ["name":"product_name","price":"product_price"];
 }
+```
 
-//3. Transent properity is not saved into database.
+#### 3. transient properties.
+
+Transent properity is not saved into database.
+
+``` swift
 override class func transientProperties() -> [String]{
     return ["isSelected"]
 }
@@ -168,8 +178,8 @@ override class func transientProperties() -> [String]{
 ```
 ActiveSQLite can only save properities in (String,NSNumber,NSDate) into database. The properities of other types are not saved into database, they are transent properities.
 
-### table constraints
-If you want custom columns by yourself. you just set model implements CreateColumnsProtocol, and comfirm createColumns function. Then the ActiveSQLite will not create columns. Make sure the properties' names of model mapping the columns'.
+### Table constraints
+If you want custom columns by yourself, you just set model implements CreateColumnsProtocol, and comfirm createColumns function. Then the ActiveSQLite will not auto create columns. Make sure the properties' names of model mapping the columns'.
 
 ```swift
 
@@ -190,14 +200,29 @@ more infomations of [table constraints document](https://github.com/stephencelis
 ## Inserting Rows
 There are only 3 functions used for insert rows. they are
 
+Insert one.
+
 ```swift
 func insert()throws ;
+```
 
+Insert more.
+
+```swift
 class func insertBatch(models:[DBModel])throws ;
 
-func save() throws;
+```
 
-//eg:
+Save method.
+Insert or Update. Insert if id == nil. Update if id != nil.
+
+```swift
+func save() throws;
+```
+
+eg:
+
+```swift
 let u = Users()
 u.name = "Kevin"
 try! u.save()
@@ -213,40 +238,67 @@ for i in 1 ..< 8 {
 try! Product.insertBatch(models: products)
 
 ```
-You must modify properties of model first, and then call these methods. 
-If the model's "id" value is not nil, save() will excute update sql.
-### Setters TODO
-
+For more to see source code or example of ActiveSQLite, also look up document [Inserting Rows document](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#inserting-rows) of SQLite.swift.
 
 ## Updateing Rows
-Update functions are similarily with Insert functions.
+There two strategies for update.
+
+### 1. Update by attribute.
+
+First modefiy attribute of model，and then save() or update() or updateBatch().
+	
+```swift
+	p.name = "zhoukai"
+	p.save()
+```
+	
+### 2. Update by Setter.
+
+Update one Product object to database. 
 
 ```swift
- func update() throws;
- 
- class func updateBatch(models:[DBModel]) throws;
- 
- func save() throws;
- 
+	p.update([Product.desc <- "normal",ProductM.price <- NSNumber(value:3))
 ```
- 
-If the model's 'id' property is nil, save() function will execute insert sql.
- 
-### Setters TODO
 
- 
+Update one or more Products by Expression.
+
+```swift
+ Product.update([Product.desc <- "best"], where: ProductM.price == NSNumber(value:9999))
+```
+For more to see source code and example of ActiveSQLite, also look up document [Updating Rows document](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#updating-rows) , [Setters document](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#setters) of SQLite.swift.
+
+
+
 ## Selecting Rows
 
 You can use findFirst to find one row, use findAll to find more rows.
 
+The methods that prefix name is "find" are class method.
+
+#### 1.Find by attribute.
+
 ```swift
 let p = Product.findFirst("name",value:"iWatch") as! Product
 
-let name = Expression<String>("name")
-let arr = Product.findAll(name == "iWatch") as! Array<Product>
+let ps = Product.findAll("name",value:"iWatch",orders:["price",false]) as! [Product]
 
 ```
+
+#### 2.Find by Expression.
+
+```swift
+let id = Expression<NSNumber>("id")
+let name = Expression<String>("name")
+
+let arr = Product.findAll(name == "iWatch") as! Array<Product>
+
+let ps = Product.findAll(id > NSNumber(value:100), orders: [Product.id.asc]) as! [Product]
+
+```
+
 ### Chainable Query
+chainable query style methods are property method.
+
 ```swift
 let products = Product().where(Expression<NSNumber>("code") > 3)
                                 .order(Product.code)
@@ -254,9 +306,13 @@ let products = Product().where(Expression<NSNumber>("code") > 3)
                                 .run() as! [Product]
 
 ```
-more complex queries to see [Building Complex Queries](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#building-complex-queries)
+Don't forget excute run().
+
+more complex queries to see source code and example of ActiveSQLite.
+Look documents [Building Complex Queries](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#building-complex-queries) of SQLite.swift
 
 ## Deleting Rows
+
 ```swift
 //1. Delete one row
 try? product.delete()
@@ -264,14 +320,14 @@ try? product.delete()
 //2. Delete all rows
 try? Product.deleteAll()
 
-//3. Delete by Expression
+//3. Delete by Expression and chains.
 try? Product().where(Expression<NSNumber>("code") > 3)
                                 .runDelete()
 
 ```
 
 ## Transactions
-I suggest that you should put all insert, update, delete and alter tables codes into ActiveSQLite.save block. 
+I suggest that you should put all insert, update, delete and alter tables codes into ActiveSQLite.save block. One block is a transaction.
 
 ```swift
  ActiveSQLite.save({ 
@@ -304,7 +360,7 @@ I suggest that you should put all insert, update, delete and alter tables codes 
 ```
 
 ## Asynichronous
-ActiveSQLite.saveAsync contains transcation function.
+ActiveSQLite.saveAsync also contains one transcation function.
 
 ```swift
  ActiveSQLite.saveAsync({ 
@@ -317,8 +373,9 @@ ActiveSQLite.saveAsync contains transcation function.
 ## Altering the Schema
 ### Renaming Tables and Adding Columns
 
+#### Step 1.You must change model use new columns and new table name.
+
 ```swift
-//1. You must change model use newColumn and newTableName.
 class Product{
 	var name:String!
 	
@@ -328,20 +385,28 @@ class Product{
 	}
 	
 }
+```
 
-//2. Execute alter table sql when db version update.
+#### Step 2. Execute alter table sql when db version update.
 
-ActiveSQLite.saveAsync({ 
-			try Product.renameTable(oldName:"oldTableName",newName:"newTableName")
-			try Product.addColumn(["newColumn"])
-
-            }, completion: { (error) in
-                ......
-            })
-            
-
+```swift
+let db = ASConnection.sharedConnection.db
+            if db.userVersion == 0 {
+                ActiveSQLite.saveAsync({
+                    try Product.renameTable(oldName:"oldTableName",newName:"newTableName")
+                    try Product.addColumn(["newColumn"])
+                    
+                }, completion: { (error) in
+                    if error == nil {
+                    
+                    	db.userVersion = 1
+                    }
+                })
+                
+            }             
 
 ```
+more to look [Altering the Schema](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#altering-the-schema) of SQLite.swift
 
 ### Indexes
 
@@ -373,8 +438,8 @@ Make sure setting log level before setting database path.
 
 ## Requirements
 - iOS 8.0+  
-- Xcode 7.3
-- Swift 3.0.1
+- Xcode 8.3.2
+- Swift 3
 
 ## Installation
 

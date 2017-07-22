@@ -16,12 +16,29 @@ class AlterSpec: QuickSpec {
         
         describe("Alter Table ") {
             
+//
+            
+//            let db = ASConnection.sharedConnection.db
+//            if db.userVersion == 0 {
+//                ActiveSQLite.saveAsync({
+//                    try Product.renameTable(oldName:"oldTableName",newName:"newTableName")
+//                    try Product.addColumn(["newColumn"])
+//                    
+//                }, completion: { (error) in
+//                    
+//                    db.userVersion = 1
+//                })
+//                
+//            }
+            
+            
             debugPrint("Alter Table Tests")
             
             /* 
 
             //1.db Version
             //.........
+
             
             //2.Alter  Table 
             expect(ProductM.addColumn(["type"])).to(equal(true))

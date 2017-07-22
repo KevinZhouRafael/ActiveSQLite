@@ -89,7 +89,7 @@ extension DBModel{
     }
     
     //MARK: - Update
-    //Update By id
+    //MARK: - Update one By id
     func update() throws {
         do {
             
@@ -115,12 +115,50 @@ extension DBModel{
         
     }
     
+    func update(_ attribute: String, value:Any?)throws{
+        try update([attribute:value])
+    }
+    
+    func update(_ attributeAndValueDic:Dictionary<String,Any?>)throws{
+        
+        let setterss = setters(attributeAndValueDic)
+        try update(setterss)
+    }
+    
+    func update(_ setters: Setter...) throws{
+        try update(setters)
+    }
+    
+    func update(_ setters:[Setter])throws{
+        do {
+            
+            let settersUpdate = (type(of: self)).updateSetters(setters)
+            
+            let table = Table(tableName()).where(Expression<NSNumber>("id") == id)
+            let rowid = try DBModel.db.run(table.update(settersUpdate))
+            
+            if rowid > 0 {
+                try self.refreshSelf()
+                
+                LogInfo(" Update row in \(rowid) from \(tableName()) Table success ")
+            } else {
+                LogWarn(" Update \(tableName()) table failure，can't not found id:\(id) 。")
+            }
+        } catch {
+            LogError(" Update \(tableName()) table failure: \(error)")
+            throw error
+        }
+        
+    }
+
+    
+    //MARK: - Update more than one by ids
     class func updateBatch(models:[DBModel]) throws{
         //updated_at
         var autoUpdateValues = [(NSNumber)]()
         do{
             try db.savepoint("savepointname_\(nameOfTable)_updateBatch\(NSDate().timeIntervalSince1970 * 1000)", block: {
-//            try db.transaction {
+                //            try db.transaction {
                 for model in models{
                     
                     let timeinterval = NSNumber(value:NSDate().timeIntervalSince1970 * 1000)
@@ -130,25 +168,91 @@ extension DBModel{
                     
                     let table = Table(model.tableName()).where(Expression<NSNumber>("id") == model.id)
                     try self.db.run(table.update(settersUpdate))
-
+                    
                     autoUpdateValues.append((timeinterval))
                     
                 }
-            
-            for i in 0 ..< models.count {
-                models[i].updated_at = autoUpdateValues[i]
-            }
-            
+                
+                for i in 0 ..< models.count {
+                    models[i].updated_at = autoUpdateValues[i]
+                }
+                
             })
             LogInfo("batch Update \(models) on \(nameOfTable) table success")
-
+            
         }catch{
             LogError("batch Update \(nameOfTable) table failure\(error)")
             throw error
         }
-
+        
     }
     
+
+    //MARK: - Update more than one by where
+    //    class func update(_ setters:Setter...,`where` predicate: SQLite.Expression<Bool>)throws{
+    //        try update(setters, where: Expression<Bool?>(predicate))
+    //    }
+    
+    class func update(_ setters:[Setter],`where` predicate: SQLite.Expression<Bool>)throws{
+        try update(setters, where: Expression<Bool?>(predicate))
+    }
+    
+    //    class func update(_ setters:Setter...,`where` predicate: SQLite.Expression<Bool?>)throws{
+    //        try update(setters, where: predicate)
+    //
+    //    }
+    
+    class func update(_ setters:[Setter],`where` predicate: SQLite.Expression<Bool?>)throws{
+        do {
+            
+            
+            let table = Table(nameOfTable).where(predicate)
+            
+            let rowid = try DBModel.db.run(table.update(updateSetters(setters)))
+            
+            if rowid > 0 {
+                LogInfo(" Update row in \(rowid) from \(nameOfTable) Table success ")
+            } else {
+                LogWarn(" Update \(nameOfTable) table failure，can't not found id:\(id) 。")
+            }
+        } catch {
+            LogError(" Update \(nameOfTable) table failure: \(error)")
+            throw error
+        }
+        
+    }
+
+    
+    //MARK: - Update all
+    class func update(_ attribute: String, value:Any?)throws{
+        try update([attribute:value])
+    }
+    
+    class func update(_ attributeAndValueDic:Dictionary<String,Any?>)throws{
+        let setterss = self.init().setters(attributeAndValueDic)
+        try update(setterss)
+        
+    }
+    
+    class func update(_ setters:[Setter])throws{
+        do {
+            
+            let table = Table(nameOfTable)
+            
+            let rowid = try DBModel.db.run(table.update(updateSetters(setters)))
+            
+            if rowid > 0 {
+                LogInfo(" Update row in \(rowid) from \(nameOfTable) Table success ")
+            } else {
+                LogWarn(" Update \(nameOfTable) table failure，can't not found id:\(id) 。")
+            }
+        } catch {
+            LogError(" Update \(nameOfTable) table failure: \(error)")
+            throw error
+        }
+        
+    }
+
     
     
     //MARK: - Save
@@ -182,8 +286,18 @@ extension DBModel{
             throw error
         }
     }
+    
 
+    
     //MARK: - Common
+    internal func refreshSelf() throws{
+        let query = Table(tableName()).where(Expression<NSNumber>("id") == id).order(Expression<NSNumber>("updated_at").desc).limit(1)
+        
+        for row in try DBModel.db.prepare(query) {
+            self.buildFromRow(row: row)
+        }
+    }
+    
     internal func setters( skips:[String] = ["id"])->[Setter]{
         var setters = [Setter]()
         
@@ -251,6 +365,134 @@ extension DBModel{
         }
         
         return setters
+    }
+    
+    internal func setters(_ attribute:String, value:Any?)->[Setter]{
+        return setters([attribute:value])
+    }
+    
+    internal func setters(_ attributeAndValueDic:Dictionary<String,Any?>)->[Setter]{
+        
+        var setters = Array<Setter>()
+        
+        for case let (attribute?,column?, v) in recursionProperties() {
+            
+            if attributeAndValueDic.keys.contains(attribute) {
+                
+                let value = attributeAndValueDic[attribute]
+                let mir = Mirror(reflecting:v)
+                
+                switch mir.subjectType {
+                    
+                case _ as String.Type, _ as  ImplicitlyUnwrappedOptional<String>.Type:
+                    setters.append(Expression<String>(column) <- value as! String)
+                case _ as String?.Type:
+                    
+                    if let v = value as? String {
+                        setters.append(Expression<String?>(column) <- v)
+                    }else{
+                        setters.append(Expression<String?>(column) <- nil)
+                    }
+                    
+                    
+                    
+                case _ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type:
+                    
+                    if self.doubleTypeProperties().contains(attribute) {
+                        setters.append(Expression<Double>(column) <- value as! Double)
+                    }else{
+                        setters.append(Expression<NSNumber>(column) <- value as! NSNumber)
+                    }
+                    
+                case _ as NSNumber?.Type:
+                    
+                    if self.doubleTypeProperties().contains(attribute) {
+                        if let v = value as? Double {
+                            setters.append(Expression<Double?>(column) <- v)
+                        }else{
+                            setters.append(Expression<Double?>(column) <- nil)
+                        }
+                    }else{
+                        if let v = value as? NSNumber {
+                            setters.append(Expression<NSNumber?>(column) <- v)
+                        }else{
+                            setters.append(Expression<NSNumber?>(column) <- nil)
+                        }
+                    }
+                    
+                case _ as NSDate.Type, _ as  ImplicitlyUnwrappedOptional<NSDate>.Type:
+                    setters.append(Expression<NSDate>(column) <- value as! NSDate)
+                case _ as NSDate?.Type:
+                    
+                    if let v = value as? NSDate {
+                        setters.append(Expression<NSDate?>(column) <- v)
+                    }else{
+                        setters.append(Expression<NSDate?>(column) <- nil)
+                    }
+                    
+                default: break
+                    
+                }
+                
+            }
+            
+        }
+        
+        return setters
+    }
+
+    //if originSetters contains "updated_at", return same setters
+    //if originSetters not contains "update_at", return new Setters contains "update_at"
+    internal class func updateSetters(_ originSetters:[Setter])->[Setter]{
+        
+        //1.Replace double type setter if originSetters contains double type
+        var settersUpdate = originSetters.map { (setter) -> Setter in
+            
+            let column = setter.getColumnName()
+            var attribute = column
+            for (pro, col) in self.init().propertieColumnMap(){
+                if col == column {
+                    attribute = pro
+                }
+            }
+            
+            if self.init().doubleTypeProperties().contains(attribute) {
+                let setterValue = setter.getValue()
+                let mir = Mirror(reflecting:setterValue ?? 0.0)
+                switch mir.subjectType {
+                    case _ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type:
+                        return Expression<Double>(column) <- setterValue as! Double
+                    case _ as NSNumber?.Type:
+                        if let v = setterValue as? Double {
+                            return Expression<Double?>(column) <- v
+                        }else{
+                            return Expression<Double?>(column) <- nil
+                        }
+                    default:break
+                }
+                return Expression<Double?>(column) <- nil
+            }else{
+                return setter
+            }
+        }
+
+    
+        // 2.Add "update_at" setter if originSetters not contains "update_at"
+        let columnNames = originSetters.flatMap({ (setter) -> String in
+            return setter.getColumnName()
+        })
+        
+        var containsUpdate_at = false
+        for columnName in columnNames {
+            if columnName.contains("updated_at") {
+                containsUpdate_at = true
+            }
+        }
+        if !containsUpdate_at {
+            settersUpdate.append(Expression<NSNumber>("updated_at") <- NSNumber(value:NSDate().timeIntervalSince1970 * 1000))
+        }
+
+        return settersUpdate
     }
 
 }

@@ -99,3 +99,48 @@ extension NSDate: SQLite.Value {
         return  Int64(timeIntervalSince1970)
     }
 }
+
+
+func recusionProperties(_ obj:Any) -> Dictionary<String,Any> {
+    var properties = [String:Any]()
+    var mirror: Mirror? = Mirror(reflecting: obj)
+    repeat {
+        for case let (key?, value) in mirror!.children {
+            properties[key] = value
+        }
+        mirror = mirror?.superclassMirror
+    } while mirror != nil
+    
+    return properties
+}
+
+extension Setter{
+    func getColumnName() -> String {
+        let selfPrpperties = recusionProperties(self)
+        for case let (key, v) in selfPrpperties{
+            if key == "column" {
+                let columnPrpperties = recusionProperties(v)
+                for case let (key, v) in columnPrpperties{
+                    if key == "template" {
+                        return (v as! String).trimmingCharacters(in: CharacterSet(charactersIn:"\""))
+                    }
+                }
+            }
+        }
+        
+        return ""
+//        return (recusionProperties(self)["column"] as! Expression).template
+    }
+    
+    func getValue() -> Any? {
+        let selfPrpperties = recusionProperties(self)
+        for case let (key, v) in selfPrpperties{
+            if key == "value" {
+                return v
+            }
+        }
+        
+        return nil
+
+    }
+}

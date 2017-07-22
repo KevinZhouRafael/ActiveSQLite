@@ -25,21 +25,40 @@ public extension DBModel{
         return findAll(attributeAndValueDic)?.first
     }
     
-    class func findFirst(_ sortedColumn:String,ascending:Bool = true)->DBModel?{
-        return findAll(sortedColumn, ascending: ascending).first
+    class func findFirst(_ orderColumn:String,ascending:Bool = true)->DBModel?{
+        return findAll(orderColumn, ascending: ascending).first
     }
 
-    class func findFirst(_ sorted:[String:Bool]? = nil)->DBModel?{
-        return findAll(sorted).first
+    class func findFirst(_ orders:[String:Bool]? = nil)->DBModel?{
+        return findAll(orders).first
     }
 
-    class func findFirst(_ attribute: String, value:Any?,_ sortedColumn:String,ascending:Bool = true)->DBModel?{
-        return findAll([attribute:value], [sortedColumn:ascending]).first
+    class func findFirst(_ attribute: String, value:Any?,_ orderBy:String,ascending:Bool = true)->DBModel?{
+        return findAll([attribute:value], [orderBy:ascending]).first
     }
     
-    class func findFirst(_ attributeAndValueDic:Dictionary<String,Any?>?,_ sorted:[String:Bool]? = nil)->DBModel?{
-        return findAll(attributeAndValueDic, sorted).first
+    class func findFirst(_ attributeAndValueDic:Dictionary<String,Any?>?,_ orders:[String:Bool]? = nil)->DBModel?{
+        return findAll(attributeAndValueDic, orders).first
     }
+    
+    class func findFirst(_ predicate: SQLite.Expression<Bool>,orders:[String:Bool])->DBModel?
+    {
+        return findAll(predicate,orders:orders)?.first
+    }
+    
+    class func findFirst(_ predicate: SQLite.Expression<Bool?>,orders:[String:Bool])->DBModel?{
+        return findAll(predicate,orders:orders)?.first
+    }
+    
+    class func findFirst(_ predicate: SQLite.Expression<Bool>,orders: [Expressible]? = nil)->DBModel?
+    {
+        return findAll(predicate,orders:orders)?.first
+    }
+    
+    class func findFirst(_ predicate: SQLite.Expression<Bool?>,orders: [Expressible]? = nil)->DBModel?{
+        return findAll(predicate,orders:orders)?.first
+    }
+    
     
     //MARK: FindAll
     class func findAll(_ attribute: String, value:Any?)->Array<DBModel>?{
@@ -51,16 +70,22 @@ public extension DBModel{
     }
     
     
-    class func findAll(_ sortedColumn:String,ascending:Bool = true)->Array<DBModel>{
-        return findAll(nil, [sortedColumn:ascending])
+    class func findAll(_ orderColumn:String,ascending:Bool = true)->Array<DBModel>{
+        return findAll(nil, [orderColumn:ascending])
     }
     
-    class func findAll(_ sorted:[String:Bool]? = nil)->Array<DBModel>{
-        return findAll(nil, sorted)
+    class func findAll(_ orders:[String:Bool]? = nil)->Array<DBModel>{
+        return findAll(nil, orders)
         
     }
+    
+    class func findAll(_ attributeAndValueDic:Dictionary<String,Any?>,orders:[String:Bool])->Array<DBModel>{
+        return findAll(attributeAndValueDic, orders: orders)
+    }
 
-    class func findAll(_ attributeAndValueDic:Dictionary<String,Any?>?,_ sorted:[String:Bool]? = nil)->Array<DBModel>{
+    class func findAll(_ attributeAndValueDic:Dictionary<String,Any?>?,_ orders:[String:Bool]? = nil)->Array<DBModel>{
+        
+        
         var results:Array<DBModel> = Array<DBModel>()
         var query = Table(nameOfTable)
         
@@ -70,8 +95,8 @@ public extension DBModel{
             }
         }
         
-        if sorted != nil {
-            query = query.order(self.init().expressiblesForOrder(sorted!))
+        if orders != nil {
+            query = query.order(self.init().expressiblesForOrder(orders!))
         }
         
         for row in try! db.prepare(query) {
@@ -82,16 +107,35 @@ public extension DBModel{
         
         return results
     }
-    
-    class func findAll(_ predicate: SQLite.Expression<Bool>)->Array<DBModel>?{
-        
-        return findAll(Expression<Bool?>(predicate))
+
+    class func findAll(_ predicate: SQLite.Expression<Bool>,orders:[String:Bool])->Array<DBModel>?{
+
+        return findAll(Expression<Bool?>(predicate),orders:self.init().expressiblesForOrder(orders))
+       
     }
     
-    class func findAll(_ predicate: SQLite.Expression<Bool?>)->Array<DBModel>?{
+    class func findAll(_ predicate: SQLite.Expression<Bool?>,orders:[String:Bool])->Array<DBModel>?{
+        
+        return findAll(predicate,orders:self.init().expressiblesForOrder(orders))
+       
+    }
+
+    class func findAll(_ predicate: SQLite.Expression<Bool>,orders: [Expressible]? = nil)->Array<DBModel>?{
+        
+        return findAll(Expression<Bool?>(predicate),orders:orders)
+    }
+    
+    class func findAll(_ predicate: SQLite.Expression<Bool?>,orders: [Expressible]? = nil)->Array<DBModel>?{
         
         var results:Array<DBModel> = Array<DBModel>()
-        let query = Table(nameOfTable).where(predicate).order(Expression<NSNumber>("created_at").desc)
+        var query = Table(nameOfTable).where(predicate)
+        
+        if orders != nil && orders!.count > 0 {
+            query = query.order(orders!)
+        }else{
+            query = query.order(Expression<NSNumber>("created_at").desc)
+        }
+        
         
         for row in try! db.prepare(query) {
             

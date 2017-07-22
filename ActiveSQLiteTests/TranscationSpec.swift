@@ -48,7 +48,7 @@ class TranscationSpec: QuickSpec {
             }, completion: { (error) in
                 
                 if error != nil {
-                    debugPrint("transtion fails \(error)")
+                    debugPrint("transtion fails \(String(describing: error))")
                 }else{
                     debugPrint("transtion success")
                 }
