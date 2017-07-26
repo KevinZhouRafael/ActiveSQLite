@@ -13,7 +13,7 @@ func save(_ block: @escaping ()throws -> Void,
           completion: @escaping (_ error:Error?)->Void) -> Void  {
     
     do{
-        try ASConnection.sharedConnection.db.transaction {
+        try DBConnection.sharedConnection.db.transaction {
              try block()
         }
         
@@ -35,7 +35,7 @@ func saveAsync(_ block: @escaping ()throws -> Void,
     DispatchQueue.global().async {
         
         do{
-            try ASConnection.sharedConnection.db.transaction {
+            try DBConnection.sharedConnection.db.transaction {
                 try block()
             }
             

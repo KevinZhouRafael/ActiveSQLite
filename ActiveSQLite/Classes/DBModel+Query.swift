@@ -90,13 +90,13 @@ public extension DBModel{
         var query = Table(nameOfTable)
         
         if attributeAndValueDic != nil {
-            if let expression = self.init().expression(attributeAndValueDic!) {
+            if let expression = self.init().buildExpression(attributeAndValueDic!) {
                 query = query.where(expression)
             }
         }
         
         if orders != nil {
-            query = query.order(self.init().expressiblesForOrder(orders!))
+            query = query.order(self.init().buildExpressiblesForOrder(orders!))
         }
         
         for row in try! db.prepare(query) {
@@ -110,13 +110,13 @@ public extension DBModel{
 
     class func findAll(_ predicate: SQLite.Expression<Bool>,orders:[String:Bool])->Array<DBModel>?{
 
-        return findAll(Expression<Bool?>(predicate),orders:self.init().expressiblesForOrder(orders))
+        return findAll(Expression<Bool?>(predicate),orders:self.init().buildExpressiblesForOrder(orders))
        
     }
     
     class func findAll(_ predicate: SQLite.Expression<Bool?>,orders:[String:Bool])->Array<DBModel>?{
         
-        return findAll(predicate,orders:self.init().expressiblesForOrder(orders))
+        return findAll(predicate,orders:self.init().buildExpressiblesForOrder(orders))
        
     }
 
@@ -232,7 +232,7 @@ public extension DBModel{
     
     public func `where`(_ attribute: String, value:Any?)->Self{
         
-        if let expression = expression(attribute, value: value) {
+        if let expression = buildExpression(attribute, value: value) {
             return self.where(expression)
         }
         return self
@@ -240,7 +240,7 @@ public extension DBModel{
     
     public func `where`(_ attributeAndValueDic:Dictionary<String,Any?>)->Self{
         
-        if let expression = expression(attributeAndValueDic) {
+        if let expression = buildExpression(attributeAndValueDic) {
             return self.where(expression)
         }
         return self
@@ -286,12 +286,12 @@ public extension DBModel{
     }
 
     public func orderBy(_ sorted:String, asc:Bool = true)->Self{
-        query = query?.order(expressiblesForOrder([sorted:asc]))
+        query = query?.order(buildExpressiblesForOrder([sorted:asc]))
         return self
     }
     
     public func orderBy(_ sorted:[String:Bool])->Self{
-        query = query?.order(expressiblesForOrder(sorted))
+        query = query?.order(buildExpressiblesForOrder(sorted))
         return self
     }
     
@@ -373,7 +373,7 @@ public extension DBModel{
         }
     }
     
-    public class func deleteAll() throws{
+    class func deleteAll() throws{
         do{
             try db.run(Table(nameOfTable).delete())
             LogInfo("Delete all rows of \(nameOfTable) success")
@@ -385,13 +385,13 @@ public extension DBModel{
     }
 
     //MARK: - Comment
-    func expression(_ attribute: String, value:Any?)->SQLite.Expression<Bool?>?{
+    internal func buildExpression(_ attribute: String, value:Any?)->SQLite.Expression<Bool?>?{
         
-        return expression([attribute:value])
+        return buildExpression([attribute:value])
         
     }
     
-    func expression(_ attributeAndValueDic:Dictionary<String,Any?>)->SQLite.Expression<Bool?>?{
+    internal func buildExpression(_ attributeAndValueDic:Dictionary<String,Any?>)->SQLite.Expression<Bool?>?{
         
         
         var expressions = Array<SQLite.Expression<Bool?>>()
@@ -412,7 +412,7 @@ public extension DBModel{
                     
                 case _ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type:
                     
-                    if self.doubleTypeProperties().contains(attribute) {
+                    if self.doubleTypes().contains(attribute) {
                         expressions.append(Expression<Bool?>(Expression<Double>(column) == value as! Double))
                     }else{
                         expressions.append(Expression<Bool?>(Expression<NSNumber>(column) == value as! NSNumber))
@@ -420,7 +420,7 @@ public extension DBModel{
                     
                 case _ as NSNumber?.Type:
                     
-                    if self.doubleTypeProperties().contains(attribute) {
+                    if self.doubleTypes().contains(attribute) {
                         expressions.append(Expression<Double?>(column) == value as? Double)
                         
                     }else{
@@ -441,15 +441,19 @@ public extension DBModel{
             
         }
         
-        if expressions.count > 0 {
-            return expressions.reduce(expressions.first!) { $0 && $1 }
+        if expressions.count > 1 {
+            var exp = expressions.first!
+            for i in 1..<expressions.count {
+                exp = exp && expressions[i]
+            }
+            return exp
         }else{
             return expressions.first
         }
         
     }
     
-    func expressiblesForOrder(_ attributeAndAscDic:Dictionary<String,Bool>)->[Expressible]{
+    internal func buildExpressiblesForOrder(_ attributeAndAscDic:Dictionary<String,Bool>)->[Expressible]{
         
         
         var expressibles = [Expressible]()
@@ -470,7 +474,7 @@ public extension DBModel{
                     
                 case _ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type:
                     
-                    if self.doubleTypeProperties().contains(attribute) {
+                    if self.doubleTypes().contains(attribute) {
                         expressibles.append((isAsc ? Expression<Double>(column).asc : Expression<Double>(column).desc))
                     }else{
                         expressibles.append((isAsc ? Expression<NSNumber>(column).asc : Expression<NSNumber>(column).desc))
@@ -478,7 +482,7 @@ public extension DBModel{
                     
                 case _ as NSNumber?.Type:
                     
-                    if self.doubleTypeProperties().contains(attribute) {
+                    if self.doubleTypes().contains(attribute) {
                         expressibles.append((isAsc ? Expression<Double?>(column).asc : Expression<Double?>(column).desc))
                         
                     }else{
@@ -503,7 +507,7 @@ public extension DBModel{
     }
     
     //MARK: - Build
-    func buildFromRow(row:Row){
+    internal func buildFromRow(row:Row){
         
         for case let (attribute?,column?, value) in recursionProperties() {
 //            let s = "Attribute ：\(attribute) Value：\(value),   " +
@@ -531,7 +535,7 @@ public extension DBModel{
                 
             case _ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type:
                 
-                if self.doubleTypeProperties().contains(attribute) {
+                if self.doubleTypes().contains(attribute) {
                     setValue(NSNumber(value:row.get(Expression<Double>(column))) , forKey: attribute)
                 }else{
                     setValue(row.get(Expression<NSNumber>(column)) , forKey: attribute)
@@ -539,7 +543,7 @@ public extension DBModel{
                 
             case _ as NSNumber?.Type:
                 
-                if self.doubleTypeProperties().contains(attribute) {
+                if self.doubleTypes().contains(attribute) {
                     if let v = row.get(Expression<Double?>(column)) {
                         setValue(NSNumber(value:v), forKey: attribute)
                     }

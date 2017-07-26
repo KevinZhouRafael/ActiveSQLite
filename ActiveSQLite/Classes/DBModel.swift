@@ -52,7 +52,7 @@ open class DBModel: NSObject{
     //T! == ImplicitlyUnwrappedOptional<T>
     static var db:Connection!{
         get{
-            return ASConnection.sharedConnection.db
+            return DBConnection.sharedConnection.db
         }
     }
     var _query:QueryType?
@@ -61,7 +61,7 @@ open class DBModel: NSObject{
         super.init()
     }
     
-    func doubleTypeProperties() -> [String]{
+    func doubleTypes() -> [String]{
         return [String]()
     }
     
@@ -69,7 +69,7 @@ open class DBModel: NSObject{
         return [String:String]()
     }
     
-    class func transientProperties() -> [String]{
+    class func transientTypes() -> [String]{
         return [String]()
     }
     
@@ -121,7 +121,7 @@ open class DBModel: NSObject{
         repeat {
             for case let (key?, value) in mirror!.children {
                 
-                if (type(of:self)).transientProperties().contains(key)  {
+                if (type(of:self)).transientTypes().contains(key)  {
                     continue
                 }
                 
@@ -165,7 +165,7 @@ open class DBModel: NSObject{
         repeat {
             for case let (key?, value) in mirror!.children {
                 
-                if (type(of:self)).transientProperties().contains(key)  {
+                if (type(of:self)).transientTypes().contains(key)  {
                     continue
                 }
                 

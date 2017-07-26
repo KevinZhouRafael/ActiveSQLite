@@ -16,7 +16,7 @@ class DBModelSpec: QuickSpec {
     override func spec() {
         describe("TestsDatabase ") {
             
-            ASConfigration.logLevel = .debug
+            DBConfigration.logLevel = .debug
             
             let model: ProductM = ProductM()
 

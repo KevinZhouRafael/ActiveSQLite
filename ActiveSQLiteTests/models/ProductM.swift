@@ -35,7 +35,7 @@ class ProductM:DBModel{
         return "Product"
     }
 
-    override func doubleTypeProperties() -> [String]{
+    override func doubleTypes() -> [String]{
         
         return ["price"]
     }
@@ -44,7 +44,7 @@ class ProductM:DBModel{
         return ["name":"product_name","price":"product_price"];
     }
     
-    override class func transientProperties() -> [String]{
+    override class func transientTypes() -> [String]{
         return ["version"]
     }
 

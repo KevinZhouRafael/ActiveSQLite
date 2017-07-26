@@ -74,7 +74,7 @@ extension DBModel{
                 
             case _ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type:
                 
-                if doubleTypeProperties().contains(attribute) {
+                if doubleTypes().contains(attribute) {
                     t.column(Expression<Double>(column), defaultValue: 0.0)
                 }else{
                     
@@ -88,7 +88,7 @@ extension DBModel{
                 
             case _ as NSNumber?.Type:
                 
-                if doubleTypeProperties().contains(attribute) {
+                if doubleTypes().contains(attribute) {
                     t.column(Expression<Double?>(column))
                 }else{
                     t.column(Expression<NSNumber?>(column))
@@ -173,7 +173,7 @@ extension DBModel{
                 
             case _ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type:
                 
-                if doubleTypeProperties().contains(attribute) {
+                if doubleTypes().contains(attribute) {
                     return t.addColumn(Expression<Double>(column), defaultValue: 0.0)
                 }else{
                     
@@ -187,7 +187,7 @@ extension DBModel{
                 
             case _ as NSNumber?.Type:
                 
-                if doubleTypeProperties().contains(attribute) {
+                if doubleTypes().contains(attribute) {
                     return t.addColumn(Expression<Double?>(column))
                 }else{
                     return t.addColumn(Expression<NSNumber?>(column))

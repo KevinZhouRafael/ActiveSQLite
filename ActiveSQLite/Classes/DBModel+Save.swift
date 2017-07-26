@@ -20,7 +20,7 @@ extension DBModel{
             
             let timeinterval = NSNumber(value:NSDate().timeIntervalSince1970 * 1000)
             
-            var settersInsert = setters(skips: ["id","created_at","updated_at"])
+            var settersInsert = buildSetters(skips: ["id", "created_at", "updated_at"])
             settersInsert.append(Expression<NSNumber>("created_at") <- timeinterval)
             settersInsert.append(Expression<NSNumber>("updated_at") <- timeinterval)
             
@@ -56,7 +56,7 @@ extension DBModel{
                     
                     let timeinterval = NSNumber(value:NSDate().timeIntervalSince1970 * 1000)
                     
-                    var settersInsert = model.setters(skips: ["id","created_at","updated_at"])
+                    var settersInsert = model.buildSetters(skips: ["id", "created_at", "updated_at"])
                     settersInsert.append(Expression<NSNumber>("created_at") <- timeinterval)
                     settersInsert.append(Expression<NSNumber>("updated_at") <- timeinterval)
                     
@@ -95,7 +95,7 @@ extension DBModel{
             
             let timeinterval = NSNumber(value:NSDate().timeIntervalSince1970 * 1000)
             
-            var settersUpdate = setters(skips: ["id","updated_at"])
+            var settersUpdate = buildSetters(skips: ["id", "updated_at"])
             settersUpdate.append(Expression<NSNumber>("updated_at") <- timeinterval)
 
             let table = Table(tableName()).where(Expression<NSNumber>("id") == id)
@@ -121,7 +121,7 @@ extension DBModel{
     
     func update(_ attributeAndValueDic:Dictionary<String,Any?>)throws{
         
-        let setterss = setters(attributeAndValueDic)
+        let setterss = buildSetters(attributeAndValueDic)
         try update(setterss)
     }
     
@@ -132,7 +132,7 @@ extension DBModel{
     func update(_ setters:[Setter])throws{
         do {
             
-            let settersUpdate = (type(of: self)).updateSetters(setters)
+            let settersUpdate = (type(of: self)).buildUpdateSetters(setters)
             
             let table = Table(tableName()).where(Expression<NSNumber>("id") == id)
             let rowid = try DBModel.db.run(table.update(settersUpdate))
@@ -151,7 +151,7 @@ extension DBModel{
         
     }
 
-    
+    //MARK: - Update all
     //MARK: - Update more than one by ids
     class func updateBatch(models:[DBModel]) throws{
         //updated_at
@@ -163,7 +163,7 @@ extension DBModel{
                     
                     let timeinterval = NSNumber(value:NSDate().timeIntervalSince1970 * 1000)
                     
-                    var settersUpdate = model.setters(skips: ["id","updated_at"])
+                    var settersUpdate = model.buildSetters(skips: ["id", "updated_at"])
                     settersUpdate.append(Expression<NSNumber>("updated_at") <- timeinterval)
                     
                     let table = Table(model.tableName()).where(Expression<NSNumber>("id") == model.id)
@@ -187,6 +187,17 @@ extension DBModel{
         
     }
     
+    class func update(_ attribute: String, value:Any?,`where` wAttribute:String, wValue:Any?)throws{
+        try update([attribute:value],where:[wAttribute:wValue])
+    }
+    
+    class func update(_ attributeAndValueDic:Dictionary<String,Any?>,`where` wAttributeAndValueDic:Dictionary<String,Any?>)throws{
+        let model = self.init()
+        let setterss = model.buildSetters(attributeAndValueDic)
+        let expressions = model.buildExpression(wAttributeAndValueDic)!
+        try update(setterss, where: expressions)
+        
+    }
 
     //MARK: - Update more than one by where
     //    class func update(_ setters:Setter...,`where` predicate: SQLite.Expression<Bool>)throws{
@@ -208,7 +219,7 @@ extension DBModel{
             
             let table = Table(nameOfTable).where(predicate)
             
-            let rowid = try DBModel.db.run(table.update(updateSetters(setters)))
+            let rowid = try DBModel.db.run(table.update(buildUpdateSetters(setters)))
             
             if rowid > 0 {
                 LogInfo(" Update row in \(rowid) from \(nameOfTable) Table success ")
@@ -223,23 +234,14 @@ extension DBModel{
     }
 
     
-    //MARK: - Update all
-    class func update(_ attribute: String, value:Any?)throws{
-        try update([attribute:value])
-    }
-    
-    class func update(_ attributeAndValueDic:Dictionary<String,Any?>)throws{
-        let setterss = self.init().setters(attributeAndValueDic)
-        try update(setterss)
-        
-    }
+
     
     class func update(_ setters:[Setter])throws{
         do {
             
             let table = Table(nameOfTable)
             
-            let rowid = try DBModel.db.run(table.update(updateSetters(setters)))
+            let rowid = try DBModel.db.run(table.update(buildUpdateSetters(setters)))
             
             if rowid > 0 {
                 LogInfo(" Update row in \(rowid) from \(nameOfTable) Table success ")
@@ -268,7 +270,7 @@ extension DBModel{
                 created_at_value = created_at
             }
             
-            var settersInsert = setters(skips: ["id","created_at","updated_at"])
+            var settersInsert = buildSetters(skips: ["id", "created_at", "updated_at"])
             settersInsert.append(Expression<NSNumber>("created_at") <- created_at_value)
             settersInsert.append(Expression<NSNumber>("updated_at") <- updated_at_value)
 
@@ -298,7 +300,7 @@ extension DBModel{
         }
     }
     
-    internal func setters( skips:[String] = ["id"])->[Setter]{
+    internal func buildSetters(skips:[String] = ["id"])->[Setter]{
         var setters = [Setter]()
         
         for case let (attribute?,column?, value) in recursionProperties() {
@@ -326,7 +328,7 @@ extension DBModel{
                 
             case _ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type:
                 
-                if self.doubleTypeProperties().contains(attribute) {
+                if self.doubleTypes().contains(attribute) {
                     setters.append(Expression<Double>(column) <- value as! Double)
                 }else{
                     setters.append(Expression<NSNumber>(column) <- value as! NSNumber)
@@ -334,7 +336,7 @@ extension DBModel{
                 
             case _ as NSNumber?.Type:
                 
-                if self.doubleTypeProperties().contains(attribute) {
+                if self.doubleTypes().contains(attribute) {
                     if let v = value as? Double {
                         setters.append(Expression<Double?>(column) <- v)
                     }else{
@@ -367,20 +369,20 @@ extension DBModel{
         return setters
     }
     
-    internal func setters(_ attribute:String, value:Any?)->[Setter]{
-        return setters([attribute:value])
+    internal func buildSetters(_ attribute:String, value:Any?)->[Setter]{
+        return buildSetters([attribute:value])
     }
     
-    internal func setters(_ attributeAndValueDic:Dictionary<String,Any?>)->[Setter]{
+    internal func buildSetters(_ attributeAndValueDic:Dictionary<String,Any?>)->[Setter]{
         
         var setters = Array<Setter>()
         
-        for case let (attribute?,column?, v) in recursionProperties() {
+        for case let (attribute?,column?, v0) in recursionProperties() {
             
             if attributeAndValueDic.keys.contains(attribute) {
                 
                 let value = attributeAndValueDic[attribute]
-                let mir = Mirror(reflecting:v)
+                let mir = Mirror(reflecting:v0)
                 
                 switch mir.subjectType {
                     
@@ -398,7 +400,7 @@ extension DBModel{
                     
                 case _ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type:
                     
-                    if self.doubleTypeProperties().contains(attribute) {
+                    if self.doubleTypes().contains(attribute) {
                         setters.append(Expression<Double>(column) <- value as! Double)
                     }else{
                         setters.append(Expression<NSNumber>(column) <- value as! NSNumber)
@@ -406,7 +408,7 @@ extension DBModel{
                     
                 case _ as NSNumber?.Type:
                     
-                    if self.doubleTypeProperties().contains(attribute) {
+                    if self.doubleTypes().contains(attribute) {
                         if let v = value as? Double {
                             setters.append(Expression<Double?>(column) <- v)
                         }else{
@@ -443,10 +445,11 @@ extension DBModel{
 
     //if originSetters contains "updated_at", return same setters
     //if originSetters not contains "update_at", return new Setters contains "update_at"
-    internal class func updateSetters(_ originSetters:[Setter])->[Setter]{
+    internal class func buildUpdateSetters(_ originSetters:[Setter])->[Setter]{
         
         //1.Replace double type setter if originSetters contains double type
         var settersUpdate = originSetters.map { (setter) -> Setter in
+            
             
             let column = setter.getColumnName()
             var attribute = column
@@ -456,7 +459,8 @@ extension DBModel{
                 }
             }
             
-            if self.init().doubleTypeProperties().contains(attribute) {
+            //
+            if self.init().doubleTypes().contains(attribute) {
                 let setterValue = setter.getValue()
                 let mir = Mirror(reflecting:setterValue ?? 0.0)
                 switch mir.subjectType {
@@ -470,7 +474,8 @@ extension DBModel{
                         }
                     default:break
                 }
-                return Expression<Double?>(column) <- nil
+                return setter //the double type that originSetters contains is NSNumber. return origin setter
+//                return Expression<Double?>(column) <- nil
             }else{
                 return setter
             }

@@ -11,11 +11,10 @@ ActiveSQLite is an helper of [SQLite.Swift](https://github.com/stephencelis/SQLi
 
 ## Features
 
- - Support all Features of SQLite.swift
- - Auto create tables
- - Auto add columns of id , created\_at , updated\_at 
+ - Support all Features of SQLite.swift.
+ - Auto create tables. Auto add columns of id , created\_at , updated\_at .
  - Auto set values to attributes of models frome query sql 
- - Mapping name of table and name of model, mapping attributes and columns
+ - Mapping name of table with name of model, mapping attribute names with column names
  - Support Transcation and Asynchronous
  - A flexible, chainable, lazy-executing query layer
  - Query use String or Expression<T> of SQLite.swift
@@ -27,8 +26,6 @@ To run the ActiveSQLiteTests target of project.
 
 
 ## Usage
-
-### Model
 
 ```swift
 import ActiveSQLite
@@ -53,9 +50,7 @@ let p = Product.findFirst("name",value:"iPhone") as! Product
 
 //or 
 let name = Expression<String>("name")
-let p = Product.findAll(name == "iPhone")!.first as! Product
-
-                        
+let p = Product.findAll(name == "iPhone")!.first as! Product                    
 //id = 1, name = iPhone 7, price = 599, desc = nil,  publish_date = nil, created_at = 1498616987587.237, updated_at = 1498616987587.237, 
 
 //Update
@@ -80,9 +75,9 @@ import ActiveSQLite
 ### Connecting to a Database
 
 ``` swift
-ASConfigration.dbPath = "..."
+DBConfigration.dbPath = "..."
 ```
-If you not set dbPath, the default db file is "ActiveSQLite.db" in the documents directory.
+If you didn't set dbPath, the default db file is "ActiveSQLite.db" in the documents directory.
 
 ## Building Type-Safe SQL
 
@@ -97,7 +92,7 @@ If you not set dbPath, the default db file is "ActiveSQLite.db" in the documents
 
 
 
-NSNumber maps two SQLite.swift types. they are Int64 ans Double. The default type is Int64. You can override doubleTypeProperties() function of DBModel to mark properties are Double Type.
+The NSNumber Type maps with two SQLite.swift's Swift Type. they are Int64 ans Double. The default type is Int64. You can override doubleTypes() function of DBModel to mark properties are Double Type.
 
 ``` swift
 class Product:DBModel{
@@ -107,19 +102,19 @@ class Product:DBModel{
     var desc:String?
     var publish_date:NSDate?
 
-  override func doubleTypeProperties() -> [String]{
+  override func doubleTypes() -> [String]{
       return ["price"]
   }
   
 }
 
 ```
-The default SQLite.swift type of NSDate is Int64. You can map NSDate to String by looking [Custom Types of Documentaion](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#custom-types) of SQLite.swift
+ActiviteSQLite map NSDate to Int64 of SQLite.swift. You can map NSDate to String by looking [Custom Types of Documentaion](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#custom-types) of SQLite.swift
 
 
 ## Creating a Table
 
-ActiveSQLite can auto create table and add "id", "created\_at" and "updated\_at" columns. "id" column is parimay key. The create code looks like:
+ActiveSQLite auto create table and add "id", "created\_at" and "updated\_at" columns to the table. "id" column is parimay key. The create code looks like below:
 
 ``` swift
 try db.run(products.create { t in      
@@ -127,17 +122,18 @@ try db.run(products.create { t in
     t.column(Expression<NSDate>("created_at"), defaultValue: NSDate(timeIntervalSince1970: 0))	
     t.column(Expression<NSDate>("updated_at"), defaultValue: NSDate(timeIntervalSince1970: 0))	
     t.column(...)  
-    t.column(...)  
+
 })                             
 
 // CREATE TABLE "Products" (
 //		"id" INTEGER PRIMARY KEY NOT NULL,
 //		created_at INTEGER DEFAULT (0),
-//		created_at INTEGER DEFAULT (0)
+//		created_at INTEGER DEFAULT (0),
+//     ...
 //	)
   
 ```
-The "created\_at" and "updated\_at" columns' unit is ms.
+The unit of "created\_at" and "updated\_at" columns is ms.
 
 
 ### Mapper
@@ -145,7 +141,7 @@ You can custom name of table, names of column and prevent save some properties i
 
 #### 1. Table name.
 
-Default table name is class name of Model.
+Default table name is same with class name.
 
 ``` swift
 // Set table name to "ProductTable"
@@ -159,24 +155,24 @@ override class var nameOfTable: String{
 Default column name is same as properity name.
 
 ``` swift
-//Set column name equals "product_name" when properity is "product"
-//Set column name equals "price_name" when properity is "price"
+//Set column name equals "product_name" when properity name is "product"
+//Set column name equals "price_name" when properity name is "price"
 override class func mapper() -> [String:String]{
     return ["name":"product_name","price":"product_price"];
 }
 ```
 
-#### 3. transient properties.
+#### 3. Transient properties.
 
-Transent properity is not saved into database.
+Transent properitird have not been saved into database.
 
 ``` swift
-override class func transientProperties() -> [String]{
+override class func transientTypess() -> [String]{
     return ["isSelected"]
 }
 
 ```
-ActiveSQLite can only save properities in (String,NSNumber,NSDate) into database. The properities of other types are not saved into database, they are transent properities.
+ActiveSQLite can only save properities in (String,NSNumber,NSDate) into database. The properities without in these types are not be saved into database, they are transent properities.
 
 ### Table constraints
 If you want custom columns by yourself, you just set model implements CreateColumnsProtocol, and comfirm createColumns function. Then the ActiveSQLite will not auto create columns. Make sure the properties' names of model mapping the columns'.
@@ -188,17 +184,17 @@ class Users:DBModel,CreateColumnsProtocol{
     var email:String!
     var age:Int?
    
-	func createColumns(t: TableBuilder) {
-		t.column(Expression<NSNumber>("id"), primaryKey: true)
-		t.column(Expression<String>("name"),defaultValue:"Anonymous")
-		t.column(Expression<String>("email"), , check: email.like("%@%"))
-	}
+    func createColumns(t: TableBuilder) {
+        t.column(Expression<NSNumber>("id"), primaryKey: true)
+        t.column(Expression<String>("name"),defaultValue:"Anonymous")
+        t.column(Expression<String>("email"), , check: email.like("%@%"))
+    }
 }
 ```
-more infomations of [table constraints document](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#table-constraints) of SQLite.swift.
+find more infomations to look up [table constraints document](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#table-constraints) of SQLite.swift.
 
 ## Inserting Rows
-There are only 3 functions used for insert rows. they are
+There are 3 functions used for insert rows. they are
 
 Insert one.
 
@@ -214,6 +210,7 @@ class func insertBatch(models:[DBModel])throws ;
 ```
 
 Save method.
+
 Insert or Update. Insert if id == nil. Update if id != nil.
 
 ```swift
@@ -241,32 +238,45 @@ try! Product.insertBatch(models: products)
 For more to see source code or example of ActiveSQLite, also look up document [Inserting Rows document](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#inserting-rows) of SQLite.swift.
 
 ## Updateing Rows
-There two strategies for update.
+There 3 strategies for update.
 
 ### 1. Update by attribute.
 
 First modefiy attribute of model，and then save() or update() or updateBatch().
 	
 ```swift
-	p.name = "zhoukai"
-	p.save()
+p.name = "zhoukai"
+p.save()
+
 ```
 	
+### 2. Update by String:Value.
+
+```swift
+//Update one
+u.update("name",value:"3ds")
+u.update(["name":"3ds","price":NSNumber(value:199)])
+
+
+//Update more
+
+Product.update(["name": "3ds","price":NSNumber(value:199)], where: ["id": NSNumber(1)])
+
+```
+
 ### 2. Update by Setter.
 
 Update one Product object to database. 
 
 ```swift
-	p.update([Product.desc <- "normal",ProductM.price <- NSNumber(value:3))
+//Update one
+p.update([Product.price <- NSNumber(value:199))
+
+//Update more
+Product.update([Product.price <- NSNumber(value:199), where: Product.name == "3ds")
 ```
 
-Update one or more Products by Expression.
-
-```swift
- Product.update([Product.desc <- "best"], where: ProductM.price == NSNumber(value:9999))
-```
 For more to see source code and example of ActiveSQLite, also look up document [Updating Rows document](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#updating-rows) , [Setters document](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#setters) of SQLite.swift.
-
 
 
 ## Selecting Rows
@@ -310,6 +320,10 @@ Don't forget excute run().
 
 more complex queries to see source code and example of ActiveSQLite.
 Look documents [Building Complex Queries](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#building-complex-queries) of SQLite.swift
+
+## Expression
+SQLite.swift use Expression replece 'where' SQL when you execute update and select SQLs.
+Complex Expression to look for [filtering-rows](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#filtering-rows)
 
 ## Deleting Rows
 
@@ -390,7 +404,7 @@ class Product{
 #### Step 2. Execute alter table sql when db version update.
 
 ```swift
-let db = ASConnection.sharedConnection.db
+let db = DBConnection.sharedConnection.db
             if db.userVersion == 0 {
                 ActiveSQLite.saveAsync({
                     try Product.renameTable(oldName:"oldTableName",newName:"newTableName")
@@ -428,10 +442,10 @@ The default log level is info. Setting log level like this:
 
 ```swift
 //1. Set log level
-ASConfigration.logLevel = .debug
+DBConfigration.logLevel = .debug
 
 //2. Set db path
-ASConfigration.dbPath = "..."
+DBConfigration.dbPath = "..."
 ```
 Make sure setting log level before setting database path.
 
