@@ -6,31 +6,32 @@
 [![Platform](https://img.shields.io/cocoapods/p/ActiveSQLite.svg?style=flat)](http://cocoapods.org/pods/ActiveSQLite)
 
 
-ActiveSQLite is an helper of [SQLite.Swift](https://github.com/stephencelis/SQLite.swift). It can let you use SQLite.swift easily.
+ActiveSQLite 是一个 [SQLite.Swift](https://github.com/stephencelis/SQLite.swift) 的封装和扩展。 目的是让你使用SQLite.swift更加简单。
 
-[**中文说明**](README_cn.md)
+[**English Version**](README.md)
 
-## Features
+## 特性
 
- - Support all Features of SQLite.swift.
- - Auto create tables. Auto add columns of id , created\_at , updated\_at .
- - Auto set values to attributes of models frome query sql 
- - Mapping name of table with name of model, mapping attribute names with column names
- - Support Transcation and Asynchronous
- - A flexible, chainable, lazy-executing query layer
- - Query use String or Expression<T> of SQLite.swift
- - Logger level
+ - 支持 SQLite.swift 的所有特性。
+ - 自动创建表. 自动创建 id , created\_at 和 updated\_at 列。
+ - 自动把SQL查询的数据赋值给数据库模型DBModel的属性。 
+ - 自定义表名和模型名之间的映射，列名和模型的属性名之间的映射。
+ - 支持事务和异步。
+ - 提供可扩展，链式，延迟执行的查询接口。
+ - 通过属性名字符串，字典，或SQLite.swift的表达式Expression<T>查询和修改数据。
+ - 日志级别
 
-## Example
+## 例子
 
-To run the ActiveSQLiteTests target of project.
+执行 ActiveSQLiteTests target.
 
 
-## Usage
+## 用法
 
 ```swift
 import ActiveSQLite
 
+//定义model和table
 class Product:DBModel{
 
     var name:String!
@@ -40,13 +41,13 @@ class Product:DBModel{
 
 }
 
-//save
+//保存
 let product = Product()
 product.name = "iPhone 7"
 product.price = NSNumber(value:599)
 try! product.save()
 
-//Query
+//查询
 let p = Product.findFirst("name",value:"iPhone") as! Product
 
 //or 
@@ -54,33 +55,32 @@ let name = Expression<String>("name")
 let p = Product.findAll(name == "iPhone")!.first as! Product                    
 //id = 1, name = iPhone 7, price = 599, desc = nil,  publish_date = nil, created_at = 1498616987587.237, updated_at = 1498616987587.237, 
 
-//Update
+//更新
 p.name = "iPad"
 try! p.update()
 
-
-//Delete
+//删除
 p.delete()
 
 ```
 
-## Getting Started
+## 开始
 
-To use ActiveSQLite classes or structures in your target’s source file, first import the `ActiveSQLite` module.
+在你的工程的target使用ActiveSQLite, 需要首先导入 `ActiveSQLite` 模块.
 
 ``` swift
 import ActiveSQLite
 ```
 
 
-### Connecting to a Database
+### 连接数据库
 
 ``` swift
 DBConfigration.dbPath = "..."
 ```
-If you didn't set dbPath, the default db file is "ActiveSQLite.db" in the documents directory.
+如果你没有设置dbPath，那么默认的数据库文件是在documents目录下的ActiveSQLite.db。
 
-## Building Type-Safe SQL
+## 支持的数据类型
 
 | ActiveSQLite<br />Swift Type    | SQLite.swift<br />Swift Type    | SQLite<br /> SQLite Type      |
 | --------------- | --------------- | ----------- |
@@ -93,7 +93,7 @@ If you didn't set dbPath, the default db file is "ActiveSQLite.db" in the docume
 
 
 
-The NSNumber Type maps with two SQLite.swift's Swift Type. they are Int64 ans Double. The default type is Int64. You can override doubleTypes() function of DBModel to mark properties are Double Type.
+NSNumber类型对应SQLite.swift的两种类型（Int64和Double)。NSNumber默认的映射类型是Int64。重写DBModel的doubleTypes()方法能标记属性为Double类型。
 
 ``` swift
 class Product:DBModel{
@@ -110,12 +110,12 @@ class Product:DBModel{
 }
 
 ```
-ActiviteSQLite map NSDate to Int64 of SQLite.swift. You can map NSDate to String by looking [Custom Types of Documentaion](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#custom-types) of SQLite.swift
+ActiviteSQLite映射NSDate类型到SQLite.swift的Int64类型。 你可以通过查找SQLite.swift的文档[Custom Types of Documentaion](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#custom-types)映射NSDate到String。
 
 
-## Creating a Table
+## 创建表
 
-ActiveSQLite auto create table and add "id", "created\_at" and "updated\_at" columns to the table. "id" column is parimay key. The create code looks like below:
+ActiveSQLite自动创建表并且添加"id", "created\_at"和 "updated\_at"字段。"id"字段是主键。 创建的代码类似于下面这样:
 
 ``` swift
 try db.run(products.create { t in      
@@ -134,38 +134,38 @@ try db.run(products.create { t in
 //	)
   
 ```
-The unit of "created\_at" and "updated\_at" columns is ms.
+"created\_at"和"updated\_at"字段的单位是毫秒ms。
 
 
-### Mapper
-You can custom name of table, names of column and prevent save some properties into database.
+### 映射
+你可以自定义表的名字, 列的名字，还可以设置瞬时属性不存在数据库中。
 
-#### 1. Table name.
+#### 1. 映射表名
 
-Default table name is same with class name.
+默认的表名和类名相同。
 
 ``` swift
-// Set table name to "ProductTable"
+//设置表名为 "ProductTable"
 override class var nameOfTable: String{
     return "ProductTable"
 }
 ```
 
-#### 2. Column name.
+#### 2. 映射列名
 
-Default column name is same as properity name.
+默认的列名和属性名相同。
 
 ``` swift
-//Set column name equals "product_name" when properity name is "product"
-//Set column name equals "price_name" when properity name is "price"
+//设置"product"属性映射的列名为"product_name"
+//设置"price"属性映射的列名为"product_price"
 override class func mapper() -> [String:String]{
     return ["name":"product_name","price":"product_price"];
 }
 ```
 
-#### 3. Transient properties.
+#### 3. 瞬时属性。
 
-Transent properitird have not been saved into database.
+瞬时属性不会被存在数据库中。
 
 ``` swift
 override class func transientTypess() -> [String]{
@@ -173,10 +173,10 @@ override class func transientTypess() -> [String]{
 }
 
 ```
-ActiveSQLite can only save properities in (String,NSNumber,NSDate) into database. The properities without in these types are not be saved into database, they are transent properities.
+ActiveSQLite 仅仅保存三种属性类型 (String,NSNumber,NSDate)到数据库。 如果属性不是这三种类型，那么不会被存入数据库，它们被当做瞬时属性看待。
 
-### Table constraints
-If you want custom columns by yourself, you just set model implements CreateColumnsProtocol, and comfirm createColumns function. Then the ActiveSQLite will not auto create columns. Make sure the properties' names of model mapping the columns'.
+### 表约束
+如果你要自定义列, 你仅需要实现CreateColumnsProtocol协议的createColumns方法，那么ActiveSQLite就不会自动创建列。写自己的建列语句，要注意列名和属性名必须一致，否则不能自动从查询sql封装数据库模型对象。
 
 ```swift
 
@@ -192,33 +192,34 @@ class Users:DBModel,CreateColumnsProtocol{
     }
 }
 ```
-find more infomations to look up [table constraints document](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#table-constraints) of SQLite.swift.
 
-## Inserting Rows
-There are 3 functions used for insert rows. they are
+更多信息查考SQLite.swift的文档[table constraints document](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#table-constraints)。
 
-Insert one.
+## 插入记录
+有三个方法用来插入记录。
+
+插入一条。
 
 ```swift
 func insert()throws ;
 ```
 
-Insert more.
+插入多条。
 
 ```swift
 class func insertBatch(models:[DBModel])throws ;
 
 ```
 
-Save method.
+保存方法。
 
-Insert or Update. Insert if id == nil. Update if id != nil.
+如果数据库模型对象的 id == nil，那么执行插入。如果id != nil那么执行更新语句。
 
 ```swift
 func save() throws;
 ```
 
-eg:
+例如:
 
 ```swift
 let u = Users()
@@ -236,14 +237,14 @@ for i in 1 ..< 8 {
 try! Product.insertBatch(models: products)
 
 ```
-For more to see source code or example of ActiveSQLite, also look up document [Inserting Rows document](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#inserting-rows) of SQLite.swift.
+更多信息可以看ActiveSQLite的源码和例子, 也可以查阅SQLite.swift的文档[Inserting Rows document](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#inserting-rows)。
 
-## Updateing Rows
-There 3 strategies for update.
+## 更新记录
+有三种更新策略。
 
-### 1. Update by attribute.
+### 1. 通过改属性值
 
-First modefiy attribute of model，and then save() or update() or updateBatch().
+首先修改属性的值，然后执行save() 或者 update() 或者 updateBatch()。
 	
 ```swift
 p.name = "zhoukai"
@@ -251,42 +252,40 @@ p.save()
 
 ```
 	
-### 2. Update by String:Value.
+### 2. 通过属性名字符串和属性值
 
 ```swift
-//Update one
+//更新一条
 u.update("name",value:"3ds")
 u.update(["name":"3ds","price":NSNumber(value:199)])
 
 
-//Update more
-
+//更新多条
 Product.update(["name": "3ds","price":NSNumber(value:199)], where: ["id": NSNumber(1)])
 
 ```
 
-### 2. Update by Setter.
+### 2. 通过SQLite.swift的Setter
 
-Update one Product object to database. 
 
 ```swift
-//Update one
+//更新一条记录
 p.update([Product.price <- NSNumber(value:199))
 
-//Update more
+//更新多条
 Product.update([Product.price <- NSNumber(value:199), where: Product.name == "3ds")
 ```
 
-For more to see source code and example of ActiveSQLite, also look up document [Updating Rows document](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#updating-rows) , [Setters document](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#setters) of SQLite.swift.
+了解更多请看ActiveSQLite的源码和例子, 查看SQLite.swift的文档[Updating Rows document](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#updating-rows) , [Setters document](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#setters)。
 
 
-## Selecting Rows
+## 查询记录
 
-You can use findFirst to find one row, use findAll to find more rows.
+使用findFirst方法查询一条记录，使用findAll方法查询多条记录。
 
-The methods that prefix name is "find" are class method.
+方法名前缀是"find"的是类方法，这种方法一次性查询出结果。
 
-#### 1.Find by attribute.
+#### 1.通过属性名字符串和属性值查询
 
 ```swift
 let p = Product.findFirst("name",value:"iWatch") as! Product
@@ -295,7 +294,7 @@ let ps = Product.findAll("name",value:"iWatch",orders:["price",false]) as! [Prod
 
 ```
 
-#### 2.Find by Expression.
+#### 2.通过SQLite.swift的Expression查询
 
 ```swift
 let id = Expression<NSNumber>("id")
@@ -307,8 +306,8 @@ let ps = Product.findAll(id > NSNumber(value:100), orders: [Product.id.asc]) as!
 
 ```
 
-### Chainable Query
-chainable query style methods are property method.
+### 链式查询
+链式查询方法是属性方法。
 
 ```swift
 let products = Product().where(Expression<NSNumber>("code") > 3)
@@ -317,32 +316,32 @@ let products = Product().where(Expression<NSNumber>("code") > 3)
                                 .run() as! [Product]
 
 ```
-Don't forget excute run().
+不要忘记执行run()。
 
-more complex queries to see source code and example of ActiveSQLite.
-Look documents [Building Complex Queries](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#building-complex-queries) of SQLite.swift
+更多复杂的查询参考ActiveSQLite的源码和例子。和SQLite.swift的文档[Building Complex Queries](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#building-complex-queries)。
 
-## Expression
-SQLite.swift use Expression replece 'where' SQL when you execute update and select SQLs.
-Complex Expression to look for [filtering-rows](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#filtering-rows)
+## 表达式Expression
 
-## Deleting Rows
+SQLite.swift再更新update和查询select操作中，使用表达式Expression转换成SQL的'where'判断，。更多复杂的表达式用法，参考文档[filtering-rows](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#filtering-rows)。
+
+## 删除记录
 
 ```swift
-//1. Delete one row
+//1. 删除一条
 try? product.delete()
 
-//2. Delete all rows
+//2. 删除所有
 try? Product.deleteAll()
 
-//3. Delete by Expression and chains.
+//3. 通过表达式Expression链式删除。
 try? Product().where(Expression<NSNumber>("code") > 3)
                                 .runDelete()
 
 ```
 
-## Transactions
-I suggest that you should put all insert, update, delete and alter tables codes into ActiveSQLite.save block. One block is a transaction.
+## 事务
+
+建议把所有的insert，update，delete操作和alter表的代码全部放在ActiveSQLite.save代码块中。一个块中的sql操作在同一个事务当中。
 
 ```swift
  ActiveSQLite.save({ 
@@ -374,8 +373,9 @@ I suggest that you should put all insert, update, delete and alter tables codes 
 
 ```
 
-## Asynichronous
-ActiveSQLite.saveAsync also contains one transcation function.
+## 异步
+
+ActiveSQLite.saveAsync是一个异步的操作，当然代码块中的sql也在同一个事务当中。
 
 ```swift
  ActiveSQLite.saveAsync({ 
@@ -385,10 +385,10 @@ ActiveSQLite.saveAsync also contains one transcation function.
                 ......
             })
 ```
-## Altering the Schema
-### Renaming Tables and Adding Columns
+## 改变表结构
+### 重命名表和添加列
 
-#### Step 1.You must change model use new columns and new table name.
+#### 第1步. 用新的表名做映射，添加新的属性。
 
 ```swift
 class Product{
@@ -402,7 +402,7 @@ class Product{
 }
 ```
 
-#### Step 2. Execute alter table sql when db version update.
+#### Step 2. 当数据库版本改变时候，执行修改表名和添加列sql，并放在同一个事务中。
 
 ```swift
 let db = DBConnection.sharedConnection.db
@@ -421,61 +421,60 @@ let db = DBConnection.sharedConnection.db
             }             
 
 ```
-more to look [Altering the Schema](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#altering-the-schema) of SQLite.swift
+更多SQLite.swift的修改表信息参看 [Altering the Schema](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#altering-the-schema)。
 
-### Indexes
+### 索引
 
 ```swift
 	let name = Expression<String>("name")
 	Product.createIndex(name)
 	Product.dropIndex(name)
 ```
-more to see [Indexes of SQLite.swift Document](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#indexes)
 
-### Dropping Tables
+更多信息查看 [Indexes of SQLite.swift Document](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#indexes)。
+
+### 删除表
 ```swift
 Product.dropTable()
 ```
 
-## Logging
-There are 4 log levels: debug,info,warn,error.
-The default log level is info. Setting log level like this:
+## 日志
+有四种日志级别，分别是: debug,info,warn,error。
+默认的日志级别是info。像这样来设置日志级别：
 
 ```swift
-//1. Set log level
+//1. 设置日志级别
 DBConfigration.logLevel = .debug
 
-//2. Set db path
+//2. 设置数据库路径
 DBConfigration.dbPath = "..."
 ```
-Make sure setting log level before setting database path.
+保证首先设置日志级别，后设置数据库路径。
 
 
-## Requirements
+## 硬件需求
 - iOS 8.0+  
 - Xcode 8.3.2
 - Swift 3
 
-## Installation
+## 安装
 
 ### Cocoapods
 
-ActiveSQLite is available through [CocoaPods](http://cocoapods.org). To install
-it, simply add the following line to your Podfile:
+再Podfile文件中添加:
 
 ```ruby
 pod "ActiveSQLite"
 ```
 
-
-## Author
+## 作者
 
 Rafael Zhou
 
-- Email me: <wumingapie@gmail.com>
-- Follow me on **Twitter**: [**@wumingapie**](https://twitter.com/wumingapie)
-- Contact me on **Facebook**: [**wumingapie**](https://www.facebook.com/wumingapie)
-- Contact me on **LinkedIn**: [**Rafael**](https://www.linkedin.com/in/rafael-zhou-7230943a/)
+- 邮件: <wumingapie@gmail.com>
+- **Twitter**: [**@wumingapie**](https://twitter.com/wumingapie)
+- **Facebook**: [**wumingapie**](https://www.facebook.com/wumingapie)
+- **LinkedIn**: [**Rafael**](https://www.linkedin.com/in/rafael-zhou-7230943a/)
 
 ## License
 
