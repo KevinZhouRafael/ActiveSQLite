@@ -162,12 +162,12 @@
 			children = (
 				56D0EF7F1F0B3F2300167862 /* ActiveSQLite.swift */,
 				56A778171F02567900829FDF /* DBConfigration.swift */,
-				56D0EF841F0BAB9000167862 /* DBLogger.swift */,
 				56D0EF861F0BAC3400167862 /* DBConnection.swift */,
+				56D0EF841F0BAB9000167862 /* DBLogger.swift */,
+				56A7781B1F02567900829FDF /* DBModel.swift */,
 				56A778181F02567900829FDF /* DBModel+Query.swift */,
 				56A778191F02567900829FDF /* DBModel+Save.swift */,
 				56A7781A1F02567900829FDF /* DBModel+Schame.swift */,
-				56A7781B1F02567900829FDF /* DBModel.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";

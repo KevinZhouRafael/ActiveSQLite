@@ -9,7 +9,7 @@
 import Foundation
 import SQLite
 
-extension DBModel{
+public extension DBModel{
     
     //MARK: - Insert
     //can't insert reduplicate ids
@@ -42,23 +42,34 @@ extension DBModel{
     }
     
     class func insertBatch(models:[DBModel])throws{
-       
+        
         
         //id，created_at,updated_at
         var autoInsertValues = [(NSNumber,NSNumber,NSNumber)]()
         do{
             
-             try createTable()
+            try createTable()
             
-//            try db.transaction {
+            //            try db.transaction {
             try db.savepoint("savepointname_\(nameOfTable)_insertbatch_\(NSDate().timeIntervalSince1970 * 1000)", block: {
                 for model in models{
                     
                     let timeinterval = NSNumber(value:NSDate().timeIntervalSince1970 * 1000)
                     
                     var settersInsert = model.buildSetters(skips: ["id", "created_at", "updated_at"])
-                    settersInsert.append(Expression<NSNumber>("created_at") <- timeinterval)
-                    settersInsert.append(Expression<NSNumber>("updated_at") <- timeinterval)
+                    
+                    if model.created_at != nil && model.created_at.int64Value > 0 {
+                        settersInsert.append(Expression<NSNumber>("created_at") <- model.created_at)
+                    }else{
+                        settersInsert.append(Expression<NSNumber>("created_at") <- timeinterval)
+                    }
+                    
+                    if model.updated_at != nil && model.updated_at.int64Value > 0 {
+                        settersInsert.append(Expression<NSNumber>("updated_at") <- model.updated_at)
+                    }else{
+                        settersInsert.append(Expression<NSNumber>("updated_at") <- timeinterval)
+                    }
+                    
                     
                     if model.id != nil {
                         settersInsert.append(Expression<NSNumber>("id") <- model.id)
@@ -69,17 +80,17 @@ extension DBModel{
                     autoInsertValues.append((id,timeinterval,timeinterval))
                     
                 }
-
+                
                 for i in 0 ..< models.count {
                     models[i].id = autoInsertValues[i].0
                     models[i].created_at = autoInsertValues[i].1
                     models[i].updated_at = autoInsertValues[i].2
                 }
-//            }
+                //            }
             })
-        
+            
             LogInfo("Batch insert rows(\(models)) into \(nameOfTable) table success")
-
+            
         }catch{
             LogError("Batch insert rows into \(nameOfTable) table failure:\(error)")
             throw error
@@ -97,7 +108,7 @@ extension DBModel{
             
             var settersUpdate = buildSetters(skips: ["id", "updated_at"])
             settersUpdate.append(Expression<NSNumber>("updated_at") <- timeinterval)
-
+            
             let table = Table(tableName()).where(Expression<NSNumber>("id") == id)
             let rowid = try DBModel.db.run(table.update(settersUpdate))
             
@@ -150,7 +161,7 @@ extension DBModel{
         }
         
     }
-
+    
     //MARK: - Update all
     //MARK: - Update more than one by ids
     class func updateBatch(models:[DBModel]) throws{
@@ -198,7 +209,7 @@ extension DBModel{
         try update(setterss, where: expressions)
         
     }
-
+    
     //MARK: - Update more than one by where
     //    class func update(_ setters:Setter...,`where` predicate: SQLite.Expression<Bool>)throws{
     //        try update(setters, where: Expression<Bool?>(predicate))
@@ -232,9 +243,9 @@ extension DBModel{
         }
         
     }
-
     
-
+    
+    
     
     class func update(_ setters:[Setter])throws{
         do {
@@ -254,7 +265,7 @@ extension DBModel{
         }
         
     }
-
+    
     
     
     //MARK: - Save
@@ -273,7 +284,7 @@ extension DBModel{
             var settersInsert = buildSetters(skips: ["id", "created_at", "updated_at"])
             settersInsert.append(Expression<NSNumber>("created_at") <- created_at_value)
             settersInsert.append(Expression<NSNumber>("updated_at") <- updated_at_value)
-
+            
             if id != nil {
                 settersInsert.append(Expression<NSNumber>("id") <- id)
             }
@@ -289,7 +300,7 @@ extension DBModel{
         }
     }
     
-
+    
     
     //MARK: - Common
     internal func refreshSelf() throws{
@@ -442,7 +453,7 @@ extension DBModel{
         
         return setters
     }
-
+    
     //if originSetters contains "updated_at", return same setters
     //if originSetters not contains "update_at", return new Setters contains "update_at"
     internal class func buildUpdateSetters(_ originSetters:[Setter])->[Setter]{
@@ -464,24 +475,24 @@ extension DBModel{
                 let setterValue = setter.getValue()
                 let mir = Mirror(reflecting:setterValue ?? 0.0)
                 switch mir.subjectType {
-                    case _ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type:
-                        return Expression<Double>(column) <- setterValue as! Double
-                    case _ as NSNumber?.Type:
-                        if let v = setterValue as? Double {
-                            return Expression<Double?>(column) <- v
-                        }else{
-                            return Expression<Double?>(column) <- nil
-                        }
-                    default:break
+                case _ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type:
+                    return Expression<Double>(column) <- setterValue as! Double
+                case _ as NSNumber?.Type:
+                    if let v = setterValue as? Double {
+                        return Expression<Double?>(column) <- v
+                    }else{
+                        return Expression<Double?>(column) <- nil
+                    }
+                default:break
                 }
                 return setter //the double type that originSetters contains is NSNumber. return origin setter
-//                return Expression<Double?>(column) <- nil
+                //                return Expression<Double?>(column) <- nil
             }else{
                 return setter
             }
         }
-
-    
+        
+        
         // 2.Add "update_at" setter if originSetters not contains "update_at"
         let columnNames = originSetters.flatMap({ (setter) -> String in
             return setter.getColumnName()
@@ -496,8 +507,8 @@ extension DBModel{
         if !containsUpdate_at {
             settersUpdate.append(Expression<NSNumber>("updated_at") <- NSNumber(value:NSDate().timeIntervalSince1970 * 1000))
         }
-
+        
         return settersUpdate
     }
-
+    
 }

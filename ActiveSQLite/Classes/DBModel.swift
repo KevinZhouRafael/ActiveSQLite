@@ -13,21 +13,21 @@ protocol ASModel:class {
     
 }
 /*
-Model Type    SQLite.swift Type      SQLite Type
-NSNumber    Int64(Int,Bool)         INTEGER
-NSNumber    Double                  REAL
-String      String                  TEXT
-nil         nil                     NULL
-            SQLite.Blob†	        BLOB //not used
-NSDate      Int64                   INTEGER
+ Model Type    SQLite.swift Type      SQLite Type
+ NSNumber    Int64(Int,Bool)         INTEGER
+ NSNumber    Double                  REAL
+ String      String                  TEXT
+ nil         nil                     NULL
+ SQLite.Blob†	        BLOB //not used
+ NSDate      Int64                   INTEGER
  */
 
 open class DBModel: NSObject,ASModel{
-
-    var id:NSNumber! //id primary key
-    var created_at:NSNumber! //Create Time, ms
-    var updated_at:NSNumber! // Update Time，ms
-
+    
+    public var id:NSNumber! //id primary key
+    public var created_at:NSNumber! //Create Time, ms
+    public var updated_at:NSNumber! // Update Time，ms
+    
     
     static var id = Expression<NSNumber>("id")
     static let created_at = Expression<NSNumber>("created_at")
@@ -68,11 +68,11 @@ open class DBModel: NSObject,ASModel{
         return [String]()
     }
     
-    class func mapper() -> [String:String]{
+    open class func mapper() -> [String:String]{
         return [String:String]()
     }
     
-    class func transientTypes() -> [String]{
+    open class func transientTypes() -> [String]{
         return [String]()
     }
     
@@ -160,7 +160,7 @@ open class DBModel: NSObject,ASModel{
             return $0.0! < $1.0!
         } )
     }
-
+    
     func propertieColumnMap() -> [String:String]{
         
         var pcMap = [String:String]()
@@ -200,18 +200,18 @@ open class DBModel: NSObject,ASModel{
         return pcMap
     }
     
-       
+    
     override open var description: String{
         var des = "**DB Model**：" + super.description + "->"
         //        var des = "**DB Model**" + NSStringFromClass(type(of:self)) + "-> "
         
         for case let (attribute?, column?, value) in recursionProperties(){
-//            if attribute == "created_at" || attribute == "updated_at" {
-//                des += "\(attribute) = \((value as! NSNumber).int64Value), "
-//            }else{
-                des += "\(attribute) = \(value), "
-//            }
-        
+            //            if attribute == "created_at" || attribute == "updated_at" {
+            //                des += "\(attribute) = \((value as! NSNumber).int64Value), "
+            //            }else{
+            des += "\(attribute) = \(value), "
+            //            }
+            
         }
         return des
     }

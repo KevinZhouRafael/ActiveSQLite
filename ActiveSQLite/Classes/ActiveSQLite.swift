@@ -9,28 +9,28 @@
 import Foundation
 import SQLite
 
-func save(_ block: @escaping ()throws -> Void,
-          completion: @escaping (_ error:Error?)->Void) -> Void  {
+public func save(_ block: @escaping ()throws -> Void,
+                 completion: ((_ error:Error?)->Void)? = nil) -> Void  {
     
     do{
         try DBConnection.sharedConnection.db.transaction {
-             try block()
+            try block()
         }
         
         LogInfo("Transcation success")
-        completion(nil)
+        completion?(nil)
     }catch{
         LogError("Transcation failure:\(error)")
-        completion(error)
+        completion?(error)
     }
-
+    
     
     
 }
 
 
-func saveAsync(_ block: @escaping ()throws -> Void,
-               completion: @escaping (_ error:Error?)->Void) -> Void  {
+public func saveAsync(_ block: @escaping ()throws -> Void,
+                      completion: ((_ error:Error?)->Void)? = nil) -> Void  {
     
     DispatchQueue.global().async {
         
@@ -42,17 +42,17 @@ func saveAsync(_ block: @escaping ()throws -> Void,
             LogInfo("Transcation success")
             
             DispatchQueue.main.async {
-                completion(nil)
+                completion?(nil)
             }
             
         }catch{
             LogError("Transcation failure:\(error)")
             
             DispatchQueue.main.async {
-                completion(error)
+                completion?(error)
             }
         }
-
+        
     }
     
 }

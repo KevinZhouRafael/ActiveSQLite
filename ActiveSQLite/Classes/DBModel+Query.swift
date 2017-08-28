@@ -13,14 +13,14 @@ import SQLite
 
 public extension DBModel{
     
-
-
+    
+    
     //MARK: - Find
     //MARK: - FindFirst
     class func findFirst(_ attribute: String, value:Any?)->DBModel?{
         return findAll(attribute, value: value)?.first
     }
-
+    
     class func findFirst(_ attributeAndValueDic:Dictionary<String,Any?>)->DBModel?{
         return findAll(attributeAndValueDic)?.first
     }
@@ -28,11 +28,11 @@ public extension DBModel{
     class func findFirst(_ orderColumn:String,ascending:Bool = true)->DBModel?{
         return findAll(orderColumn, ascending: ascending).first
     }
-
+    
     class func findFirst(_ orders:[String:Bool]? = nil)->DBModel?{
         return findAll(orders).first
     }
-
+    
     class func findFirst(_ attribute: String, value:Any?,_ orderBy:String,ascending:Bool = true)->DBModel?{
         return findAll([attribute:value], [orderBy:ascending]).first
     }
@@ -64,7 +64,7 @@ public extension DBModel{
     class func findAll(_ attribute: String, value:Any?)->Array<DBModel>?{
         return findAll([attribute:value])
     }
-
+    
     class func findAll(_ attributeAndValueDic:Dictionary<String,Any?>)->Array<DBModel>?{
         return findAll(attributeAndValueDic, nil)
     }
@@ -82,7 +82,7 @@ public extension DBModel{
     class func findAll(_ attributeAndValueDic:Dictionary<String,Any?>,orders:[String:Bool])->Array<DBModel>{
         return findAll(attributeAndValueDic, orders: orders)
     }
-
+    
     class func findAll(_ attributeAndValueDic:Dictionary<String,Any?>?,_ orders:[String:Bool]? = nil)->Array<DBModel>{
         
         
@@ -107,19 +107,19 @@ public extension DBModel{
         
         return results
     }
-
+    
     class func findAll(_ predicate: SQLite.Expression<Bool>,orders:[String:Bool])->Array<DBModel>?{
-
+        
         return findAll(Expression<Bool?>(predicate),orders:self.init().buildExpressiblesForOrder(orders))
-       
+        
     }
     
     class func findAll(_ predicate: SQLite.Expression<Bool?>,orders:[String:Bool])->Array<DBModel>?{
         
         return findAll(predicate,orders:self.init().buildExpressiblesForOrder(orders))
-       
+        
     }
-
+    
     class func findAll(_ predicate: SQLite.Expression<Bool>,orders: [Expressible]? = nil)->Array<DBModel>?{
         
         return findAll(Expression<Bool?>(predicate),orders:orders)
@@ -151,24 +151,24 @@ public extension DBModel{
     }
     
     //function of object
-//    func findAll(_ predicate: SQLite.Expression<Bool?>)->Array<DBModel>?{
-//        
-//        var results:Array<DBModel> = Array<DBModel>()
-//        let query = Table(tableName()).where(predicate).order(Expression<NSNumber>("created_at").desc)
-//        
-//        
-//        for row in try! db.prepare(query) {
-//            
-//            let model = type(of: self).init()
-//            
-//            model.buildFromRow(row: row)
-//            
-//            
-//            results.append(model)
-//        }
-//        
-//        return results
-//    }
+    //    func findAll(_ predicate: SQLite.Expression<Bool?>)->Array<DBModel>?{
+    //
+    //        var results:Array<DBModel> = Array<DBModel>()
+    //        let query = Table(tableName()).where(predicate).order(Expression<NSNumber>("created_at").desc)
+    //
+    //
+    //        for row in try! db.prepare(query) {
+    //
+    //            let model = type(of: self).init()
+    //
+    //            model.buildFromRow(row: row)
+    //
+    //
+    //            results.append(model)
+    //        }
+    //
+    //        return results
+    //    }
     
     //MARK: - Generic Type
     func findAll<T:DBModel>(_ predicate: SQLite.Expression<Bool>, toT t:T)->Array<T>?{
@@ -251,18 +251,18 @@ public extension DBModel{
         query = query?.join(table, on: condition)
         return self
     }
-
+    
     public func join(_ type: JoinType, _ table: QueryType, on condition: Expression<Bool>) -> Self {
         query = query?.join(type, table, on: condition)
         return self
     }
     
-
+    
     public func join(_ type: JoinType, _ table: QueryType, on condition: Expression<Bool?>) -> Self {
         query = query?.join(type, table, on: condition)
         return self
     }
-
+    
     
     public func `where`(_ attribute: String, value:Any?)->Self{
         
@@ -294,7 +294,7 @@ public extension DBModel{
         query = query?.group(by)
         return self
     }
-
+    
     public func group(_ by: [Expressible]) -> Self {
         query = query?.group(by)
         return self
@@ -318,7 +318,7 @@ public extension DBModel{
         query = query?.group(by, having: having)
         return self
     }
-
+    
     public func orderBy(_ sorted:String, asc:Bool = true)->Self{
         query = query?.order(buildExpressiblesForOrder([sorted:asc]))
         return self
@@ -343,12 +343,12 @@ public extension DBModel{
         query = query?.limit(length)
         return self
     }
-
+    
     public func limit(_ length: Int, offset: Int) -> Self {
         query = query?.limit(length, offset: offset)
         return self
     }
-
+    
     
     func run()->Array<DBModel>{
         
@@ -417,7 +417,7 @@ public extension DBModel{
             throw error
         }
     }
-
+    
     //MARK: - Comment
     internal func buildExpression(_ attribute: String, value:Any?)->SQLite.Expression<Bool?>?{
         
@@ -544,12 +544,12 @@ public extension DBModel{
     internal func buildFromRow(row:Row){
         
         for case let (attribute?,column?, value) in recursionProperties() {
-//            let s = "Attribute ：\(attribute) Value：\(value),   " +
-//                    "Mirror: \(Mirror(reflecting:value)),  " +
-//                    "Mirror.subjectType: \(Mirror(reflecting:value).subjectType),    " +
-//                    "Mirror.displayStyle: \(String(describing: Mirror(reflecting:value).displayStyle))"
-//            LogDebug(s)
-//            LogDebug("assign Value-\(value) to \(attribute)-attribute of \(type(of: self).nameOfTable). ")
+            //            let s = "Attribute ：\(attribute) Value：\(value),   " +
+            //                    "Mirror: \(Mirror(reflecting:value)),  " +
+            //                    "Mirror.subjectType: \(Mirror(reflecting:value).subjectType),    " +
+            //                    "Mirror.displayStyle: \(String(describing: Mirror(reflecting:value).displayStyle))"
+            //            LogDebug(s)
+            //            LogDebug("assign Value-\(value) to \(attribute)-attribute of \(type(of: self).nameOfTable). ")
             
             
             let mir = Mirror(reflecting:value)
@@ -605,6 +605,6 @@ public extension DBModel{
             
         }
     }
-
+    
     
 }

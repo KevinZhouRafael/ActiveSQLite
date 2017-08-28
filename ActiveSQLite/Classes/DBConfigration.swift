@@ -11,20 +11,20 @@ import SQLite
 
 //MARK: Custom Class
 open class DBConfigration {
-    static var logLevel: LogLevel = .info
+    public static var logLevel: LogLevel = .info
     
     private static var dbPath:String?
-    static func setDBPath(path:String){
+    public static func setDBPath(path:String){
         dbPath = path
-
+        
     }
     
-    static func getDBPath() -> String?{
+    public static func getDBPath() -> String?{
         
         if dbPath == nil || dbPath!.isEmpty {
             NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
-            dbPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first! + "/ActiveSQLite.db"
-//            dbPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first! + "/" + bundleName() + "-ActiveSQLite.db"
+            dbPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first! + "/EasySQLite.db"
+            //            dbPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first! + "/" + bundleName() + "-EasySQLite.db"
         }
         
         if !FileManager.default.fileExists(atPath: dbPath!) {
@@ -36,7 +36,6 @@ open class DBConfigration {
         return dbPath
     }
 }
-
 
 
 

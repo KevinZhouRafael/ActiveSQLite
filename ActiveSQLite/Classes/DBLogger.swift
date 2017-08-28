@@ -9,7 +9,7 @@
 import Foundation
 
 
-enum LogLevel:Int {
+public enum LogLevel:Int {
     case debug = 1,info,warn,error
 }
 

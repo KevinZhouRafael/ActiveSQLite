@@ -11,7 +11,7 @@ import SQLite
 
 open class DBConnection {
     
-    static let sharedConnection: DBConnection = DBConnection()
+    public static let sharedConnection: DBConnection = DBConnection()
     
     var db:Connection!
     
@@ -32,6 +32,9 @@ open class DBConnection {
         
     }
     
+    public func getDB()->Connection{
+        return db
+    }
     //    class func getDB() -> Connection{
     //        let db =  try! Connection(ASConfigration.getDBPath()!)
     //        return db
@@ -41,10 +44,10 @@ open class DBConnection {
     //
     //        let fileManager = FileManager.default
     //
-    //        let dbFilePath = "\(NSHomeDirectory())/Documents/ActiveSQLite.db"
+    //        let dbFilePath = "\(NSHomeDirectory())/Documents/EasySQLite.db"
     //
     //        if !fileManager.fileExists(atPath: dbFilePath) {
-    //            let resourcePath = Bundle.main.path(forResource: "ActiveSQLite", ofType: "db")
+    //            let resourcePath = Bundle.main.path(forResource: "EasySQLite", ofType: "db")
     //            do{
     //                try fileManager.copyItem(atPath: resourcePath!, toPath: dbFilePath)
     //
