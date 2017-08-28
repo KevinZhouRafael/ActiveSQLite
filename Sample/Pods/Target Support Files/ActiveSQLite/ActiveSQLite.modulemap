@@ -1,0 +1,6 @@
+framework module ActiveSQLite {
+  umbrella header "ActiveSQLite-umbrella.h"
+
+  export *
+  module * { export * }
+}

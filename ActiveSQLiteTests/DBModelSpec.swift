@@ -71,8 +71,25 @@ class DBModelSpec: QuickSpec {
 //                        expect(p.name).to(equal("iWatch"))
                         
                         let p2 = ProductM().findAll(ProductM.name == "iWatch", toT:ProductM())!.first
+                        ProductM.findAll(ProductM.name == "iWatch")
                         expect(p2!.price).to(equal(10000))
                         expect(p2!.name).to(equal("iWatch"))
+                        
+                    })
+                    
+                    describe("Query-Generic Types2", {
+                        
+                        let p2:ProductM = ProductM.findAll(ProductM.name == "iWatch")?.first as! ProductM
+                        expect(p2.price).to(equal(10000))
+                        expect(p2.name).to(equal("iWatch"))
+                        
+                    })
+                    
+                    describe("Query-Generic Types3", {
+                        
+                        let p2:ProductM = ProductM.findAll(ProductM.name == "iWatch")?.first as! ProductM
+                        expect(p2.price).to(equal(10000))
+                        expect(p2.name).to(equal("iWatch"))
                         
                     })
                     

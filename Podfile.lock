@@ -1,0 +1,23 @@
+PODS:
+  - Nimble (7.0.1)
+  - Quick (1.1.0)
+  - SQLite.swift/standalone (0.11.2):
+    - sqlite3 (>= 3.14.0)
+  - sqlite3 (3.19.3):
+    - sqlite3/common (= 3.19.3)
+  - sqlite3/common (3.19.3)
+
+DEPENDENCIES:
+  - Nimble
+  - Quick
+  - SQLite.swift/standalone (~> 0.11.2)
+
+SPEC CHECKSUMS:
+  Nimble: 657d000e11df8aebe27cdaf9d244de7f30ed87f7
+  Quick: dafc587e21eed9f4cab3249b9f9015b0b7a7f71d
+  SQLite.swift: 670c3e9e0a806bbfd56a3de5d530768dc0e6fe7c
+  sqlite3: e0f7755dc52e709215e116c801ea0c81fd45c083
+
+PODFILE CHECKSUM: a933d0ae613366a659f9ca08948166cdd3e81e16
+
+COCOAPODS: 1.2.1

@@ -9,6 +9,9 @@
 import Foundation
 import SQLite
 
+protocol ASModel:class {
+    
+}
 /*
 Model Type    SQLite.swift Type      SQLite Type
 NSNumber    Int64(Int,Bool)         INTEGER
@@ -19,7 +22,7 @@ nil         nil                     NULL
 NSDate      Int64                   INTEGER
  */
 
-open class DBModel: NSObject{
+open class DBModel: NSObject,ASModel{
 
     var id:NSNumber! //id primary key
     var created_at:NSNumber! //Create Time, ms

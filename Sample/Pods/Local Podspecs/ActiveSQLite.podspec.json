@@ -1,0 +1,27 @@
+{
+  "name": "ActiveSQLite",
+  "version": "0.1.0",
+  "summary": "A short description of ActiveSQLite.Swift.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/KevinZhouRafael/ActiveSQLite",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "zhoukai": "zhoukai@kaochong.com"
+  },
+  "source": {
+    "git": "git@github.com:KevinZhouRafael/ActiveSQLite.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "ActiveSQLite/Classes/**/*",
+  "dependencies": {
+    "SQLite.swift/standalone": [
+      "~> 0.11.2"
+    ]
+  }
+}

@@ -193,6 +193,40 @@ public extension DBModel{
         return results
     }
     
+    func findAll<T:DBModel>(_ predicate: SQLite.Expression<Bool?>)->Array<T>?{
+        
+        var results:[T] = [T]()
+        
+        let query = Table(type(of: self).nameOfTable).where(predicate).order(Expression<NSNumber>("created_at").desc)
+        
+        for result in try! DBModel.db.prepare(query) {
+            
+            let model = T()
+            model.buildFromRow(row: result)
+            
+            results.append(model)
+        }
+        
+        return results
+    }
+    
+    internal func findAll<T:DBModel>(_ predicate: SQLite.Expression<Bool?>) -> [T] where T : ASModel{
+        
+        var results:[T] = [T]()
+        
+        let query = Table(type(of: self).nameOfTable).where(predicate).order(Expression<NSNumber>("created_at").desc)
+        
+        for result in try! DBModel.db.prepare(query) {
+            
+            let model = T()
+            model.buildFromRow(row: result)
+            
+            results.append(model)
+        }
+        
+        return results
+    }
+    
     //MARK: - Query
     
     var query:QueryType?{
