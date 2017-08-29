@@ -120,6 +120,17 @@ public extension DBModel{
         
     }
     
+    class func findAll(_ predicate: SQLite.Expression<Bool>,order: Expressible)->Array<DBModel>?{
+        
+        return findAll(Expression<Bool?>(predicate),orders:[order])
+    }
+    
+    class func findAll(_ predicate: SQLite.Expression<Bool>,orders: [Expressible])->Array<DBModel>?{
+        
+        return findAll(Expression<Bool?>(predicate),orders:orders)
+    }
+    
+    
     class func findAll(_ predicate: SQLite.Expression<Bool>,orders: [Expressible]? = nil)->Array<DBModel>?{
         
         return findAll(Expression<Bool?>(predicate),orders:orders)
