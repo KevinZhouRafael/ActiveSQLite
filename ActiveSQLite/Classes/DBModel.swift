@@ -29,11 +29,11 @@ open class DBModel: NSObject,ASModel{
     public var updated_at:NSNumber! // Update Time，ms
     
     
-    static var id = Expression<NSNumber>("id")
-    static let created_at = Expression<NSNumber>("created_at")
-    static let updated_at = Expression<NSNumber>("updated_at")
+    public static var id = Expression<NSNumber>("id")
+    public static let created_at = Expression<NSNumber>("created_at")
+    public static let updated_at = Expression<NSNumber>("updated_at")
     
-    var created_date:NSDate! {
+    public var created_date:NSDate! {
         set{
             created_at = NSNumber(value:newValue.timeIntervalSince1970 * 1000)
         }
@@ -41,7 +41,7 @@ open class DBModel: NSObject,ASModel{
             return NSDate(timeIntervalSince1970: TimeInterval(created_at.int64Value/1000))
         }
     }
-    var updated_date:NSDate! {
+    public var updated_date:NSDate! {
         set{
             updated_at = NSNumber(value:newValue.timeIntervalSince1970 * 1000)
         }
