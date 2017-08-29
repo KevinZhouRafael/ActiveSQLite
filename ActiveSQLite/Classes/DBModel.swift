@@ -64,7 +64,7 @@ open class DBModel: NSObject,ASModel{
         super.init()
     }
     
-    func doubleTypes() -> [String]{
+    open func doubleTypes() -> [String]{
         return [String]()
     }
     

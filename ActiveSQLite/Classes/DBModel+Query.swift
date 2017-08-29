@@ -418,6 +418,31 @@ public extension DBModel{
         }
     }
     
+    class func deleteBatch(_ models:[DBModel]) throws{
+        do{
+            let db = DBModel.db
+            try db!.savepoint("savepointname_\(nameOfTable)_deleteBatch\(NSDate().timeIntervalSince1970 * 1000)", block: {
+                
+                var ids = Array<NSNumber>()
+                for model in models{
+                    if model.id == nil {
+                        continue
+                    }
+                    ids.append(model.id)
+                }
+                
+                let query = Table(nameOfTable).where(ids.contains(Expression<NSNumber>("id")))
+                
+                try db!.run(query.delete())
+                
+                LogInfo("Delete batch rows of \(nameOfTable) success")
+            })
+        }catch{
+            LogError("Delete batch rows of \(nameOfTable) failure: \(error)")
+            throw error
+        }
+    }
+
     class func deleteAll() throws{
         do{
             try db.run(Table(nameOfTable).delete())
