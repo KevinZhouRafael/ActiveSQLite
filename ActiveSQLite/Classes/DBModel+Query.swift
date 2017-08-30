@@ -99,11 +99,16 @@ public extension DBModel{
             query = query.order(self.init().buildExpressiblesForOrder(orders!))
         }
         
-        for row in try! db.prepare(query) {
-            let model = self.init()
-            model.buildFromRow(row: row)
-            results.append(model)
+        do{
+            for row in try db.prepare(query) {
+                let model = self.init()
+                model.buildFromRow(row: row)
+                results.append(model)
+            }
+        }catch{
+            LogError(error)
         }
+        
         
         return results
     }
@@ -135,6 +140,7 @@ public extension DBModel{
         
         return findAll(Expression<Bool?>(predicate),orders:orders)
     }
+    
     
     class func findAll(_ predicate: SQLite.Expression<Bool?>,orders: [Expressible]? = nil)->Array<DBModel>?{
         
@@ -442,7 +448,7 @@ public extension DBModel{
             throw error
         }
     }
-
+    
     class func deleteAll() throws{
         do{
             try db.run(Table(nameOfTable).delete())
