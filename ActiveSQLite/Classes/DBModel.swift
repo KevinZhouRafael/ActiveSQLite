@@ -18,7 +18,7 @@ protocol ASModel:class {
  NSNumber    Double                  REAL
  String      String                  TEXT
  nil         nil                     NULL
- SQLite.Blob†	        BLOB //not used
+ --------    SQLite.Blob†	         BLOB
  NSDate      Int64                   INTEGER
  */
 

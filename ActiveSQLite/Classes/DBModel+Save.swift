@@ -21,8 +21,18 @@ public extension DBModel{
             let timeinterval = NSNumber(value:NSDate().timeIntervalSince1970 * 1000)
             
             var settersInsert = buildSetters(skips: ["id", "created_at", "updated_at"])
-            settersInsert.append(Expression<NSNumber>("created_at") <- timeinterval)
-            settersInsert.append(Expression<NSNumber>("updated_at") <- timeinterval)
+            
+            if self.created_at != nil && self.created_at.int64Value > 0 {
+                settersInsert.append(Expression<NSNumber>("created_at") <- self.created_at)
+            }else{
+                settersInsert.append(Expression<NSNumber>("created_at") <- timeinterval)
+            }
+            
+            if self.updated_at != nil && self.updated_at.int64Value > 0 {
+                settersInsert.append(Expression<NSNumber>("updated_at") <- self.updated_at)
+            }else{
+                settersInsert.append(Expression<NSNumber>("updated_at") <- timeinterval)
+            }
             
             //insert id if id has value; insert auto id if id is nil.
             if id != nil {
