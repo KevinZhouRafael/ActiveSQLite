@@ -153,39 +153,20 @@ public extension DBModel{
             query = query.order(Expression<NSNumber>("created_at").desc)
         }
         
-        
-        for row in try! db.prepare(query) {
-            
-            let model = self.init()
-            
-            model.buildFromRow(row: row)
-            
-            
-            results.append(model)
+        do{
+            for row in try db.prepare(query) {
+                let model = self.init()
+                model.buildFromRow(row: row)
+
+                results.append(model)
+            }
+        }catch{
+            LogError("Find all from \(nameOfTable) failure。\(error)")
         }
+
         
         return results
     }
-    
-    //function of object
-    //    func findAll(_ predicate: SQLite.Expression<Bool?>)->Array<DBModel>?{
-    //
-    //        var results:Array<DBModel> = Array<DBModel>()
-    //        let query = Table(tableName()).where(predicate).order(Expression<NSNumber>("created_at").desc)
-    //
-    //
-    //        for row in try! db.prepare(query) {
-    //
-    //            let model = type(of: self).init()
-    //
-    //            model.buildFromRow(row: row)
-    //
-    //
-    //            results.append(model)
-    //        }
-    //
-    //        return results
-    //    }
     
     //MARK: - Generic Type
     func findAll<T:DBModel>(_ predicate: SQLite.Expression<Bool>, toT t:T)->Array<T>?{
@@ -199,12 +180,17 @@ public extension DBModel{
         
         let query = Table(type(of: self).nameOfTable).where(predicate).order(Expression<NSNumber>("created_at").desc)
         
-        for result in try! DBModel.db.prepare(query) {
+
+        do{
+            for result in try DBModel.db.prepare(query) {
             
-            let model = T()
-            model.buildFromRow(row: result)
+                let model = T()
+                model.buildFromRow(row: result)
             
-            results.append(model)
+                results.append(model)
+            }
+        }catch{
+            LogError("Find all from \(type(of: self).nameOfTable) failure。\(error)")
         }
         
         return results
@@ -216,12 +202,18 @@ public extension DBModel{
         
         let query = Table(type(of: self).nameOfTable).where(predicate).order(Expression<NSNumber>("created_at").desc)
         
-        for result in try! DBModel.db.prepare(query) {
-            
-            let model = T()
-            model.buildFromRow(row: result)
-            
-            results.append(model)
+
+        
+        do{
+            for result in try DBModel.db.prepare(query) {
+                
+                let model = T()
+                model.buildFromRow(row: result)
+                
+                results.append(model)
+            }
+        }catch{
+            LogError("Find all from \(type(of: self).nameOfTable) failure。\(error)")
         }
         
         return results
@@ -233,12 +225,17 @@ public extension DBModel{
         
         let query = Table(type(of: self).nameOfTable).where(predicate).order(Expression<NSNumber>("created_at").desc)
         
-        for result in try! DBModel.db.prepare(query) {
-            
-            let model = T()
-            model.buildFromRow(row: result)
-            
-            results.append(model)
+
+        do{
+            for result in try DBModel.db.prepare(query) {
+                
+                let model = T()
+                model.buildFromRow(row: result)
+                
+                results.append(model)
+            }
+        }catch{
+            LogError("Find all from \(type(of: self).nameOfTable) failure。\(error)")
         }
         
         return results
@@ -370,19 +367,21 @@ public extension DBModel{
     func run()->Array<DBModel>{
         
         var results:Array<DBModel> = Array<DBModel>()
-        for row in try! DBModel.db.prepare(query!) {
+
+        
+        do{
+            for row in try DBModel.db.prepare(query!) {
+                let model = type(of: self).init()
+                model.buildFromRow(row: row)
+                results.append(model)
+            }
             
-            let model = type(of: self).init()
-            
-            model.buildFromRow(row: row)
-            
-            
-            results.append(model)
+            LogInfo("Execute Query run() function from \(type(of: self).nameOfTable)  success")
+        }catch{
+            LogError("Execute run() of \(type(of: self).nameOfTable) failure。\(error)")
         }
         
         query = nil
-        
-        LogInfo("Execute Query run() function from \(type(of: self).nameOfTable)  success")
         
         return results
         
