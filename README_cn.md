@@ -12,14 +12,17 @@ ActiveSQLite 是一个 [SQLite.Swift](https://github.com/stephencelis/SQLite.swi
 
 ## 特性
 
- - 支持 SQLite.swift 的所有特性。
- - 自动创建表. 自动创建 id , created\_at 和 updated\_at 列。
- - 自动把SQL查询的数据赋值给数据库模型DBModel的属性。 
- - 自定义表名和模型名之间的映射，列名和模型的属性名之间的映射。
- - 支持事务和异步。
- - 提供可扩展，链式，延迟执行的查询接口。
- - 通过属性名字符串，字典，或SQLite.swift的表达式Expression<T>查询和修改数据。
- - 日志级别
+ - [x] 支持 SQLite.swift 的所有特性。
+ - [x] 自动创建表. 自动创建 id , created\_at 和 updated\_at 列。
+ - [x] 自动把SQL查询的数据赋值给数据库模型DBModel的属性。 
+ - [x] 自定义表名和模型名之间的映射，列名和模型的属性名之间的映射。
+ - [x] 支持事务和异步。
+ - [x] 提供可扩展，链式，延迟执行的查询接口。
+ - [x] 通过属性名字符串，字典，或SQLite.swift的表达式Expression<T>查询和修改数据。
+ - [x] 日志级别
+ - [] 表关联
+ - [] 缓存和惰值
+
 
 ## 例子
 
@@ -34,10 +37,10 @@ import ActiveSQLite
 //定义model和table
 class Product:DBModel{
 
-    var name:String!
-    var price:NSNumber!
-    var desc:String?
-    var publish_date:NSDate?
+    @objc var name:String!
+    @objc var price:NSNumber!
+    @objc var desc:String?
+    @objc var publish_date:NSDate?
 
 }
 
@@ -76,9 +79,13 @@ import ActiveSQLite
 ### 连接数据库
 
 ``` swift
-DBConfigration.dbPath = "..."
+DBConfigration.setDefaultDB(path:"db file path", name: "default db name")
+
+//If you want a other db
+DBConfigration.setDB(path: "other db file path", name: "other db name")
+
 ```
-如果你没有设置dbPath，那么默认的数据库文件是在documents目录下的ActiveSQLite.db。
+必须设置 setDefaultDB 。
 
 ## 支持的数据类型
 
@@ -98,10 +105,10 @@ NSNumber类型对应SQLite.swift的两种类型（Int64和Double)。NSNumber默�
 ``` swift
 class Product:DBModel{
 
-    var name:String!
-    var price:NSNumber!
-    var desc:String?
-    var publish_date:NSDate?
+    @objc var name:String!
+    @objc var price:NSNumber!
+    @objc var desc:String?
+    @objc var publish_date:NSDate?
 
   override func doubleTypes() -> [String]{
       return ["price"]
@@ -140,9 +147,23 @@ try db.run(products.create { t in
 ### 映射
 你可以自定义表的名字, 列的名字，还可以设置瞬时属性不存在数据库中。
 
-#### 1. 映射表名
+#### 1. 映射数据库名
 
-默认的表名和类名相同。
+如果你只用了一个数据库，那么设置完 setDefaultDB（path:name:) 就可以了，不需要做额外的操作。如果你用了多个数据库，设置表在特定的数据库，只需要写model的时候，重写dbName。
+
+``` swift
+
+DBConfigration.setDefaultDB(path:"db file path", name: "default db name")
+DBConfigration.setDB(path: "other db file path", name: "other db name")
+
+override class var dbName:String?{
+    return "other db name"
+}
+```
+
+#### 2. 映射表名
+
+默认的表名和类名相同。设置其他表名的时候，只需要在model定义中重写nameOfTable。
 
 ``` swift
 //设置表名为 "ProductTable"
@@ -151,19 +172,29 @@ override class var nameOfTable: String{
 }
 ```
 
-#### 2. 映射列名
+#### 3. 映射列名
 
-默认的列名和属性名相同。
+默认的列名和属性名相同，不需要做额外的操作。如果要使属性名和列名不同，需要重写mapper()
 
 ``` swift
-//设置"product"属性映射的列名为"product_name"
-//设置"price"属性映射的列名为"product_price"
-override class func mapper() -> [String:String]{
-    return ["name":"product_name","price":"product_price"];
+override func mapper() -> [String:String]{
+    return ["property_name":"column_name"];
 }
 ```
 
-#### 3. 瞬时属性。
+如果要设置主键对应的列名，需要重写 PRIMARY_KEY 和 mapper()。
+
+``` swift
+override class var PRIMARY_KEY:String{
+    return "_id"
+}
+    
+override func mapper() -> [String:String]{
+    return ["id":"_id"]
+}
+``` 
+
+#### 4. 瞬时属性。
 
 瞬时属性不会被存在数据库中。
 
@@ -174,6 +205,18 @@ override class func transientTypess() -> [String]{
 
 ```
 ActiveSQLite 仅仅保存三种属性类型 (String,NSNumber,NSDate)到数据库。 如果属性不是这三种类型，那么不会被存入数据库，它们被当做瞬时属性看待。
+
+#### 5. 自动创建 "created\_at" and "updated\_at" columns.
+
+只需要重写 isSaveDefaulttimestamp, 不需要做任何其他事情, 父类 DBModel 已经定义了 "created\_at" 和 "updated\_at" 属性。
+
+```swift
+
+override class var isSaveDefaulttimestamp:Bool{
+    return true
+}
+    
+```
 
 ### 表约束
 如果你要自定义列, 你仅需要实现CreateColumnsProtocol协议的createColumns方法，那么ActiveSQLite就不会自动创建列。写自己的建列语句，要注意列名和属性名必须一致，否则不能自动从查询sql封装数据库模型对象。
@@ -455,7 +498,7 @@ DBConfigration.dbPath = "..."
 ## 硬件需求
 - iOS 8.0+  
 - Xcode 8.3.2
-- Swift 3
+- Swift 4
 
 ## 安装
 
@@ -469,7 +512,7 @@ pod "ActiveSQLite"
 
 ## 作者
 
-Rafael Zhou
+Kevin Zhou
 
 - 邮件: <wumingapie@gmail.com>
 - **Twitter**: [**@wumingapie**](https://twitter.com/wumingapie)

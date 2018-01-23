@@ -12,7 +12,7 @@ import SQLite
 
 class Users:DBModel,CreateColumnsProtocol{
     
-    var name:String!
+    @objc var name:String!
         
     static let name = Expression<String>("name")
 
@@ -23,5 +23,9 @@ class Users:DBModel,CreateColumnsProtocol{
         t.column(Users.name,defaultValue:"")
         t.column(Expression<NSDate>("created_at"), defaultValue: NSDate(timeIntervalSince1970: 0))
         t.column(Expression<NSDate>("updated_at"), defaultValue: NSDate(timeIntervalSince1970: 0))
+    }
+    
+    override class var isSaveDefaulttimestamp:Bool{
+        return true
     }
 }

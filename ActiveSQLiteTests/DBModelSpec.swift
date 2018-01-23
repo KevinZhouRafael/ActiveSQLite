@@ -17,6 +17,7 @@ class DBModelSpec: QuickSpec {
         describe("TestsDatabase ") {
             
             DBConfigration.logLevel = .debug
+            DBConfigration.setDefaultDB(path: getTestDBPath()!, name: DBDefaultName)
             
             let model: ProductM = ProductM()
 

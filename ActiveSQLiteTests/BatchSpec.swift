@@ -16,6 +16,8 @@ class BatchSpec: QuickSpec {
     override func spec() {
         describe("batch insert") {
             
+            DBConfigration.setDefaultDB(path: getTestDBPath()!, name: DBDefaultName)
+            
             try? ProductM.dropTable()
             
             var products = [ProductM]()

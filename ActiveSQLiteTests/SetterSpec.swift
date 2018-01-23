@@ -16,6 +16,8 @@ class SetterSpec: QuickSpec {
     override func spec() {
         describe("1--- update one by id") {
             
+            DBConfigration.setDefaultDB(path: getTestDBPath()!, name: DBDefaultName)
+            
             try? ProductM.dropTable()
             let p = ProductM()
             

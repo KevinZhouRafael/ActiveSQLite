@@ -14,6 +14,7 @@ import Nimble
 class TranscationSpec: QuickSpec {
     override func spec() {
         describe("Transcation Tests") {
+            DBConfigration.setDefaultDB(path: getTestDBPath()!, name: DBDefaultName)
             
             try? ProductM.dropTable()
             try? Users.dropTable()

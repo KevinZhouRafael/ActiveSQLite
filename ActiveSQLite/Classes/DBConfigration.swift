@@ -13,28 +13,51 @@ import SQLite
 open class DBConfigration {
     public static var logLevel: LogLevel = .info
     
-    private static var dbPath:String?
-    public static func setDBPath(path:String){
-        dbPath = path
+    private static var dbMap:Dictionary<String,Connection> = Dictionary<String,Connection>()
+    
+    private static var defaultDB:Connection!
+    
+    public static func setDB(path:String,name:String){
         
+        guard dbMap[name] == nil else {
+            return
+        }
+        let db = try! Connection(path)
+        dbMap[name] = db
+        
+        //        #if DEBUG
+        //            DBModel.db.trace{ debugPrint($0)}
+        //        #endif
+        
+        if logLevel == .debug {
+            db.trace{ print($0)}
+        }
     }
     
-    public static func getDBPath() -> String?{
+    public static func setDefaultDB(path:String,name:String){
         
-        if dbPath == nil || dbPath!.isEmpty {
-            NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
-            dbPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first! + "/EasySQLite.db"
-            //            dbPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first! + "/" + bundleName() + "-EasySQLite.db"
+        guard dbMap[name] == nil else {
+            return
         }
         
-        if !FileManager.default.fileExists(atPath: dbPath!) {
-            FileManager.default.createFile(atPath: dbPath!, contents: nil, attributes: nil)
-            LogInfo("Create db file success-\(dbPath!)")
-            
+        let db = try! Connection(path)
+        dbMap[name] = db
+        
+        if logLevel == .debug {
+            db.trace{ print($0)}
         }
         
-        return dbPath
+        defaultDB = db
     }
+    
+    public static func getDefaultDB() -> Connection{
+        return defaultDB
+    }
+    
+    public static func getDB(name:String) -> Connection{
+        return dbMap[name]!
+    }
+    
 }
 
 

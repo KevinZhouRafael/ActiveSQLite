@@ -16,21 +16,11 @@ public protocol CreateColumnsProtocol {
 
 public extension DBModel{
     
-    
-    class var nameOfTable: String{
-        return NSStringFromClass(self).components(separatedBy: ".").last!
-    }
-    
-    func tableName() -> String{
-        return type(of: self).nameOfTable
-        //        return NSStringFromClass(type(of:self)).components(separatedBy: ".").last!
-    }
-    
     internal func createTable()throws{
         //        type(of: self).createTable()
         
         do{
-            try DBModel.db.run(Table(tableName()).create(ifNotExists: true) { t in
+            try db.run(getTable().create(ifNotExists: true) { t in
                 
                 
                 if self is CreateColumnsProtocol {
@@ -48,9 +38,9 @@ public extension DBModel{
                 
             })
             
-            LogInfo("Create  Table \(tableName()) success")
+            LogInfo("Create  Table \(nameOfTable) success")
         }catch let e{
-            LogError("Create  Table \(tableName())failure：\(e.localizedDescription)")
+            LogError("Create  Table \(nameOfTable)failure：\(e.localizedDescription)")
             throw e
         }
         
@@ -78,7 +68,7 @@ public extension DBModel{
                     t.column(Expression<Double>(column), defaultValue: 0.0)
                 }else{
                     
-                    if attribute == "id" {
+                    if attribute == primaryKeyAttributeName {
                         t.column(Expression<NSNumber>(column), primaryKey: .autoincrement)
                     }else{
                         t.column(Expression<NSNumber>(column), defaultValue: 0)
@@ -108,7 +98,7 @@ public extension DBModel{
     
     class func dropTable()throws{
         do{
-            try db.run(Table(nameOfTable).drop(ifExists: true))
+            try db.run(getTable().drop(ifExists: true))
             LogInfo("Delete  Table \(nameOfTable) success")
             
         }catch{
@@ -137,8 +127,7 @@ public extension DBModel{
         do{
             try db.savepoint("savepointname_\(nameOfTable)_addColumn_\(NSDate().timeIntervalSince1970 * 1000)", block: {
                 //            try self.db.transaction {
-                let t = Table(nameOfTable)
-                
+                let t = getTable()
                 for columnName in columnNames {
                     try self.db.run(self.init().addColumnReturnSQL(t: t, columnName: columnName)!)
                 }
@@ -177,7 +166,7 @@ public extension DBModel{
                     return t.addColumn(Expression<Double>(column), defaultValue: 0.0)
                 }else{
                     
-                    //                    if key == "id" {
+                    //                    if key == primaryKeyAttributeName {
                     //                        return t.addColumn(Expression<NSNumber>(key), primaryKey: .autoincrement)
                     //                    }else{
                     return t.addColumn(Expression<NSNumber>(column), defaultValue: 0)
@@ -207,10 +196,9 @@ public extension DBModel{
     }
     
     // MARK: - CREATE INDEX
-    
     class func createIndex(_ columns: Expressible...)throws {
         do{
-            try db.run(Table(nameOfTable).createIndex(columns))
+            try db.run(getTable().createIndexBrage(columns))
             LogInfo("Create \(columns) indexs on \(nameOfTable) table success")
             
             
@@ -223,7 +211,7 @@ public extension DBModel{
     class func createIndex(_ columns: [Expressible], unique: Bool = false, ifNotExists: Bool = false)throws {
         do{
             
-            try db.run(Table(nameOfTable).createIndex(columns, unique: unique, ifNotExists: ifNotExists))
+            try db.run(getTable().createIndexBrage(columns, unique: unique, ifNotExists: ifNotExists))
             LogInfo("Create \(columns) indexs on \(nameOfTable) table success")
             
         }catch{
@@ -233,13 +221,12 @@ public extension DBModel{
     }
     
     // MARK: - DROP INDEX
-    
     class func dropIndex(_ columns: Expressible...) -> Bool {
         do{
-            try db.run(Table(nameOfTable).dropIndex(columns))
+            try db.run(getTable().dropIndexBrage(columns))
             LogInfo("Drop \(columns) indexs from \(nameOfTable) table success")
             return true
-            
+
         }catch{
             LogError("Drop \(columns) indexs from \(nameOfTable) table failure")
             return false
@@ -248,14 +235,16 @@ public extension DBModel{
     
     class func dropIndex(_ columns: [Expressible], ifExists: Bool = false) -> Bool {
         do{
-            
-            try db.run(Table(nameOfTable).dropIndex(columns, ifExists: ifExists))
+        
+            try db.run(getTable().dropIndexBrage(columns, ifExists: ifExists))
             LogInfo("Drop \(columns) indexs from \(nameOfTable) table success")
             return true
-            
+        
         }catch{
             LogError("Drop \(columns) indexs from \(nameOfTable) table failure")
             return false
         }
     }
 }
+
+

@@ -12,14 +12,17 @@ ActiveSQLite is an helper of [SQLite.Swift](https://github.com/stephencelis/SQLi
 
 ## Features
 
- - Support all Features of SQLite.swift.
- - Auto create tables. Auto add columns of id , created\_at , updated\_at .
- - Auto set values to attributes of models frome query sql 
- - Mapping name of table with name of model, mapping attribute names with column names
- - Support Transcation and Asynchronous
- - A flexible, chainable, lazy-executing query layer
- - Query use String or Expression<T> of SQLite.swift
- - Logger level
+ - [x] Support all Features of SQLite.swift.
+ - [x] Auto create tables. Auto add columns of id , created\_at , updated\_at .
+ - [x] Auto set values to attributes of models frome query sql 
+ - [x] Mapping name of table with name of model, mapping attribute names with column names
+ - [x] Support Transcation and Asynchronous
+ - [x] A flexible, chainable, lazy-executing query layer
+ - [x] Query use String or Expression<T> of SQLite.swift
+ - [x] Logger level
+ - [] table relations
+ - [] cache and faults value
+
 
 ## Example
 
@@ -33,10 +36,10 @@ import ActiveSQLite
 
 class Product:DBModel{
 
-    var name:String!
-    var price:NSNumber!
-    var desc:String?
-    var publish_date:NSDate?
+    @objc var name:String!
+    @objc var price:NSNumber!
+    @objc var desc:String?
+    @objc var publish_date:NSDate?
 
 }
 
@@ -76,9 +79,14 @@ import ActiveSQLite
 ### Connecting to a Database
 
 ``` swift
-DBConfigration.dbPath = "..."
+DBConfigration.setDefaultDB(path:"db file path", name: "default db name")
+
+//If you want a other db
+DBConfigration.setDB(path: "other db file path", name: "other db name")
+
 ```
-If you didn't set dbPath, the default db file is "ActiveSQLite.db" in the documents directory.
+You must set default db path.
+
 
 ## Building Type-Safe SQL
 
@@ -98,10 +106,10 @@ The NSNumber Type maps with two SQLite.swift's Swift Type. they are Int64 ans Do
 ``` swift
 class Product:DBModel{
 
-    var name:String!
-    var price:NSNumber!
-    var desc:String?
-    var publish_date:NSDate?
+    @objc var name:String!
+    @objc var price:NSNumber!
+    @objc var desc:String?
+    @objc var publish_date:NSDate?
 
   override func doubleTypes() -> [String]{
       return ["price"]
@@ -115,7 +123,7 @@ ActiviteSQLite map NSDate to Int64 of SQLite.swift. You can map NSDate to String
 
 ## Creating a Table
 
-ActiveSQLite auto create table and add "id", "created\_at" and "updated\_at" columns to the table. "id" column is parimay key. The create code looks like below:
+ActiveSQLite auto create table and add "id". The create code looks like below:
 
 ``` swift
 try db.run(products.create { t in      
@@ -140,9 +148,22 @@ The unit of "created\_at" and "updated\_at" columns is ms.
 ### Mapper
 You can custom name of table, names of column and prevent save some properties into database.
 
-#### 1. Table name.
+#### 1. DB name.
+If you use one db, only setDefaultDB(path:name:),, you needn't do anything. If you set you table in other db, you must override dbName.
 
-Default table name is same with class name.
+``` swift
+
+DBConfigration.setDefaultDB(path:"db file path", name: "default db name")
+DBConfigration.setDB(path: "other db file path", name: "other db name")
+
+override class var dbName:String?{
+    return "other db name"
+}
+```
+
+#### 2. Table name.
+
+Default table name is same with class name, you needn't do anything. If you want use different name ,you must override nameOfTable.
 
 ``` swift
 // Set table name to "ProductTable"
@@ -151,19 +172,30 @@ override class var nameOfTable: String{
 }
 ```
 
-#### 2. Column name.
+#### 3. Column name.
 
-Default column name is same as properity name.
+Default column name is same with properity name, you needn't do anything. If you want use different name, you must override mapper().
 
 ``` swift
-//Set column name equals "product_name" when properity name is "product"
-//Set column name equals "price_name" when properity name is "price"
-override class func mapper() -> [String:String]{
-    return ["name":"product_name","price":"product_price"];
+override func mapper() -> [String:String]{
+    return ["property_name":"column_name"];
 }
 ```
 
-#### 3. Transient properties.
+If you let primary key is not "id",use like this:
+
+``` swift
+override class var PRIMARY_KEY:String{
+    return "_id"
+}
+    
+override func mapper() -> [String:String]{
+    return ["id":"_id"]
+}
+``` 
+
+
+#### 4. Transient properties.
 
 Transent properitird have not been saved into database.
 
@@ -174,6 +206,18 @@ override class func transientTypess() -> [String]{
 
 ```
 ActiveSQLite can only save properities in (String,NSNumber,NSDate) into database. The properities without in these types are not be saved into database, they are transent properities.
+
+#### 5. Auto create "created\_at" and "updated\_at" columns. 
+
+Just override isSaveDefaulttimestamp, don't do anything, the super class DBModel already define "created\_at" and "updated\_at" properies.
+
+```swift
+
+override class var isSaveDefaulttimestamp:Bool{
+        return true
+}
+    
+```
 
 ### Table constraints
 If you want custom columns by yourself, you just set model implements CreateColumnsProtocol, and comfirm createColumns function. Then the ActiveSQLite will not auto create columns. Make sure the properties' names of model mapping the columns'.
@@ -392,9 +436,9 @@ ActiveSQLite.saveAsync also contains one transcation function.
 
 ```swift
 class Product{
-	var name:String!
+	@objc var name:String!
 	
-	var newColumn:String!
+	@objc var newColumn:String!
 	override class var nameOfTable: String{
     	return "newTableName"
 	}
@@ -454,7 +498,7 @@ Make sure setting log level before setting database path.
 ## Requirements
 - iOS 8.0+  
 - Xcode 8.3.2
-- Swift 3
+- Swift 4
 
 ## Installation
 
@@ -470,7 +514,7 @@ pod "ActiveSQLite"
 
 ## Author
 
-Rafael Zhou
+Kevin Zhou
 
 - Email me: <wumingapie@gmail.com>
 - Follow me on **Twitter**: [**@wumingapie**](https://twitter.com/wumingapie)

@@ -16,6 +16,8 @@ class NSDateSpec: QuickSpec {
     
     override func spec() {
         
+        DBConfigration.setDefaultDB(path: getTestDBPath()!, name: DBDefaultName)
+        
         describe("Test Column of NSDate。 ") {
             describe("Save", {
                 

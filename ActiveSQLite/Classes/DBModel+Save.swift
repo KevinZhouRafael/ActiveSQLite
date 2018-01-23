@@ -18,34 +18,42 @@ public extension DBModel{
         do {
             try createTable()
             
+            var settersInsert = buildSetters(skips: [type(of: self).PRIMARY_KEY, type(of: self).CREATE_AT_KEY, type(of: self).UPDATE_AT_KEY])
+            
+            
             let timeinterval = NSNumber(value:NSDate().timeIntervalSince1970 * 1000)
-            
-            var settersInsert = buildSetters(skips: ["id", "created_at", "updated_at"])
-            
-            if self.created_at != nil && self.created_at.int64Value > 0 {
-                settersInsert.append(Expression<NSNumber>("created_at") <- self.created_at)
-            }else{
-                settersInsert.append(Expression<NSNumber>("created_at") <- timeinterval)
+            if type(of: self).isSaveDefaulttimestamp {
+                
+                if self.created_at != nil && self.created_at.int64Value > 0 {
+                    settersInsert.append(type(of: self).created_at <- self.created_at)
+                }else{
+                    settersInsert.append(type(of: self).created_at <- timeinterval)
+                }
+                
+                if self.updated_at != nil && self.updated_at.int64Value > 0 {
+                    settersInsert.append(type(of: self).updated_at <- self.updated_at)
+                }else{
+                    settersInsert.append(type(of: self).updated_at <- timeinterval)
+                }
             }
             
-            if self.updated_at != nil && self.updated_at.int64Value > 0 {
-                settersInsert.append(Expression<NSNumber>("updated_at") <- self.updated_at)
-            }else{
-                settersInsert.append(Expression<NSNumber>("updated_at") <- timeinterval)
-            }
             
             //insert id if id has value; insert auto id if id is nil.
             if id != nil {
-                settersInsert.append(Expression<NSNumber>("id") <- id)
+                settersInsert.append(type(of: self).id <- id)
             }
             
-            let rowid = try DBModel.db.run(Table(tableName()).insert(settersInsert))
+            let rowid = try db.run(getTable().insert(settersInsert))
             id = NSNumber(value:rowid)
-            created_at = timeinterval
-            updated_at = timeinterval
-            LogInfo("Insert row of \(rowid) into \(tableName()) table success ")
+            
+            if type(of: self).isSaveDefaulttimestamp {
+                created_at = timeinterval
+                updated_at = timeinterval
+            }
+            
+            LogInfo("Insert row of \(rowid) into \(nameOfTable) table success ")
         }catch{
-            LogError("Insert row into \(tableName()) table failure: \(error)")
+            LogError("Insert row into \(nameOfTable) table failure: \(error)")
             throw error
         }
         
@@ -66,35 +74,42 @@ public extension DBModel{
                     
                     let timeinterval = NSNumber(value:NSDate().timeIntervalSince1970 * 1000)
                     
-                    var settersInsert = model.buildSetters(skips: ["id", "created_at", "updated_at"])
+                    var settersInsert = model.buildSetters(skips: [PRIMARY_KEY, CREATE_AT_KEY, UPDATE_AT_KEY])
                     
-                    if model.created_at != nil && model.created_at.int64Value > 0 {
-                        settersInsert.append(Expression<NSNumber>("created_at") <- model.created_at)
-                    }else{
-                        settersInsert.append(Expression<NSNumber>("created_at") <- timeinterval)
+                    if isSaveDefaulttimestamp {
+                        if model.created_at != nil && model.created_at.int64Value > 0 {
+                            settersInsert.append(created_at <- model.created_at)
+                        }else{
+                            settersInsert.append(created_at <- timeinterval)
+                        }
+                        
+                        if model.updated_at != nil && model.updated_at.int64Value > 0 {
+                            settersInsert.append(updated_at <- model.updated_at)
+                        }else{
+                            settersInsert.append(updated_at <- timeinterval)
+                        }
                     }
                     
-                    if model.updated_at != nil && model.updated_at.int64Value > 0 {
-                        settersInsert.append(Expression<NSNumber>("updated_at") <- model.updated_at)
-                    }else{
-                        settersInsert.append(Expression<NSNumber>("updated_at") <- timeinterval)
-                    }
                     
                     
                     if model.id != nil {
-                        settersInsert.append(Expression<NSNumber>("id") <- model.id)
+                        settersInsert.append(Expression<NSNumber>(PRIMARY_KEY) <- model.id)
                     }
                     
-                    let rowid = try self.db.run(Table(nameOfTable).insert(settersInsert))
+                    let rowid = try self.db.run(getTable().insert(settersInsert))
                     let id = NSNumber(value:rowid)
-                    autoInsertValues.append((id,timeinterval,timeinterval))
                     
+                    autoInsertValues.append((id,timeinterval,timeinterval))
+
                 }
                 
                 for i in 0 ..< models.count {
                     models[i].id = autoInsertValues[i].0
-                    models[i].created_at = autoInsertValues[i].1
-                    models[i].updated_at = autoInsertValues[i].2
+                    if isSaveDefaulttimestamp {
+                        models[i].created_at = autoInsertValues[i].1
+                        models[i].updated_at = autoInsertValues[i].2
+                    }
+                    
                 }
                 //            }
             })
@@ -116,20 +131,26 @@ public extension DBModel{
             
             let timeinterval = NSNumber(value:NSDate().timeIntervalSince1970 * 1000)
             
-            var settersUpdate = buildSetters(skips: ["id", "updated_at"])
-            settersUpdate.append(Expression<NSNumber>("updated_at") <- timeinterval)
+            var settersUpdate = buildSetters(skips: [type(of: self).PRIMARY_KEY, type(of: self).UPDATE_AT_KEY])
+            if type(of: self).isSaveDefaulttimestamp {
+                settersUpdate.append(type(of: self).updated_at <- timeinterval)
+            }
             
-            let table = Table(tableName()).where(Expression<NSNumber>("id") == id)
+            
+            let table = getTable().where(type(of: self).id == id)
             let rowid = try DBModel.db.run(table.update(settersUpdate))
             
             if rowid > 0 {
-                updated_at = timeinterval
-                LogInfo(" Update row in \(rowid) from \(tableName()) Table success ")
+                if type(of: self).isSaveDefaulttimestamp {
+                    updated_at = timeinterval
+                }
+                
+                LogInfo(" Update row in \(rowid) from \(nameOfTable) Table success ")
             } else {
-                LogWarn(" Update \(tableName()) table failure，can't not found id:\(id) 。")
+                LogWarn(" Update \(nameOfTable) table failure，can't not found id:\(id) 。")
             }
         } catch {
-            LogError(" Update \(tableName()) table failure: \(error)")
+            LogError(" Update \(nameOfTable) table failure: \(error)")
             throw error
         }
         
@@ -155,18 +176,18 @@ public extension DBModel{
             
             let settersUpdate = (type(of: self)).buildUpdateSetters(setters)
             
-            let table = Table(tableName()).where(Expression<NSNumber>("id") == id)
-            let rowid = try DBModel.db.run(table.update(settersUpdate))
+            let table = getTable().where(type(of: self).id == id)
+            let rowid = try db.run(table.update(settersUpdate))
             
             if rowid > 0 {
                 try self.refreshSelf()
                 
-                LogInfo(" Update row in \(rowid) from \(tableName()) Table success ")
+                LogInfo(" Update row in \(rowid) from \(nameOfTable) Table success ")
             } else {
-                LogWarn(" Update \(tableName()) table failure，can't not found id:\(id) 。")
+                LogWarn(" Update \(nameOfTable) table failure，can't not found id:\(id) 。")
             }
         } catch {
-            LogError(" Update \(tableName()) table failure: \(error)")
+            LogError(" Update \(nameOfTable) table failure: \(error)")
             throw error
         }
         
@@ -182,22 +203,29 @@ public extension DBModel{
                 //            try db.transaction {
                 for model in models{
                     
+                    var settersUpdate = model.buildSetters(skips: [PRIMARY_KEY, UPDATE_AT_KEY])
+                    
                     let timeinterval = NSNumber(value:NSDate().timeIntervalSince1970 * 1000)
+                    if isSaveDefaulttimestamp{
+                        settersUpdate.append(updated_at <- timeinterval)
+                    }
                     
-                    var settersUpdate = model.buildSetters(skips: ["id", "updated_at"])
-                    settersUpdate.append(Expression<NSNumber>("updated_at") <- timeinterval)
                     
-                    let table = Table(model.tableName()).where(Expression<NSNumber>("id") == model.id)
+                    let table = model.getTable().where(id == model.id)
                     try self.db.run(table.update(settersUpdate))
                     
-                    autoUpdateValues.append((timeinterval))
-                    
+                    if isSaveDefaulttimestamp{
+                        autoUpdateValues.append((timeinterval))
+                    }
+
                 }
                 
-                for i in 0 ..< models.count {
-                    models[i].updated_at = autoUpdateValues[i]
+                if isSaveDefaulttimestamp{
+                    for i in 0 ..< models.count {
+                        models[i].updated_at = autoUpdateValues[i]
+                    }
                 }
-                
+ 
             })
             LogInfo("batch Update \(models) on \(nameOfTable) table success")
             
@@ -238,9 +266,9 @@ public extension DBModel{
         do {
             
             
-            let table = Table(nameOfTable).where(predicate)
+            let table = getTable().where(predicate)
             
-            let rowid = try DBModel.db.run(table.update(buildUpdateSetters(setters)))
+            let rowid = try db.run(table.update(buildUpdateSetters(setters)))
             
             if rowid > 0 {
                 LogInfo(" Update row in \(rowid) from \(nameOfTable) Table success ")
@@ -260,9 +288,7 @@ public extension DBModel{
     class func update(_ setters:[Setter])throws{
         do {
             
-            let table = Table(nameOfTable)
-            
-            let rowid = try DBModel.db.run(table.update(buildUpdateSetters(setters)))
+            let rowid = try db.run(getTable().update(buildUpdateSetters(setters)))
             
             if rowid > 0 {
                 LogInfo(" Update row in \(rowid) from \(nameOfTable) Table success ")
@@ -291,21 +317,27 @@ public extension DBModel{
                 created_at_value = created_at
             }
             
-            var settersInsert = buildSetters(skips: ["id", "created_at", "updated_at"])
-            settersInsert.append(Expression<NSNumber>("created_at") <- created_at_value)
-            settersInsert.append(Expression<NSNumber>("updated_at") <- updated_at_value)
+            var settersInsert = buildSetters(skips: [type(of: self).PRIMARY_KEY, type(of: self).CREATE_AT_KEY, type(of: self).UPDATE_AT_KEY])
             
-            if id != nil {
-                settersInsert.append(Expression<NSNumber>("id") <- id)
+            if type(of: self).isSaveDefaulttimestamp{
+                settersInsert.append(type(of: self).created_at <- created_at_value)
+                settersInsert.append(type(of: self).updated_at <- updated_at_value)
             }
             
-            let rowid = try DBModel.db.run(Table(tableName()).insert(or: .replace, settersInsert))
+            
+            if id != nil {
+                settersInsert.append(type(of: self).id <- id)
+            }
+            
+            let rowid = try db.run(getTable().insert(or: .replace, settersInsert))
             id = NSNumber(value:rowid)
-            created_at = created_at_value
-            updated_at = updated_at_value
-            LogInfo("Insert row of \(rowid) into \(tableName()) table success ")
+            if type(of: self).isSaveDefaulttimestamp{
+                created_at = created_at_value
+                updated_at = updated_at_value
+            }
+            LogInfo("Insert row of \(rowid) into \(nameOfTable) table success ")
         }catch{
-            LogError("Insert into \(tableName()) table failure: \(error)")
+            LogError("Insert into \(nameOfTable) table failure: \(error)")
             throw error
         }
     }
@@ -314,20 +346,27 @@ public extension DBModel{
     
     //MARK: - Common
     internal func refreshSelf() throws{
-        let query = Table(tableName()).where(Expression<NSNumber>("id") == id).order(Expression<NSNumber>("updated_at").desc).limit(1)
+        var query = getTable().where(type(of: self).id == id)
         
-        for row in try DBModel.db.prepare(query) {
+        if type(of: self).isSaveDefaulttimestamp {
+            query = query.order(type(of: self).updated_at.desc)
+        }
+        
+        query = query.limit(1)
+        
+        
+        for row in try db.prepare(query) {
             self.buildFromRow(row: row)
         }
     }
     
-    internal func buildSetters(skips:[String] = ["id"])->[Setter]{
+    internal func buildSetters(skips:[String] = [PRIMARY_KEY])->[Setter]{
         var setters = [Setter]()
         
         for case let (attribute?,column?, value) in recursionProperties() {
             
             //skip primary key
-            if skips.contains(attribute){
+            if skips.contains(column){
                 continue
             }
             
@@ -503,20 +542,24 @@ public extension DBModel{
         }
         
         
-        // 2.Add "update_at" setter if originSetters not contains "update_at"
-        let columnNames = originSetters.flatMap({ (setter) -> String in
-            return setter.getColumnName()
-        })
-        
-        var containsUpdate_at = false
-        for columnName in columnNames {
-            if columnName.contains("updated_at") {
-                containsUpdate_at = true
+        if isSaveDefaulttimestamp {
+            // 2.Add "update_at" setter if originSetters not contains "update_at"
+            let columnNames:[String] = originSetters.flatMap({ (setter) -> String in
+                return setter.getColumnName()
+            })
+            
+            
+            var containsUpdate_at = false
+            for columnName in columnNames {
+                if columnName.contains(UPDATE_AT_KEY) {
+                    containsUpdate_at = true
+                }
+            }
+            if !containsUpdate_at {
+                settersUpdate.append(updated_at <- NSNumber(value:NSDate().timeIntervalSince1970 * 1000))
             }
         }
-        if !containsUpdate_at {
-            settersUpdate.append(Expression<NSNumber>("updated_at") <- NSNumber(value:NSDate().timeIntervalSince1970 * 1000))
-        }
+        
         
         return settersUpdate
     }

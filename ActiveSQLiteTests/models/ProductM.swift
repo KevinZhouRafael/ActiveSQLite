@@ -12,13 +12,13 @@ import SQLite
 
 class ProductM:DBModel{
     
-    var name:String!
-    var price:NSNumber!
-    var desc:String?
-    var code:NSNumber?
-    var publish_date:NSDate?
+    @objc var name:String!
+    @objc var price:NSNumber!
+    @objc var desc:String?
+    @objc var code:NSNumber?
+    @objc var publish_date:NSDate?
     
-    var version:NSNumber?
+    @objc var version:NSNumber?
 
     static let name = Expression<String>("product_name")
     static let price = Expression<NSNumber>("product_price")
@@ -27,7 +27,7 @@ class ProductM:DBModel{
     
     
     //Tests add column
-    var type:NSNumber?
+    @objc var type:NSNumber?
     static let type = Expression<NSNumber>("type")
     
 
@@ -40,13 +40,16 @@ class ProductM:DBModel{
         return ["price"]
     }
     
-    override class func mapper() -> [String:String]{
+    override func mapper() -> [String:String]{
         return ["name":"product_name","price":"product_price"];
     }
     
-    override class func transientTypes() -> [String]{
+    override func transientTypes() -> [String]{
         return ["version"]
     }
 
+    override class var isSaveDefaulttimestamp:Bool{
+        return true
+    }
     
 }

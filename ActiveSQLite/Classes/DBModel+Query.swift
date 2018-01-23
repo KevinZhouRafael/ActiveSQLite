@@ -14,7 +14,6 @@ import SQLite
 public extension DBModel{
     
     
-    
     //MARK: - Find
     //MARK: - FindFirst
     class func findFirst(_ attribute: String, value:Any?)->DBModel?{
@@ -25,12 +24,12 @@ public extension DBModel{
         return findAll(attributeAndValueDic)?.first
     }
     
-    class func findFirst(_ orderColumn:String,ascending:Bool = true)->DBModel?{
-        return findAll(orderColumn, ascending: ascending).first
+    class func findFirst(orderColumn:String,ascending:Bool = true)->DBModel?{
+        return findAll(orderColumn:orderColumn, ascending: ascending).first
     }
     
-    class func findFirst(_ orders:[String:Bool]? = nil)->DBModel?{
-        return findAll(orders).first
+    class func findFirst(orders:[String:Bool]? = nil)->DBModel?{
+        return findAll(orders:orders).first
     }
     
     class func findFirst(_ attribute: String, value:Any?,_ orderBy:String,ascending:Bool = true)->DBModel?{
@@ -70,11 +69,11 @@ public extension DBModel{
     }
     
     
-    class func findAll(_ orderColumn:String,ascending:Bool = true)->Array<DBModel>{
+    class func findAll(orderColumn:String,ascending:Bool = true)->Array<DBModel>{
         return findAll(nil, [orderColumn:ascending])
     }
     
-    class func findAll(_ orders:[String:Bool]? = nil)->Array<DBModel>{
+    class func findAll(orders:[String:Bool]? = nil)->Array<DBModel>{
         return findAll(nil, orders)
         
     }
@@ -87,7 +86,7 @@ public extension DBModel{
         
         
         var results:Array<DBModel> = Array<DBModel>()
-        var query = Table(nameOfTable)
+        var query = getTable()
         
         if attributeAndValueDic != nil {
             if let expression = self.init().buildExpression(attributeAndValueDic!) {
@@ -145,28 +144,35 @@ public extension DBModel{
     class func findAll(_ predicate: SQLite.Expression<Bool?>,orders: [Expressible]? = nil)->Array<DBModel>?{
         
         var results:Array<DBModel> = Array<DBModel>()
-        var query = Table(nameOfTable).where(predicate)
+        var query = getTable().where(predicate)
         
         if orders != nil && orders!.count > 0 {
             query = query.order(orders!)
         }else{
-            query = query.order(Expression<NSNumber>("created_at").desc)
+            if isSaveDefaulttimestamp {
+                query = query.order(created_at.desc)
+            }
         }
+        
         
         do{
             for row in try db.prepare(query) {
+                
                 let model = self.init()
+                
                 model.buildFromRow(row: row)
-
+                
+                
                 results.append(model)
             }
         }catch{
-            LogError("Find all from \(nameOfTable) failure。\(error)")
+            LogError("Find all for \(nameOfTable) failure: \(error)")
         }
-
+        
         
         return results
     }
+    
     
     //MARK: - Generic Type
     func findAll<T:DBModel>(_ predicate: SQLite.Expression<Bool>, toT t:T)->Array<T>?{
@@ -178,20 +184,24 @@ public extension DBModel{
         
         var results:[T] = [T]()
         
-        let query = Table(type(of: self).nameOfTable).where(predicate).order(Expression<NSNumber>("created_at").desc)
+        var query = getTable().where(predicate)
+        if type(of: self).isSaveDefaulttimestamp{
+            query = query.order(type(of: self).created_at.desc)
+        }
         
-
+        
         do{
-            for result in try DBModel.db.prepare(query) {
-            
+            for result in try T.db.prepare(query) {
+                
                 let model = T()
                 model.buildFromRow(row: result)
-            
+                
                 results.append(model)
             }
         }catch{
-            LogError("Find all from \(type(of: self).nameOfTable) failure。\(error)")
+            LogError("Find all for \(nameOfTable) failure: \(error)")
         }
+        
         
         return results
     }
@@ -200,12 +210,15 @@ public extension DBModel{
         
         var results:[T] = [T]()
         
-        let query = Table(type(of: self).nameOfTable).where(predicate).order(Expression<NSNumber>("created_at").desc)
+        var query = getTable().where(predicate)
         
-
+        if type(of: self).isSaveDefaulttimestamp {
+            query = query.order(type(of: self).created_at.desc)
+        }
+        
         
         do{
-            for result in try DBModel.db.prepare(query) {
+            for result in try T.db.prepare(query) {
                 
                 let model = T()
                 model.buildFromRow(row: result)
@@ -213,8 +226,9 @@ public extension DBModel{
                 results.append(model)
             }
         }catch{
-            LogError("Find all from \(type(of: self).nameOfTable) failure。\(error)")
+            LogError("Find all for \(nameOfTable) failure: \(error)")
         }
+        
         
         return results
     }
@@ -223,11 +237,14 @@ public extension DBModel{
         
         var results:[T] = [T]()
         
-        let query = Table(type(of: self).nameOfTable).where(predicate).order(Expression<NSNumber>("created_at").desc)
+        var query = getTable().where(predicate)
         
-
+        if type(of: self).isSaveDefaulttimestamp {
+            query = query.order(type(of: self).created_at.desc)
+        }
+        
         do{
-            for result in try DBModel.db.prepare(query) {
+            for result in try T.db.prepare(query) {
                 
                 let model = T()
                 model.buildFromRow(row: result)
@@ -235,8 +252,9 @@ public extension DBModel{
                 results.append(model)
             }
         }catch{
-            LogError("Find all from \(type(of: self).nameOfTable) failure。\(error)")
+            LogError("Find all for \(nameOfTable) failure: \(error)")
         }
+        
         
         return results
     }
@@ -249,7 +267,7 @@ public extension DBModel{
         }
         get{
             if _query == nil {
-                _query =  Table(type(of: self).nameOfTable)
+                _query =  getTable()
             }
             return _query
         }
@@ -367,21 +385,24 @@ public extension DBModel{
     func run()->Array<DBModel>{
         
         var results:Array<DBModel> = Array<DBModel>()
-
-        
         do{
-            for row in try DBModel.db.prepare(query!) {
+            for row in try type(of: self).db.prepare(query!) {
+                
                 let model = type(of: self).init()
+                
                 model.buildFromRow(row: row)
+                
+                
                 results.append(model)
             }
-            
-            LogInfo("Execute Query run() function from \(type(of: self).nameOfTable)  success")
         }catch{
-            LogError("Execute run() of \(type(of: self).nameOfTable) failure。\(error)")
+            LogError("Execute run() from \(nameOfTable) failure。\(error)")
         }
         
+        
         query = nil
+        
+        LogInfo("Execute Query run() function from \(nameOfTable)  success")
         
         return results
         
@@ -390,15 +411,15 @@ public extension DBModel{
     //MARK: - Delete
     func runDelete()throws{
         do {
-            if try DBModel.db.run(query!.delete()) > 0 {
-                LogInfo("Delete rows of \(type(of: self).nameOfTable) success")
+            if try type(of: self).db.run(query!.delete()) > 0 {
+                LogInfo("Delete rows of \(nameOfTable) success")
                 
             } else {
-                LogWarn("Delete rows of \(type(of: self).nameOfTable) failure。")
+                LogWarn("Delete rows of \(nameOfTable) failure。")
                 
             }
         } catch {
-            LogError("Delete rows of \(type(of: self).nameOfTable) failure。")
+            LogError("Delete rows of \(nameOfTable) failure。")
             throw error
         }
     }
@@ -408,13 +429,13 @@ public extension DBModel{
             return
         }
         
-        let query = Table(type(of: self).nameOfTable).where(Expression<NSNumber>("id") == id)
+        let query = getTable().where(type(of: self).id == id)
         do {
-            if try DBModel.db.run(query.delete()) > 0 {
-                LogInfo("Delete  \(type(of: self).nameOfTable)，id:\(id)  success")
+            if try db.run(query.delete()) > 0 {
+                LogInfo("Delete  \(nameOfTable)，id:\(id)  success")
                 
             } else {
-                LogWarn("Delete \(type(of: self).nameOfTable) failure，haven't found id:\(id) 。")
+                LogWarn("Delete \(nameOfTable) failure，haven't found id:\(id) 。")
                 
             }
         } catch {
@@ -424,8 +445,9 @@ public extension DBModel{
     }
     
     class func deleteBatch(_ models:[DBModel]) throws{
+        
         do{
-            let db = DBModel.db
+            
             try db!.savepoint("savepointname_\(nameOfTable)_deleteBatch\(NSDate().timeIntervalSince1970 * 1000)", block: {
                 
                 var ids = Array<NSNumber>()
@@ -436,7 +458,7 @@ public extension DBModel{
                     ids.append(model.id)
                 }
                 
-                let query = Table(nameOfTable).where(ids.contains(Expression<NSNumber>("id")))
+                let query = getTable().where(ids.contains(id))
                 
                 try db!.run(query.delete())
                 
@@ -450,7 +472,7 @@ public extension DBModel{
     
     class func deleteAll() throws{
         do{
-            try db.run(Table(nameOfTable).delete())
+            try db.run(getTable().delete())
             LogInfo("Delete all rows of \(nameOfTable) success")
             
         }catch{
@@ -590,7 +612,7 @@ public extension DBModel{
             //                    "Mirror.subjectType: \(Mirror(reflecting:value).subjectType),    " +
             //                    "Mirror.displayStyle: \(String(describing: Mirror(reflecting:value).displayStyle))"
             //            LogDebug(s)
-            //            LogDebug("assign Value-\(value) to \(attribute)-attribute of \(type(of: self).nameOfTable). ")
+            //            LogDebug("assign Value-\(value) to \(attribute)-attribute of \(nameOfTable). ")
             
             
             let mir = Mirror(reflecting:value)
@@ -611,19 +633,22 @@ public extension DBModel{
             case _ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type:
                 
                 if self.doubleTypes().contains(attribute) {
-                    setValue(NSNumber(value:row.get(Expression<Double>(column))) , forKey: attribute)
+                    setValue(NSNumber(value:try! row.get(Expression<Double>(column))) , forKey: attribute)
                 }else{
-                    setValue(row.get(Expression<NSNumber>(column)) , forKey: attribute)
+
+                    let v = try! row.get(Expression<NSNumber>(column))
+                    setValue(v, forKey: attribute)
+
                 }
                 
             case _ as NSNumber?.Type:
                 
                 if self.doubleTypes().contains(attribute) {
-                    if let v = row.get(Expression<Double?>(column)) {
+                    if let v = try! row.get(Expression<Double?>(column)) {
                         setValue(NSNumber(value:v), forKey: attribute)
                     }
                 }else{
-                    if let v = row.get(Expression<NSNumber?>(column)) {
+                    if let v = try! row.get(Expression<NSNumber?>(column)) {
                         setValue(v, forKey: attribute)
                     }else{
                         setValue(nil, forKey: attribute)
@@ -631,10 +656,10 @@ public extension DBModel{
                 }
                 
             case _ as NSDate.Type, _ as  ImplicitlyUnwrappedOptional<NSDate>.Type:
-                setValue(row.get(Expression<NSDate>(column)), forKey: attribute)
+                setValue(try! row.get(Expression<NSDate>(column)), forKey: attribute)
                 
             case _ as NSDate?.Type:
-                if let v = row.get(Expression<NSDate?>(column)) {
+                if let v = try! row.get(Expression<NSDate?>(column)) {
                     setValue(v, forKey: attribute)
                 }else{
                     setValue(nil, forKey: attribute)
