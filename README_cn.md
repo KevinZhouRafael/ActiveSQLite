@@ -224,9 +224,9 @@ override class var isSaveDefaulttimestamp:Bool{
 ```swift
 
 class Users:DBModel,CreateColumnsProtocol{
-    var name:String!
-    var email:String!
-    var age:Int?
+    @objc var name:String!
+    @objc var email:String!
+    @objc var age:Int?
    
     func createColumns(t: TableBuilder) {
         t.column(Expression<NSNumber>("id"), primaryKey: true)

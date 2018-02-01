@@ -225,9 +225,9 @@ If you want custom columns by yourself, you just set model implements CreateColu
 ```swift
 
 class Users:DBModel,CreateColumnsProtocol{
-    var name:String!
-    var email:String!
-    var age:Int?
+    @objc var name:String!
+    @objc var email:String!
+    @objc var age:Int?
    
     func createColumns(t: TableBuilder) {
         t.column(Expression<NSNumber>("id"), primaryKey: true)
