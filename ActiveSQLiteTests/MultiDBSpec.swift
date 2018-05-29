@@ -68,12 +68,12 @@ class MultiDBSpec: QuickSpec {
 
         describe("Find cities ") {
             
-            let cities1 = City.findAll(orderColumn: "id") as! [City]
+            let cities1 = City.findAll(orderColumn: "id")
             expect(cities1.count).to(equal(10))
             expect(cities1.last?.name).to(equal("City name 9 in DB1"))
 
             
-            let cities2 = City2.findAll(orderColumn: "id") as! [City2]
+            let cities2 = City2.findAll(orderColumn: "id")
             expect(cities2.count).to(equal(5))
             expect(cities2.first?.name).to(equal("City name 0 in DB2"))
             

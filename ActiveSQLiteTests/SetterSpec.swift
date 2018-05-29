@@ -33,7 +33,7 @@ class SetterSpec: QuickSpec {
                     
                     expect(error).to(beNil())
                     
-                    //                let p = ProductM.findFirst("id", value: NSNumber(value:1)) as! ProductM
+                    //                let p = ProductM.findFirst("id", value: NSNumber(value:1))!
                     expect(p.name).to(equal("House"))
                 })
 
@@ -100,7 +100,7 @@ class SetterSpec: QuickSpec {
                     
                     expect(error).to(beNil())
                     
-                    let ps = ProductM.findAll(ProductM.id > NSNumber(value:3), orders: [ProductM.id.asc]) as! [ProductM]
+                    let ps = ProductM.findAll(ProductM.id > NSNumber(value:3), orders: [ProductM.id.asc])
                     
                     for i in 0 ..< 4 {
                         let p = ps[i]
@@ -123,7 +123,7 @@ class SetterSpec: QuickSpec {
                     
                     expect(error).to(beNil())
 
-                    let ps = ProductM.findAll(ProductM.id > NSNumber(value:0), orders: [ProductM.id.asc]) as! [ProductM]
+                    let ps = ProductM.findAll(ProductM.id > NSNumber(value:0), orders: [ProductM.id.asc])
                     
                     for i in 0 ..< 7 {
                         let p = ps[i]

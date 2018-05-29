@@ -9,9 +9,7 @@
 import Foundation
 import SQLite
 
-protocol ASModel:class {
-    
-}
+
 /*
  Model Type    SQLite.swift Type      SQLite Type
  NSNumber    Int64(Int,Bool)         INTEGER
@@ -122,14 +120,6 @@ protocol ASModel:class {
         return type(of: self).getTable()
     }
     
-    @objc open override func setValue(_ value: Any?, forKey key: String) {
-        super.setValue(value, forKey: key)
-    }
-    
-    @objc open override func value(forKey key: String) -> Any? {
-        return super.value(forKey: key)
-    }
-    
     //MARK: - utils
     internal var primaryKeyAttributeName:String{
         return "id"
@@ -142,127 +132,12 @@ protocol ASModel:class {
             return transientTypes() + [type(of: self).CREATE_AT_KEY,type(of: self).UPDATE_AT_KEY]
         }
     }
-    
-    func recursionPropertiesOnlyColumn() -> [(String?,Any)]{
-        
-        var properties = [(String?,Any)]()
-        var mirror: Mirror? = Mirror(reflecting: self)
-        repeat {
-            for case let (key?, value) in mirror!.children {
-                
-                let mir = Mirror(reflecting:value)
-                
-                switch mir.subjectType {
-                    
-                case _ as String.Type, _ as  ImplicitlyUnwrappedOptional<String>.Type,_ as String?.Type,_ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type,_ as NSNumber?.Type,
-                     _ as NSDate.Type, _ as ImplicitlyUnwrappedOptional<NSDate>.Type,_ as NSDate?.Type:
-                    
-                    if let column = mapper()[key] {
-                        properties.append((column, value))
-                    }else{
-                        properties.append((key, value))
-                    }
-                    
-                    
-                    break
-                    
-                default: break
-                    
-                }
-                
-            }
-            mirror = mirror?.superclassMirror
-        } while mirror != nil
-        
-        return properties.sorted(by: {
-            if $0.0 ==  primaryKeyAttributeName {
-                return true
-            }
-            return $0.0! < $1.0!
-        } )
+    @objc open override func setValue(_ value: Any?, forKey key: String) {
+        super.setValue(value, forKey: key)
     }
     
-    func recursionProperties() -> [(String?,String?,Any)]{
-        
-        var properties = [(String?,String?,Any)]()
-        var mirror: Mirror? = Mirror(reflecting: self)
-        repeat {
-            for case let (attribute?, value) in mirror!.children {
-                
-                if noSavedProperties().contains(attribute){
-                    continue
-                }
-                
-                let mir = Mirror(reflecting:value)
-                
-                switch mir.subjectType {
-                    
-                case _ as String.Type, _ as  ImplicitlyUnwrappedOptional<String>.Type,_ as String?.Type,_ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type,_ as NSNumber?.Type,
-                     _ as NSDate.Type, _ as ImplicitlyUnwrappedOptional<NSDate>.Type,_ as NSDate?.Type:
-                    
-                    
-                    if let column = mapper()[attribute] {
-                        properties.append((attribute, column, value))
-                    }else{
-                        properties.append((attribute, attribute, value))
-                    }
-                    
-                    
-                    break
-                    
-                default: break
-                    
-                }
-                
-            }
-            mirror = mirror?.superclassMirror
-        } while mirror != nil
-        
-        return properties.sorted(by: {
-            if $0.0 == primaryKeyAttributeName {
-                return true
-            }
-            return $0.0! < $1.0!
-        } )
-    }
-    
-    func propertieColumnMap() -> [String:String]{
-        
-        var pcMap = [String:String]()
-        var mirror: Mirror? = Mirror(reflecting: self)
-        repeat {
-            for case let (key?, value) in mirror!.children {
-                
-                if noSavedProperties().contains(key)  {
-                    continue
-                }
-                
-                let mir = Mirror(reflecting:value)
-                
-                switch mir.subjectType {
-                    
-                case _ as String.Type, _ as  ImplicitlyUnwrappedOptional<String>.Type,_ as String?.Type,_ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type,_ as NSNumber?.Type,
-                     _ as NSDate.Type, _ as ImplicitlyUnwrappedOptional<NSDate>.Type,_ as NSDate?.Type:
-                    
-                    if let column = mapper()[key] {
-                        pcMap[key] = column
-                    }else{
-                        pcMap[key] = key
-                    }
-                    
-                    
-                    break
-                    
-                default: break
-                    
-                }
-                
-            }
-            mirror = mirror?.superclassMirror
-        } while mirror != nil
-        
-        
-        return pcMap
+    @objc open override func value(forKey key: String) -> Any? {
+        return super.value(forKey: key)
     }
     
     
@@ -282,3 +157,95 @@ protocol ASModel:class {
     }
     
 }
+
+
+//public extension DBModel{
+
+//MARK: - Generic Type
+//    func findAll<T:DBModel>(_ predicate: SQLite.Expression<Bool>, toT t:T)->Array<T>{
+//
+//        return findAll(Expression<Bool?>(predicate),toT:t)
+//    }
+//
+//    func findAll<T:DBModel>(_ predicate: SQLite.Expression<Bool?>, toT t:T)->Array<T>{
+//
+//        var results:[T] = [T]()
+//
+//        var query = getTable().where(predicate)
+//        if type(of: self).isSaveDefaulttimestamp{
+//            query = query.order(type(of: self).created_at.desc)
+//        }
+//
+//
+//        do{
+//            for result in try T.db.prepare(query) {
+//
+//                let model = T()
+//                model.buildFromRow(row: result)
+//
+//                results.append(model)
+//            }
+//        }catch{
+//            LogError("Find all for \(nameOfTable) failure: \(error)")
+//        }
+//
+//
+//        return results
+//    }
+//
+//    func findAll<T:DBModel>(_ predicate: SQLite.Expression<Bool?>)->Array<T>{
+//
+//        var results:[T] = [T]()
+//
+//        var query = getTable().where(predicate)
+//
+//        if type(of: self).isSaveDefaulttimestamp {
+//            query = query.order(type(of: self).created_at.desc)
+//        }
+//
+//
+//        do{
+//            for result in try T.db.prepare(query) {
+//
+//                let model = T()
+//                model.buildFromRow(row: result)
+//
+//                results.append(model)
+//            }
+//        }catch{
+//            LogError("Find all for \(nameOfTable) failure: \(error)")
+//        }
+//
+//
+//        return results
+//    }
+
+//    internal func findAll<T:DBModel>(_ predicate: SQLite.Expression<Bool?>) -> [T] where T : ASModel{
+//
+//        var results:[T] = [T]()
+//
+//        var query = getTable().where(predicate)
+//
+//        if type(of: self).isSaveDefaulttimestamp {
+//            query = query.order(type(of: self).created_at.desc)
+//        }
+//
+//        do{
+//            for result in try T.db.prepare(query) {
+//
+//                let model = T()
+//                model.buildFromRow(row: result)
+//
+//                results.append(model)
+//            }
+//        }catch{
+//            LogError("Find all for \(nameOfTable) failure: \(error)")
+//        }
+//
+//
+//        return results
+//    }
+
+
+//}
+

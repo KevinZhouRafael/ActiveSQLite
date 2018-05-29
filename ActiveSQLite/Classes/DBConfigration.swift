@@ -19,9 +19,9 @@ open class DBConfigration {
     
     public static func setDB(path:String,name:String){
         
-        guard dbMap[name] == nil else {
-            return
-        }
+//        guard dbMap[name] == nil else {
+//            return
+//        }
         let db = try! Connection(path)
         dbMap[name] = db
         

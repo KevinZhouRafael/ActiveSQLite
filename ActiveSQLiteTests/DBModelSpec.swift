@@ -65,43 +65,39 @@ class DBModelSpec: QuickSpec {
                         try! m2.save()
                     })
                     
-                    describe("Query-Generic Types", {
-                        
-//                        let p:ProductM = ProductM().findd(SQLite.Expression<String>("name") == "iWatch")!.first!
-//                        expect(p.price).to(equal(10000))
-//                        expect(p.name).to(equal("iWatch"))
-                        
-                        let p2 = ProductM().findAll(ProductM.name == "iWatch", toT:ProductM())!.first
-                        ProductM.findAll(ProductM.name == "iWatch")
-                        expect(p2!.price).to(equal(10000))
-                        expect(p2!.name).to(equal("iWatch"))
-                        
-                    })
-                    
-                    describe("Query-Generic Types2", {
-                        
-                        let p2:ProductM = ProductM.findAll(ProductM.name == "iWatch")?.first as! ProductM
-                        expect(p2.price).to(equal(10000))
-                        expect(p2.name).to(equal("iWatch"))
-                        
-                    })
-                    
-                    describe("Query-Generic Types3", {
-                        
-                        let p2:ProductM = ProductM.findAll(ProductM.name == "iWatch")?.first as! ProductM
-                        expect(p2.price).to(equal(10000))
-                        expect(p2.name).to(equal("iWatch"))
-                        
-                    })
+//                    describe("Query-Generic Types", {
+//                        
+//                        let p2 = ProductM().findAll(ProductM.name == "iWatch", toT:ProductM()).first
+//                        ProductM.findAll(ProductM.name == "iWatch")
+//                        expect(p2!.price).to(equal(10000))
+//                        expect(p2!.name).to(equal("iWatch"))
+//                        
+//                    })
+//                    
+//                    describe("Query-Generic Types2", {
+//                        
+//                        let p2:ProductM = ProductM.findAll(ProductM.name == "iWatch").first!
+//                        expect(p2.price).to(equal(10000))
+//                        expect(p2.name).to(equal("iWatch"))
+//                        
+//                    })
+//                    
+//                    describe("Query-Generic Types3", {
+//                        
+//                        let p2:ProductM = ProductM.findAll(ProductM.name == "iWatch").first!
+//                        expect(p2.price).to(equal(10000))
+//                        expect(p2.name).to(equal("iWatch"))
+//                        
+//                    })
                     
                     describe("Query- use as", {
                         
-                        let p = ProductM.findAll(ProductM.name == "iWatch")!.first as! ProductM
+                        let p = ProductM.findAll(ProductM.name == "iWatch").first!
                         expect(p.price).to(equal(10000))
                         expect(p.name).to(equal("iWatch"))
                         
                         
-                        let arr = ProductM.findAll(ProductM.name == "iWatch") as! Array<ProductM>
+                        let arr = ProductM.findAll(ProductM.name == "iWatch")
                         let p2 = arr.first!
                         expect(p2.price).to(equal(10000))
                         expect(p2.name).to(equal("iWatch"))
@@ -114,11 +110,11 @@ class DBModelSpec: QuickSpec {
                     describe("Query- use String", {
                         
                         
-                        let p = ProductM.findAll("name",value:"iWatch")!.first as! ProductM
+                        let p = ProductM.findAll("name",value:"iWatch").first!
                         expect(p.price).to(equal(10000))
                         expect(p.name).to(equal("iWatch"))
                         
-                        let p2 = ProductM.findAll(["name":"iWatch", "id":2])!.first as! ProductM
+                        let p2 = ProductM.findAll(["name":"iWatch", "id":2]).first!
                         expect(p2.price).to(equal(10000))
                         expect(p2.name).to(equal("iWatch"))
                         expect(p2.id).to(equal(2))
@@ -171,19 +167,20 @@ class DBModelSpec: QuickSpec {
 
                         })
                         
+                        
                     })
 
                     describe("Delete ", { 
                         
                         try! ProductM().where("name",value:"iWatch").runDelete()
-                        expect(ProductM.findAll("name",value:"iWatch")?.count).to(equal(0))
+                        expect(ProductM.findAll("name",value:"iWatch").count).to(equal(0))
                     })
 //
 //                    describe("Query use attributes ", {
 //                        
 //                        
 //                        var v = Vocabulary()
-//                        if let vv =  v.find(v.schame.KCUUID == NSNumber(value:4579384579438) && v.schame.question == "question1?")?.first {
+//                        if let vv =  v.find(v.schame.KCUUID == NSNumber(value:4579384579438) && v.schame.question == "question1?").first {
 //                            vv.print()
 //                        }
 //                        

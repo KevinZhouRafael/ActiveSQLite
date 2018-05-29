@@ -41,7 +41,7 @@ class BatchSpec: QuickSpec {
             
             describe("batch Update ", { 
                 
-                let products = ProductM.findAll() as! Array<ProductM>
+                let products = ProductM.findAll()
                 
                 for (index,product) in products.enumerated(){
                     XCTAssertEqual(product.id.intValue, index + 1)

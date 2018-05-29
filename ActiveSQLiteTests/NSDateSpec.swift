@@ -33,7 +33,7 @@ class NSDateSpec: QuickSpec {
                 
                 
                 context("Query", closure: {
-                    let p = ProductM.findFirst("name", value: "Book") as! ProductM
+                    let p = ProductM.findFirst("name", value: "Book")!
                     
                     let formater = DateFormatter()
                     formater.dateFormat = "yyyy-MM-dd HH-mm-ss"
