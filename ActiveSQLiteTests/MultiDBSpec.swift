@@ -16,8 +16,8 @@ import SQLite
 class MultiDBSpec: QuickSpec {
     override func spec() {
         
-        DBConfigration.setDefaultDB(path: getTestDBPath()!, name: DBDefaultName)
-        DBConfigration.setDB(path: getDB2Path(), name: DBName2)
+        ASConfigration.setDefaultDB(path: getTestDBPath()!, name: DBDefaultName)
+        ASConfigration.setDB(path: getDB2Path(), name: DBName2)
 
         
         describe("Insert cities in db1") {

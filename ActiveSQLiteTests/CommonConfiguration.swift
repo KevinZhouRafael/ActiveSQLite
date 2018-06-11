@@ -2,7 +2,7 @@
 //  CommonConfiguration.swift
 //  ActiveSQLite
 //
-//  Created by zhou kai on 25/05/2017.
+//  Created by Kevin Zhou on 25/05/2017.
 //  Copyright © 2017 wumingapie@gmail.com. All rights reserved.
 //
 

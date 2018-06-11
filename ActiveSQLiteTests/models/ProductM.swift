@@ -2,7 +2,7 @@
 //  ProductM.swift
 //  ActiveSQLite
 //
-//  Created by zhou kai on 05/06/2017.
+//  Created by Kevin Zhou on 05/06/2017.
 //  Copyright © 2017 wumingapie@gmail.com. All rights reserved.
 //
 
@@ -10,7 +10,7 @@ import Foundation
 import SQLite
 @testable import ActiveSQLite
 
-class ProductM:DBModel{
+class ProductM:ASModel{
     
     @objc var name:String!
     @objc var price:NSNumber!

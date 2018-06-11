@@ -1,15 +1,15 @@
 //
-//  DBModel+Insert&Update.swift
+//  ASProtocolInsert&Update.swift
 //  ActiveSQLite
 //
-//  Created by zhou kai on 08/06/2017.
+//  Created by Kevin Zhou on 08/06/2017.
 //  Copyright © 2017 wumingapie@gmail.com. All rights reserved.
 //
 
 import Foundation
 import SQLite
 
-public extension ASModel where Self:DBModel{
+public extension ASProtocol where Self:ASModel{
     
     //MARK: - Insert
     //can't insert reduplicate ids

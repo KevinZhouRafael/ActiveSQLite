@@ -2,7 +2,7 @@
 //  Users.swift
 //  ActiveSQLite
 //
-//  Created by zhou kai on 09/06/2017.
+//  Created by Kevin Zhou on 09/06/2017.
 //  Copyright © 2017 wumingapie@gmail.com. All rights reserved.
 //
 
@@ -10,7 +10,7 @@ import Foundation
 import SQLite
 @testable import ActiveSQLite
 
-class Users:DBModel,CreateColumnsProtocol{
+class Users:ASModel,CreateColumnsProtocol{
     
     @objc var name:String!
         

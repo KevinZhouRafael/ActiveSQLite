@@ -2,7 +2,7 @@
 //  JoinSpec.swift
 //  ActiveSQLite
 //
-//  Created by zhou kai on 09/06/2017.
+//  Created by Kevin Zhou on 09/06/2017.
 //  Copyright © 2017 wumingapie@gmail.com. All rights reserved.
 //
 
@@ -15,7 +15,7 @@ import SQLite
 class JoinSpec: QuickSpec {
     override func spec() {
 
-        DBConfigration.setDefaultDB(path: getTestDBPath()!, name: DBDefaultName)
+        ASConfigration.setDefaultDB(path: getTestDBPath()!, name: DBDefaultName)
         
         describe("generate datas") {
             
@@ -51,7 +51,7 @@ class JoinSpec: QuickSpec {
                 let query = users.join(posts, on: Posts.user_id == users.namespace(Users.id)).filter(Posts.user_id == u.id)
                 
                 
-                let db = DBConfigration.getDefaultDB()
+                let db = ASConfigration.getDefaultDB()
                 
                 for result in try! db.prepare(query) {
                    debugPrint("Results of join Query -> \(result)" )

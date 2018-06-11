@@ -2,7 +2,7 @@
 //  NSDateSpec.swift
 //  ActiveSQLite
 //
-//  Created by zhou kai on 21/06/2017.
+//  Created by Kevin Zhou on 21/06/2017.
 //  Copyright © 2017 ios. All rights reserved.
 //
 
@@ -16,7 +16,7 @@ class NSDateSpec: QuickSpec {
     
     override func spec() {
         
-        DBConfigration.setDefaultDB(path: getTestDBPath()!, name: DBDefaultName)
+        ASConfigration.setDefaultDB(path: getTestDBPath()!, name: DBDefaultName)
         
         describe("Test Column of NSDate。 ") {
             describe("Save", {

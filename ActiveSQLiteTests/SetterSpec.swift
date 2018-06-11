@@ -2,7 +2,7 @@
 //  SetterSpec.swift
 //  ActiveSQLite
 //
-//  Created by zhou kai on 05/07/2017.
+//  Created by Kevin Zhou on 05/07/2017.
 //  Copyright © 2017 wumingapie@gmail.com. All rights reserved.
 //
 
@@ -16,7 +16,7 @@ class SetterSpec: QuickSpec {
     override func spec() {
         describe("1--- update one by id") {
             
-            DBConfigration.setDefaultDB(path: getTestDBPath()!, name: DBDefaultName)
+            ASConfigration.setDefaultDB(path: getTestDBPath()!, name: DBDefaultName)
             
             try? ProductM.dropTable()
             let p = ProductM()

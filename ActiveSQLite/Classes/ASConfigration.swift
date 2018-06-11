@@ -1,8 +1,8 @@
 //
-//  DBConfigration.swift
+//  ASConfigration.swift
 //  ActiveSQLite
 //
-//  Created by zhou kai on 14/06/2017.
+//  Created by Kevin Zhou on 14/06/2017.
 //  Copyright © 2017 wumingapie@gmail.com. All rights reserved.
 //
 
@@ -10,7 +10,7 @@ import Foundation
 import SQLite
 
 //MARK: Custom Class
-open class DBConfigration {
+open class ASConfigration {
     public static var logLevel: LogLevel = .info
     
     private static var dbMap:Dictionary<String,Connection> = Dictionary<String,Connection>()
@@ -26,7 +26,7 @@ open class DBConfigration {
         dbMap[name] = db
         
         //        #if DEBUG
-        //            DBModel.db.trace{ debugPrint($0)}
+        //            ASModel.db.trace{ debugPrint($0)}
         //        #endif
         
         if logLevel == .debug {

@@ -1,5 +1,5 @@
 //
-//  ASModel+Query.swift
+//  ASProtocol+Query.swift
 //  ActiveSQLite
 //
 //  Created by kai zhou on 2018/5/29.
@@ -9,7 +9,7 @@
 import Foundation
 import SQLite
 
-public extension ASModel where Self:DBModel{
+public extension ASProtocol where Self:ASModel{
     //    public static var dbName:String?{
     //        return nil
     //    }
@@ -17,9 +17,9 @@ public extension ASModel where Self:DBModel{
     //    static var db:Connection{
     //        get{
     //            if let name = dbName {
-    //                return DBConfigration.getDB(name: name)
+    //                return ASConfigration.getDB(name: name)
     //            }else{
-    //                return DBConfigration.getDefaultDB()
+    //                return ASConfigration.getDefaultDB()
     //            }
     //
     //        }

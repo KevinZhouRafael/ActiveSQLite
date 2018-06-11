@@ -2,7 +2,7 @@
 //  TranscationSpec.swift
 //  ActiveSQLite
 //
-//  Created by zhou kai on 04/07/2017.
+//  Created by Kevin Zhou on 04/07/2017.
 //  Copyright © 2017 wumingapie@gmail.com. All rights reserved.
 //
 
@@ -14,7 +14,7 @@ import Nimble
 class TranscationSpec: QuickSpec {
     override func spec() {
         describe("Transcation Tests") {
-            DBConfigration.setDefaultDB(path: getTestDBPath()!, name: DBDefaultName)
+            ASConfigration.setDefaultDB(path: getTestDBPath()!, name: DBDefaultName)
             
             try? ProductM.dropTable()
             try? Users.dropTable()

@@ -1,8 +1,8 @@
 //
-//  DBLogger.swift
+//  ASLogger.swift
 //  ActiveSQLite
 //
-//  Created by zhou kai on 04/07/2017.
+//  Created by Kevin Zhou on 04/07/2017.
 //  Copyright © 2017 wumingapie@gmail.com. All rights reserved.
 //
 
@@ -18,7 +18,7 @@ func LogDebug(_ message: Any = "",
               line: Int = #line,
               function: String = #function) {
     //    debugPrint( "***[debug]***-\(Thread.current)-\(name(of: file))[\(line)]:\(function) --> \(message)")
-    if DBConfigration.logLevel == .debug {
+    if ASConfigration.logLevel == .debug {
         print( "***[debug]***-\(name(of: file))[\(line)]:\(function) --> \(message)")
     }
 }
@@ -27,7 +27,7 @@ func LogInfo(_ message: Any = "",
              file: String = #file,
              line: Int = #line,
              function: String = #function) {
-    if DBConfigration.logLevel.rawValue >= LogLevel.info.rawValue {
+    if ASConfigration.logLevel.rawValue >= LogLevel.info.rawValue {
         print( "***[info]***-\(name(of: file))[\(line)]:\(function) --> \(message)")
     }
     
@@ -37,7 +37,7 @@ func LogWarn(_ message: Any = "",
              file: String = #file,
              line: Int = #line,
              function: String = #function) {
-    if DBConfigration.logLevel.rawValue >= LogLevel.warn.rawValue {
+    if ASConfigration.logLevel.rawValue >= LogLevel.warn.rawValue {
         print( "***[warn]***-\(name(of: file))[\(line)]:\(function) --> \(message)")
     }
     

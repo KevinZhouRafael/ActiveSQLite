@@ -14,7 +14,7 @@ ActiveSQLite 是一个 [SQLite.Swift](https://github.com/stephencelis/SQLite.swi
 
  - [x] 支持 SQLite.swift 的所有特性。
  - [x] 自动创建表. 自动创建 id , created\_at 和 updated\_at 列。
- - [x] 自动把SQL查询的数据赋值给数据库模型DBModel的属性。 
+ - [x] 自动把SQL查询的数据赋值给数据库模型ASModel的属性。 
  - [x] 自定义表名和模型名之间的映射，列名和模型的属性名之间的映射。
  - [x] 支持事务和异步。
  - [x] 提供可扩展，链式，延迟执行的查询接口。
@@ -35,7 +35,7 @@ ActiveSQLite 是一个 [SQLite.Swift](https://github.com/stephencelis/SQLite.swi
 import ActiveSQLite
 
 //定义model和table
-class Product:DBModel{
+class Product:ASModel{
 
     @objc var name:String!
     @objc var price:NSNumber!
@@ -51,11 +51,11 @@ product.price = NSNumber(value:599)
 try! product.save()
 
 //查询
-let p = Product.findFirst("name",value:"iPhone") as! Product
+let p = Product.findFirst("name",value:"iPhone")
 
 //or 
 let name = Expression<String>("name")
-let p = Product.findAll(name == "iPhone")!.first as! Product                    
+let p = Product.findAll(name == "iPhone").first                    
 //id = 1, name = iPhone 7, price = 599, desc = nil,  publish_date = nil, created_at = 1498616987587.237, updated_at = 1498616987587.237, 
 
 //更新
@@ -100,10 +100,10 @@ DBConfigration.setDB(path: "other db file path", name: "other db name")
 
 
 
-NSNumber类型对应SQLite.swift的两种类型（Int64和Double)。NSNumber默认的映射类型是Int64。重写DBModel的doubleTypes()方法能标记属性为Double类型。
+NSNumber类型对应SQLite.swift的两种类型（Int64和Double)。NSNumber默认的映射类型是Int64。重写ASModel的doubleTypes()方法能标记属性为Double类型。
 
 ``` swift
-class Product:DBModel{
+class Product:ASModel{
 
     @objc var name:String!
     @objc var price:NSNumber!
@@ -208,7 +208,7 @@ ActiveSQLite 仅仅保存三种属性类型 (String,NSNumber,NSDate)到数据库
 
 #### 5. 自动创建 "created\_at" and "updated\_at" columns.
 
-只需要重写 isSaveDefaulttimestamp, 不需要做任何其他事情, 父类 DBModel 已经定义了 "created\_at" 和 "updated\_at" 属性。
+只需要重写 isSaveDefaulttimestamp, 不需要做任何其他事情, 父类 ASModel 已经定义了 "created\_at" 和 "updated\_at" 属性。
 
 ```swift
 
@@ -223,7 +223,7 @@ override class var isSaveDefaulttimestamp:Bool{
 
 ```swift
 
-class Users:DBModel,CreateColumnsProtocol{
+class Users:ASModel,CreateColumnsProtocol{
     @objc var name:String!
     @objc var email:String!
     @objc var age:Int?
@@ -250,7 +250,7 @@ func insert()throws ;
 插入多条。
 
 ```swift
-class func insertBatch(models:[DBModel])throws ;
+class func insertBatch(models:[ASModel])throws ;
 
 ```
 
@@ -331,9 +331,9 @@ Product.update([Product.price <- NSNumber(value:199), where: Product.name == "3d
 #### 1.通过属性名字符串和属性值查询
 
 ```swift
-let p = Product.findFirst("name",value:"iWatch") as! Product
+let p = Product.findFirst("name",value:"iWatch")
 
-let ps = Product.findAll("name",value:"iWatch",orders:["price",false]) as! [Product]
+let ps = Product.findAll("name",value:"iWatch",orders:["price",false])
 
 ```
 
@@ -343,9 +343,9 @@ let ps = Product.findAll("name",value:"iWatch",orders:["price",false]) as! [Prod
 let id = Expression<NSNumber>("id")
 let name = Expression<String>("name")
 
-let arr = Product.findAll(name == "iWatch") as! Array<Product>
+let arr = Product.findAll(name == "iWatch")
 
-let ps = Product.findAll(id > NSNumber(value:100), orders: [Product.id.asc]) as! [Product]
+let ps = Product.findAll(id > NSNumber(value:100), orders: [Product.id.asc])
 
 ```
 
@@ -356,7 +356,7 @@ let ps = Product.findAll(id > NSNumber(value:100), orders: [Product.id.asc]) as!
 let products = Product().where(Expression<NSNumber>("code") > 3)
                                 .order(Product.code)
                                 .limit(5)
-                                .run() as! [Product]
+                                .run()
 
 ```
 不要忘记执行run()。

@@ -2,7 +2,7 @@
 //  AlterSpec.swift
 //  ActiveSQLite
 //
-//  Created by zhou kai on 13/06/2017.
+//  Created by Kevin Zhou on 13/06/2017.
 //  Copyright © 2017 wumingapie@gmail.com. All rights reserved.
 //
 

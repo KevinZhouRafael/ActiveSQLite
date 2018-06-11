@@ -2,7 +2,7 @@
 //  DBModelSpec.swift
 //  ActiveSQLite
 //
-//  Created by zhou kai on 05/06/2017.
+//  Created by Kevin Zhou on 05/06/2017.
 //  Copyright © 2017 wumingapie@gmail.com. All rights reserved.
 //
 
@@ -16,8 +16,8 @@ class DBModelSpec: QuickSpec {
     override func spec() {
         describe("TestsDatabase ") {
             
-            DBConfigration.logLevel = .debug
-            DBConfigration.setDefaultDB(path: getTestDBPath()!, name: DBDefaultName)
+            ASConfigration.logLevel = .debug
+            ASConfigration.setDefaultDB(path: getTestDBPath()!, name: DBDefaultName)
             
             let model: ProductM = ProductM()
 
@@ -122,7 +122,7 @@ class DBModelSpec: QuickSpec {
                     })
                     
                     describe("Query", {
-                        let p = ProductM().where("name",value:"iWatch").where(ProductM.id > 0).run().first as! ProductM
+                        let p = ProductM().where("name",value:"iWatch").where(ProductM.id > 0).run().first!
                         expect(p.price).to(equal(10000))
                         expect(p.id).to(equal(2))
                         
@@ -141,7 +141,7 @@ class DBModelSpec: QuickSpec {
                             let products = ProductM().where(ProductM.code > 3)
                                 .order(ProductM.code)
                                 .limit(5)
-                                .run() as! [ProductM]
+                                .run()
                             
                             //verify Query
                             var i = 4;
@@ -156,7 +156,7 @@ class DBModelSpec: QuickSpec {
                             let pros = ProductM().where(ProductM.code > 3)
                                 .orderBy("code")
                                 .limit(5)
-                                .run() as! [ProductM]
+                                .run()
                             
                             //verify Query
                             var i = 4;

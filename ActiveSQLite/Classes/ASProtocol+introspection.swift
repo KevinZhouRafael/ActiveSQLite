@@ -1,8 +1,8 @@
 //
-//  DBModel+Query.swift
+//  ASProtocolQuery.swift
 //  ActiveSQLite
 //
-//  Created by zhou kai on 08/06/2017.
+//  Created by Kevin Zhou on 08/06/2017.
 //  Copyright © 2017 wumingapie@gmail.com. All rights reserved.
 //
 
@@ -10,7 +10,7 @@ import Foundation
 import SQLite
 
 
-public extension ASModel where Self:DBModel{
+public extension ASProtocol where Self:ASModel{
     //    public static var dbName:String?{
     //        return nil
     //    }
@@ -18,9 +18,9 @@ public extension ASModel where Self:DBModel{
     //    static var db:Connection{
     //        get{
     //            if let name = dbName {
-    //                return DBConfigration.getDB(name: name)
+    //                return ASConfigration.getDB(name: name)
     //            }else{
-    //                return DBConfigration.getDefaultDB()
+    //                return ASConfigration.getDefaultDB()
     //            }
     //
     //        }
@@ -360,6 +360,16 @@ public extension ASModel where Self:DBModel{
     
     
 
+    internal var primaryKeyAttributeName:String{
+        return "id"
+    }
     
+    internal func noSavedProperties() -> [String]{
+        if type(of: self).isSaveDefaulttimestamp{
+            return transientTypes()
+        }else{
+            return transientTypes() + [type(of: self).CREATE_AT_KEY,type(of: self).UPDATE_AT_KEY]
+        }
+    }
 }
 

@@ -10,7 +10,7 @@ import Foundation
 import SQLite
 @testable import ActiveSQLite
 
-class City2: DBModel {
+class City2: ASModel {
     @objc var code:String!
     @objc var name:String!
     

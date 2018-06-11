@@ -2,7 +2,7 @@
 //  ActiveSQLiteTests.swift
 //  ActiveSQLiteTests
 //
-//  Created by zhou kai on 27/06/2017.
+//  Created by Kevin Zhou on 27/06/2017.
 //  Copyright © 2017 wumingapie@gmail.com. All rights reserved.
 //
 

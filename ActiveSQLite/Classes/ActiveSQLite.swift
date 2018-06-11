@@ -2,7 +2,7 @@
 //  ActiveSQLite.swift
 //  ActiveSQLite
 //
-//  Created by zhou kai  on 04/07/2017.
+//  Created by Kevin Zhou  on 04/07/2017.
 //  Copyright © 2017 wumingapie@gmail.com. All rights reserved.
 //
 
@@ -15,7 +15,7 @@ public  func save(db:Connection? = nil, _ block: @escaping ()throws -> Void,
     do{
         
         
-        let excuteDB = (db != nil ? db! : DBConfigration.getDefaultDB())
+        let excuteDB = (db != nil ? db! : ASConfigration.getDefaultDB())
         
         try excuteDB.transaction {
             try block()
@@ -37,7 +37,7 @@ public  func saveAsync(db:Connection? = nil, _ block: @escaping ()throws -> Void
     DispatchQueue.global().async {
         
         do{
-            let excuteDB = (db != nil ? db! : DBConfigration.getDefaultDB())
+            let excuteDB = (db != nil ? db! : ASConfigration.getDefaultDB())
             
             try excuteDB.transaction {
                 try block()

@@ -34,7 +34,7 @@ To run the ActiveSQLiteTests target of project.
 ```swift
 import ActiveSQLite
 
-class Product:DBModel{
+class Product:ASModel{
 
     @objc var name:String!
     @objc var price:NSNumber!
@@ -50,11 +50,11 @@ product.price = NSNumber(value:599)
 try! product.save()
 
 //Query
-let p = Product.findFirst("name",value:"iPhone") as! Product
+let p = Product.findFirst("name",value:"iPhone")
 
 //or 
 let name = Expression<String>("name")
-let p = Product.findAll(name == "iPhone")!.first as! Product                    
+let p = Product.findAll(name == "iPhone").first
 //id = 1, name = iPhone 7, price = 599, desc = nil,  publish_date = nil, created_at = 1498616987587.237, updated_at = 1498616987587.237, 
 
 //Update
@@ -101,10 +101,10 @@ You must set default db path.
 
 
 
-The NSNumber Type maps with two SQLite.swift's Swift Type. they are Int64 ans Double. The default type is Int64. You can override doubleTypes() function of DBModel to mark properties are Double Type.
+The NSNumber Type maps with two SQLite.swift's Swift Type. they are Int64 ans Double. The default type is Int64. You can override doubleTypes() function of ASModel to mark properties are Double Type.
 
 ``` swift
-class Product:DBModel{
+class Product:ASModel{
 
     @objc var name:String!
     @objc var price:NSNumber!
@@ -209,7 +209,7 @@ ActiveSQLite can only save properities in (String,NSNumber,NSDate) into database
 
 #### 5. Auto create "created\_at" and "updated\_at" columns. 
 
-Just override isSaveDefaulttimestamp, don't do anything, the super class DBModel already define "created\_at" and "updated\_at" properies.
+Just override isSaveDefaulttimestamp, don't do anything, the super class ASModel already define "created\_at" and "updated\_at" properies.
 
 ```swift
 
@@ -224,7 +224,7 @@ If you want custom columns by yourself, you just set model implements CreateColu
 
 ```swift
 
-class Users:DBModel,CreateColumnsProtocol{
+class Users:ASModel,CreateColumnsProtocol{
     @objc var name:String!
     @objc var email:String!
     @objc var age:Int?
@@ -250,7 +250,7 @@ func insert()throws ;
 Insert more.
 
 ```swift
-class func insertBatch(models:[DBModel])throws ;
+class func insertBatch(models:[ASModel])throws ;
 
 ```
 
@@ -333,9 +333,9 @@ The methods that prefix name is "find" are class method.
 #### 1.Find by attribute.
 
 ```swift
-let p = Product.findFirst("name",value:"iWatch") as! Product
+let p = Product.findFirst("name",value:"iWatch")
 
-let ps = Product.findAll("name",value:"iWatch",orders:["price",false]) as! [Product]
+let ps = Product.findAll("name",value:"iWatch",orders:["price",false])
 
 ```
 
@@ -345,9 +345,9 @@ let ps = Product.findAll("name",value:"iWatch",orders:["price",false]) as! [Prod
 let id = Expression<NSNumber>("id")
 let name = Expression<String>("name")
 
-let arr = Product.findAll(name == "iWatch") as! Array<Product>
+let arr = Product.findAll(name == "iWatch")
 
-let ps = Product.findAll(id > NSNumber(value:100), orders: [Product.id.asc]) as! [Product]
+let ps = Product.findAll(id > NSNumber(value:100), orders: [Product.id.asc])
 
 ```
 
@@ -358,7 +358,7 @@ chainable query style methods are property method.
 let products = Product().where(Expression<NSNumber>("code") > 3)
                                 .order(Product.code)
                                 .limit(5)
-                                .run() as! [Product]
+                                .run()
 
 ```
 Don't forget excute run().
