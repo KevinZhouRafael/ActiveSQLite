@@ -9,6 +9,7 @@
 import Foundation
 import SQLite
 
+
 //MARK: Custom Class
 open class ASConfigration {
     public static var logLevel: LogLevel = .info
@@ -17,12 +18,20 @@ open class ASConfigration {
     
     private static var defaultDB:Connection!
     
-    public static func setDB(path:String,name:String){
+    public static func setDB(path:String,name:String,key:String? = nil){
         
 //        guard dbMap[name] == nil else {
 //            return
 //        }
         let db = try! Connection(path)
+        if let cipherkey = key {
+            do{
+                try db.key(cipherkey)
+            }catch{
+                LogError(error)
+            }
+            
+        }
         dbMap[name] = db
         
         //        #if DEBUG
@@ -34,13 +43,16 @@ open class ASConfigration {
         }
     }
     
-    public static func setDefaultDB(path:String,name:String){
+    public static func setDefaultDB(path:String,name:String,key:String? = nil){
         
         guard dbMap[name] == nil else {
             return
         }
         
         let db = try! Connection(path)
+        if let cipherkey = key {
+            try! db.key(cipherkey)
+        }
         dbMap[name] = db
         
         if logLevel == .debug {

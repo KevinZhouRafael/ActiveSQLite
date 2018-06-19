@@ -3,13 +3,13 @@ use_frameworks!
 
 target ‘ActiveSQLite’ do
 
-#   pod 'SQLite.swift'
-pod 'SQLite.swift/standalone' #  , '~> 0.11.5'
-#   pod 'SQLite.swift/SQLCipher'
+pod 'SQLite.swift'  , '~> 0.11.5'
+pod 'SQLite.swift/SQLCipher', '~> 0.11.5'
+#pod 'SQLite.swift/SQLCipher', :git => 'https://github.com/stephencelis/SQLite.swift.git'
+
 end
 
 target ‘ActiveSQLiteTests' do
     pod 'Quick'
     pod 'Nimble'
-# pod 'SQLite.swift/standalone' #, '~> 0.11.5'
 end

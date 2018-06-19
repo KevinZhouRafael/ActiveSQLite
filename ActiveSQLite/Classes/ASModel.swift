@@ -96,7 +96,7 @@ import SQLite
         }
     }
     
-    class var db:Connection!{
+    public class var db:Connection!{
         get{
             if let name = dbName {
                 return ASConfigration.getDB(name: name)
@@ -112,6 +112,7 @@ import SQLite
             return type(of: self).db
         }
     }
+    
     public class func getTable() -> Table{
         return Table(nameOfTable)
     }

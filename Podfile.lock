@@ -1,30 +1,36 @@
 PODS:
   - Nimble (7.1.2)
   - Quick (1.3.0)
-  - SQLite.swift/standalone (0.11.5):
-    - sqlite3
-  - sqlite3 (3.24.0):
-    - sqlite3/common (= 3.24.0)
-  - sqlite3/common (3.24.0)
+  - SQLCipher (3.4.2):
+    - SQLCipher/standard (= 3.4.2)
+  - SQLCipher/common (3.4.2)
+  - SQLCipher/standard (3.4.2):
+    - SQLCipher/common
+  - SQLite.swift (0.11.5):
+    - SQLite.swift/standard (= 0.11.5)
+  - SQLite.swift/SQLCipher (0.11.5):
+    - SQLCipher (>= 3.4.0)
+  - SQLite.swift/standard (0.11.5)
 
 DEPENDENCIES:
   - Nimble
   - Quick
-  - SQLite.swift/standalone
+  - SQLite.swift (~> 0.11.5)
+  - SQLite.swift/SQLCipher (~> 0.11.5)
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  https://github.com/cocoapods/specs.git:
     - Nimble
     - Quick
+    - SQLCipher
     - SQLite.swift
-    - sqlite3
 
 SPEC CHECKSUMS:
   Nimble: 3835ba9f459daa6b347f8a8e110aaae8ca1920a8
   Quick: 03278013f71aa05fe9ecabc94fbcc6835f1ee76f
+  SQLCipher: f9fcf29b2e59ced7defc2a2bdd0ebe79b40d4990
   SQLite.swift: 6e5356850bb1791459f8c16d6ee9195b28714a2e
-  sqlite3: 3ba3b687e159a637b40df3438b860f7b3fe60a96
 
-PODFILE CHECKSUM: 62f1b91c3442620984d9c0a6fbefeb2f4b12378e
+PODFILE CHECKSUM: 5b56ab37665d25a467575d600613edae6e3bfebf
 
-COCOAPODS: 1.5.0
+COCOAPODS: 1.5.3

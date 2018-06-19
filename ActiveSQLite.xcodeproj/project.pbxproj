@@ -38,6 +38,8 @@
 		CF6CD55B2012321C009BA3C9 /* City.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF6CD55A2012321C009BA3C9 /* City.swift */; };
 		CF6CD55D20123256009BA3C9 /* City2.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF6CD55C20123256009BA3C9 /* City2.swift */; };
 		CFED5E2F20BBDF4E00520F14 /* ASProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFED5E2E20BBDF4E00520F14 /* ASProtocol.swift */; };
+		CFF1C6CA20D8DDED008ED3D4 /* CipherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFF1C6C920D8DDED008ED3D4 /* CipherTests.swift */; };
+		CFF1C6CC20D8DE55008ED3D4 /* CityCipher.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFF1C6CB20D8DE55008ED3D4 /* CityCipher.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -88,6 +90,8 @@
 		CF6CD55A2012321C009BA3C9 /* City.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = City.swift; sourceTree = "<group>"; };
 		CF6CD55C20123256009BA3C9 /* City2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = City2.swift; sourceTree = "<group>"; };
 		CFED5E2E20BBDF4E00520F14 /* ASProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASProtocol.swift; sourceTree = "<group>"; };
+		CFF1C6C920D8DDED008ED3D4 /* CipherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CipherTests.swift; sourceTree = "<group>"; };
+		CFF1C6CB20D8DE55008ED3D4 /* CityCipher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CityCipher.swift; sourceTree = "<group>"; };
 		E6E867ED899BD53C926DD3EC /* Pods-ActiveSQLiteTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActiveSQLiteTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActiveSQLiteTests/Pods-ActiveSQLiteTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -167,6 +171,7 @@
 				56D0EF881F0C962600167862 /* SetterSpec.swift */,
 				CF6CD558201231AA009BA3C9 /* MultiDBSpec.swift */,
 				CF348CA32010FADC00126A31 /* Utils.swift */,
+				CFF1C6C920D8DDED008ED3D4 /* CipherTests.swift */,
 			);
 			path = ActiveSQLiteTests;
 			sourceTree = "<group>";
@@ -197,6 +202,7 @@
 				56A7782A1F02568200829FDF /* Users.swift */,
 				CF6CD55A2012321C009BA3C9 /* City.swift */,
 				CF6CD55C20123256009BA3C9 /* City2.swift */,
+				CFF1C6CB20D8DE55008ED3D4 /* CityCipher.swift */,
 			);
 			path = models;
 			sourceTree = "<group>";
@@ -369,15 +375,15 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-ActiveSQLiteTests/Pods-ActiveSQLiteTests-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Nimble/Nimble.framework",
 				"${BUILT_PRODUCTS_DIR}/Quick/Quick.framework",
+				"${BUILT_PRODUCTS_DIR}/SQLCipher/SQLCipher.framework",
 				"${BUILT_PRODUCTS_DIR}/SQLite.swift/SQLite.framework",
-				"${BUILT_PRODUCTS_DIR}/sqlite3/sqlite3.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Nimble.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Quick.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SQLCipher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SQLite.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/sqlite3.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -413,6 +419,7 @@
 				56D0EF891F0C962600167862 /* SetterSpec.swift in Sources */,
 				CF348CA42010FADC00126A31 /* Utils.swift in Sources */,
 				56A778341F02568200829FDF /* Users.swift in Sources */,
+				CFF1C6CC20D8DE55008ED3D4 /* CityCipher.swift in Sources */,
 				56A778311F02568200829FDF /* JoinSpec.swift in Sources */,
 				56A7782E1F02568200829FDF /* CommonConfiguration.swift in Sources */,
 				56A778301F02568200829FDF /* DBModelSpec.swift in Sources */,
@@ -420,6 +427,7 @@
 				56A778351F02568200829FDF /* NSDateSpec.swift in Sources */,
 				56A7782D1F02568200829FDF /* BatchSpec.swift in Sources */,
 				56A7782C1F02568200829FDF /* AlterSpec.swift in Sources */,
+				CFF1C6CA20D8DDED008ED3D4 /* CipherTests.swift in Sources */,
 				CF6CD559201231AA009BA3C9 /* MultiDBSpec.swift in Sources */,
 				56D0EF831F0B41B700167862 /* TranscationSpec.swift in Sources */,
 				56A7782F1F02568200829FDF /* ConfigrationSpec.swift in Sources */,

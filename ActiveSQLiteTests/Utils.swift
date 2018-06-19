@@ -10,6 +10,7 @@ import Foundation
 
 let DBDefaultName = "TestDefaultDB"
 let DBName2 = "OtherDB"
+let DBNameCipher = "CipherDB"
 
 //default db path
 public func getTestDBPath() -> String?{
@@ -31,6 +32,19 @@ public func getDB2Path() -> String{
     NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
     let dbPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first! + "/ActiveSQLite2.db"
 
+    if !FileManager.default.fileExists(atPath: dbPath) {
+        FileManager.default.createFile(atPath: dbPath, contents: nil, attributes: nil)
+        
+    }
+    
+    print(dbPath)
+    return dbPath
+}
+
+public func getDBCipherPath() -> String{
+    NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+    let dbPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first! + "/ActiveSQLiteCipher.db"
+    
     if !FileManager.default.fileExists(atPath: dbPath) {
         FileManager.default.createFile(atPath: dbPath, contents: nil, attributes: nil)
         
