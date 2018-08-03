@@ -20,8 +20,10 @@ ActiveSQLite is an helper of [SQLite.Swift](https://github.com/stephencelis/SQLi
  - [x] A flexible, chainable, lazy-executing query layer
  - [x] Query use String or Expression<T> of SQLite.swift
  - [x] Logger level
- - [] table relations
- - [] cache and faults value
+ - [ ] Runtime Encoding to Codable Encoding
+ - [ ] Complete Protocol Oriented Programming
+ - [ ] Table relations
+ - [ ] Cache and Faults value
 
 
 ## Example

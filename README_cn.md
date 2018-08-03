@@ -20,8 +20,10 @@ ActiveSQLite 是一个 [SQLite.Swift](https://github.com/stephencelis/SQLite.swi
  - [x] 提供可扩展，链式，延迟执行的查询接口。
  - [x] 通过属性名字符串，字典，或SQLite.swift的表达式Expression<T>查询和修改数据。
  - [x] 日志级别
- - [] 表关联
- - [] 缓存和惰值
+ - [ ] 由Runtime编码改为Codable编码
+ - [ ] 完全的面向协议编程
+ - [ ] 表关联
+ - [ ] 缓存和惰值
 
 
 ## 例子
