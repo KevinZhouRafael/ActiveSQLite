@@ -1,7 +1,7 @@
 # ActiveSQLite
 
 [![Version](https://img.shields.io/cocoapods/v/ActiveSQLite.svg?style=flat)](http://cocoapods.org/pods/ActiveSQLite)
-[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+<!--[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)-->
 [![License](https://img.shields.io/cocoapods/l/ActiveSQLite.svg?style=flat)](http://cocoapods.org/pods/ActiveSQLite)
 [![Platform](https://img.shields.io/cocoapods/p/ActiveSQLite.svg?style=flat)](http://cocoapods.org/pods/ActiveSQLite)
 
@@ -145,7 +145,7 @@ try db.run(products.create { t in
 ```
 "created\_at"和"updated\_at"字段的单位是毫秒ms。
 
-###从 ActiveSQLite0.4.0 升级到 0.4.1
+### 从 ActiveSQLite0.4.0 升级到 0.4.1
 
 ActiveSQLite0.4.0 用3种类型定义属性: T, T!, T?.<br>
 ActiveSQLite0.4.1 用两种类型定义属性: T, T?.

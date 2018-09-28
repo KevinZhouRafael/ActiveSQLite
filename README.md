@@ -1,7 +1,7 @@
 # ActiveSQLite
 
 [![Version](https://img.shields.io/cocoapods/v/ActiveSQLite.svg?style=flat)](http://cocoapods.org/pods/ActiveSQLite)
-[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+<!--[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)-->
 [![License](https://img.shields.io/cocoapods/l/ActiveSQLite.svg?style=flat)](http://cocoapods.org/pods/ActiveSQLite)
 [![Platform](https://img.shields.io/cocoapods/p/ActiveSQLite.svg?style=flat)](http://cocoapods.org/pods/ActiveSQLite)
 
@@ -147,7 +147,7 @@ try db.run(products.create { t in
 ```
 The unit of "created\_at" and "updated\_at" columns is ms.
 
-###From ActiveSQLite0.4.0 to 0.4.1
+### From ActiveSQLite0.4.0 to 0.4.1
 
 ActiveSQLite0.4.0 can use 3 types to define property: T, T!, T?.<br>
 ActiveSQLite0.4.1 use 2 types to define property: T, T?.
