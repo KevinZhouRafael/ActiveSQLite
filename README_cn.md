@@ -512,8 +512,8 @@ DBConfigration.dbPath = "..."
 
 ## 硬件需求
 - iOS 8.0+  
-- Xcode 8.3.2
-- Swift 4
+- Xcode 10
+- Swift 4.2
 
 ## 安装
 
