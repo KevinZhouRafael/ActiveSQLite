@@ -36,7 +36,7 @@ class MultiDBSpec: QuickSpec {
             
 
             for (index,city) in cities.enumerated(){
-                XCTAssertTrue(city.id.intValue > 0)
+                XCTAssertTrue(city.id!.intValue > 0)
                 XCTAssertEqual(city.name, "City name \(index) in DB1")
                 XCTAssertEqual(city.code, String(index))
             }
@@ -59,7 +59,7 @@ class MultiDBSpec: QuickSpec {
             
             
             for (index,city) in cities.enumerated(){
-                XCTAssertTrue(city.id.intValue > 0)
+                XCTAssertTrue(city.id!.intValue > 0)
                 XCTAssertEqual(city.name, "City name \(index) in DB2")
                 XCTAssertEqual(city.code, String(index))
             }

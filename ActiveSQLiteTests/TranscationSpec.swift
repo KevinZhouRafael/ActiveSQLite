@@ -24,7 +24,7 @@ class TranscationSpec: QuickSpec {
 
 //                let p = ProductM()
 //                p.name = "House"
-//                p.price = NSNumber(value:9999.99)
+//                p.price = 9999.99
 //                try p.save()
                 
                 

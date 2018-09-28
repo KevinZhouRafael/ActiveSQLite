@@ -47,7 +47,7 @@ public extension ASProtocol where Self:ASModel{
 //        return  "created_at"
 //    }
 //    public static var created_at:Expression<NSNumber>{
-//        return Expression<NSNumber>(CREATE_AT_KEY)
+//        return Expression<Int64>(CREATE_AT_KEY)
 //    }
 //
 //    public static var isSaveDefaulttimestamp:Bool {

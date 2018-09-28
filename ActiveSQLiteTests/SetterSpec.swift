@@ -25,7 +25,7 @@ class SetterSpec: QuickSpec {
                 ActiveSQLite.save({
                     
                     p.name = "House"
-                    p.price = NSNumber(value:9999.99)
+                    p.price = 9999.99
                     try p.save()
                     
                     
@@ -33,7 +33,7 @@ class SetterSpec: QuickSpec {
                     
                     expect(error).to(beNil())
                     
-                    //                let p = ProductM.findFirst("id", value: NSNumber(value:1))!
+                    //                let p = ProductM.findFirst("id", value: 1)!
                     expect(p.name).to(equal("House"))
                 })
 
@@ -46,7 +46,7 @@ class SetterSpec: QuickSpec {
             }
             
             describe("update by setter") {
-                try! p.update(ProductM.name <- "apartment",ProductM.price <- NSNumber(value:77.77))
+                try! p.update(ProductM.name <- "apartment",ProductM.price <- 77.77)
                 expect(p.name).to(equal("apartment"))
                 expect(p.price.doubleValue).to(equal(77.77))
                 
@@ -116,7 +116,7 @@ class SetterSpec: QuickSpec {
                 ActiveSQLite.save({
                     
                     for i in 0 ..< 7 {
-                        try ProductM.update([ProductM.desc <- "介绍\(i)",ProductM.price <- NSNumber(value:i)], where: ProductM.id == NSNumber(value:i + 1))
+                        try ProductM.update([ProductM.desc <- "介绍\(i)",ProductM.price <- Double(i)], where: ProductM.id == NSNumber(value:i + 1))
                     }
                     
                 }, completion: { (error) in

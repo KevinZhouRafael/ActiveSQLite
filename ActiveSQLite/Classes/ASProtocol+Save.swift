@@ -22,6 +22,7 @@ public extension ASProtocol where Self:ASModel{
             
             
             let timeinterval = NSNumber(value:NSDate().timeIntervalSince1970 * 1000)
+            
             if type(of: self).isSaveDefaulttimestamp {
                 
                 if self.created_at != nil && self.created_at.int64Value > 0 {
@@ -37,10 +38,8 @@ public extension ASProtocol where Self:ASModel{
                 }
             }
             
-            
-            //insert id if id has value; insert auto id if id is nil.
             if id != nil {
-                settersInsert.append(type(of: self).id <- id)
+                settersInsert.append(type(of: self).id <- id!)
             }
             
             let rowid = try db.run(getTable().insert(settersInsert))
@@ -72,7 +71,7 @@ public extension ASProtocol where Self:ASModel{
             try db.savepoint("savepointname_\(nameOfTable)_insertbatch_\(NSDate().timeIntervalSince1970 * 1000)", block: {
                 for model in models{
                     
-                    let timeinterval = NSNumber(value:NSDate().timeIntervalSince1970 * 1000)
+                    let timeinterval = NSNumber(value:Int64(NSDate().timeIntervalSince1970 * 1000))
                     
                     var settersInsert = model.buildSetters(skips: [PRIMARY_KEY, CREATE_AT_KEY, UPDATE_AT_KEY])
                     
@@ -90,10 +89,8 @@ public extension ASProtocol where Self:ASModel{
                         }
                     }
                     
-                    
-                    
                     if model.id != nil {
-                        settersInsert.append(Expression<NSNumber>(PRIMARY_KEY) <- model.id)
+                        settersInsert.append(Expression<NSNumber>(PRIMARY_KEY) <- model.id!)
                     }
                     
                     let rowid = try self.db.run(getTable().insert(settersInsert))
@@ -127,6 +124,11 @@ public extension ASProtocol where Self:ASModel{
     //MARK: - Update
     //MARK: - Update one By id
     func update() throws {
+        guard id != nil else {
+            LogError(" Update \(nameOfTable) table failure: id must not be nil.")
+            return
+        }
+        
         do {
             
             let timeinterval = NSNumber(value:NSDate().timeIntervalSince1970 * 1000)
@@ -137,7 +139,7 @@ public extension ASProtocol where Self:ASModel{
             }
             
             
-            let table = getTable().where(type(of: self).id == id)
+            let table = getTable().where(type(of: self).id == id!)
             let rowid = try db.run(table.update(settersUpdate))
             
             if rowid > 0 {
@@ -172,11 +174,16 @@ public extension ASProtocol where Self:ASModel{
     }
     
     func update(_ setters:[Setter])throws{
+        guard id != nil else {
+            LogError(" Update \(nameOfTable) table failure: id must not be nil.")
+            return
+        }
+        
         do {
             
             let settersUpdate = (type(of: self)).buildUpdateSetters(setters)
             
-            let table = getTable().where(type(of: self).id == id)
+            let table = getTable().where(type(of: self).id == id!)
             let rowid = try db.run(table.update(settersUpdate))
             
             if rowid > 0 {
@@ -203,15 +210,21 @@ public extension ASProtocol where Self:ASModel{
                 //            try db.transaction {
                 for model in models{
                     
+                    if model.id == nil {
+                        LogError(" Update \(nameOfTable) table failure: id must not be nil.")
+                        continue
+                    }
+                    
                     var settersUpdate = model.buildSetters(skips: [PRIMARY_KEY, UPDATE_AT_KEY])
                     
                     let timeinterval = NSNumber(value:NSDate().timeIntervalSince1970 * 1000)
+                    
                     if isSaveDefaulttimestamp{
                         settersUpdate.append(updated_at <- timeinterval)
                     }
                     
                     
-                    let table = model.getTable().where(id == model.id)
+                    let table = model.getTable().where(id == model.id!)
                     try self.db.run(table.update(settersUpdate))
                     
                     if isSaveDefaulttimestamp{
@@ -311,6 +324,7 @@ public extension ASProtocol where Self:ASModel{
             try createTable()
             
             let timeinterval = NSNumber(value:NSDate().timeIntervalSince1970 * 1000)
+            
             var created_at_value = timeinterval
             let updated_at_value = timeinterval
             if created_at != nil {
@@ -324,9 +338,8 @@ public extension ASProtocol where Self:ASModel{
                 settersInsert.append(type(of: self).updated_at <- updated_at_value)
             }
             
-            
             if id != nil {
-                settersInsert.append(type(of: self).id <- id)
+                settersInsert.append(type(of: self).id <- id!)
             }
             
             let rowid = try db.run(getTable().insert(or: .replace, settersInsert))
@@ -346,7 +359,7 @@ public extension ASProtocol where Self:ASModel{
     
     //MARK: - Common
     internal func refreshSelf() throws{
-        var query = getTable().where(type(of: self).id == id)
+        var query = getTable().where(type(of: self).id == id!)
         
         if type(of: self).isSaveDefaulttimestamp {
             query = query.order(type(of: self).updated_at.desc)
@@ -356,7 +369,7 @@ public extension ASProtocol where Self:ASModel{
         
         
         for row in try db.prepare(query) {
-            self.buildFromRow(row: row)
+            self.buildFromRow(row: row) //TODO:编码
         }
     }
     
@@ -369,12 +382,12 @@ public extension ASProtocol where Self:ASModel{
             if skips.contains(column){
                 continue
             }
-            
+
             let mir = Mirror(reflecting:value)
             
             switch mir.subjectType {
                 
-            case _ as String.Type, _ as  ImplicitlyUnwrappedOptional<String>.Type:
+            case _ as String.Type:
                 setters.append(Expression<String>(column) <- value as! String)
             case _ as String?.Type:
                 
@@ -386,7 +399,7 @@ public extension ASProtocol where Self:ASModel{
                 
                 
                 
-            case _ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type:
+            case _ as NSNumber.Type:
                 
                 if self.doubleTypes().contains(attribute) {
                     setters.append(Expression<Double>(column) <- value as! Double)
@@ -410,7 +423,7 @@ public extension ASProtocol where Self:ASModel{
                     }
                 }
                 
-            case _ as NSDate.Type, _ as  ImplicitlyUnwrappedOptional<NSDate>.Type:
+            case _ as NSDate.Type:
                 setters.append(Expression<NSDate>(column) <- value as! NSDate)
             case _ as NSDate?.Type:
                 
@@ -423,6 +436,10 @@ public extension ASProtocol where Self:ASModel{
             default: break
                 
             }
+            
+//            if let setter = Setter.generate(key: column, type: value, value: value) {
+//                setters.append(setter)
+//            }
             
         }
         
@@ -442,11 +459,12 @@ public extension ASProtocol where Self:ASModel{
             if attributeAndValueDic.keys.contains(attribute) {
                 
                 let value = attributeAndValueDic[attribute]
+                
                 let mir = Mirror(reflecting:v0)
                 
                 switch mir.subjectType {
                     
-                case _ as String.Type, _ as  ImplicitlyUnwrappedOptional<String>.Type:
+                case _ as String.Type:
                     setters.append(Expression<String>(column) <- value as! String)
                 case _ as String?.Type:
                     
@@ -458,7 +476,7 @@ public extension ASProtocol where Self:ASModel{
                     
                     
                     
-                case _ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type:
+                case _ as NSNumber.Type:
                     
                     if self.doubleTypes().contains(attribute) {
                         setters.append(Expression<Double>(column) <- value as! Double)
@@ -482,7 +500,7 @@ public extension ASProtocol where Self:ASModel{
                         }
                     }
                     
-                case _ as NSDate.Type, _ as  ImplicitlyUnwrappedOptional<NSDate>.Type:
+                case _ as NSDate.Type:
                     setters.append(Expression<NSDate>(column) <- value as! NSDate)
                 case _ as NSDate?.Type:
                     
@@ -495,6 +513,10 @@ public extension ASProtocol where Self:ASModel{
                 default: break
                     
                 }
+                
+//                if let setter = Setter.generate(key: column, type: v0, value: value) {
+//                    setters.append(setter)
+//                }
                 
             }
             
@@ -510,7 +532,6 @@ public extension ASProtocol where Self:ASModel{
         //1.Replace double type setter if originSetters contains double type
         var settersUpdate = originSetters.map { (setter) -> Setter in
             
-            
             let column = setter.getColumnName()
             var attribute = column
             for (pro, col) in self.init().propertieColumnMap(){
@@ -524,7 +545,7 @@ public extension ASProtocol where Self:ASModel{
                 let setterValue = setter.getValue()
                 let mir = Mirror(reflecting:setterValue ?? 0.0)
                 switch mir.subjectType {
-                case _ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type:
+                case _ as NSNumber.Type:
                     return Expression<Double>(column) <- setterValue as! Double
                 case _ as NSNumber?.Type:
                     if let v = setterValue as? Double {
@@ -544,7 +565,7 @@ public extension ASProtocol where Self:ASModel{
         
         if isSaveDefaulttimestamp {
             // 2.Add "update_at" setter if originSetters not contains "update_at"
-            let columnNames:[String] = originSetters.flatMap({ (setter) -> String in
+            let columnNames:[String] = originSetters.compactMap({ (setter) -> String in
                 return setter.getColumnName()
             })
             

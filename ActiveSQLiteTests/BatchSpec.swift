@@ -34,7 +34,7 @@ class BatchSpec: QuickSpec {
 
             
             for (index,product) in products.enumerated(){
-                XCTAssertTrue(product.id.intValue > 0)
+                XCTAssertTrue(product.id!.int64Value > 0)
                 XCTAssertEqual(product.name, "Product name \(index)")
                 XCTAssertEqual(product.price.doubleValue, Double(index))
             }
@@ -44,7 +44,7 @@ class BatchSpec: QuickSpec {
                 let products = ProductM.findAll()
                 
                 for (index,product) in products.enumerated(){
-                    XCTAssertEqual(product.id.intValue, index + 1)
+                    XCTAssertEqual(product.id!.intValue, index + 1)
                     XCTAssertEqual(product.name, "Product name \(index)")
                     XCTAssertEqual(product.price.doubleValue, Double(index))
                     

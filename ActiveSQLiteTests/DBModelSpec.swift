@@ -146,7 +146,7 @@ class DBModelSpec: QuickSpec {
                             //verify Query
                             var i = 4;
                             for product in products{
-                                expect(product.code).to(equal(NSNumber(value:i)))
+                                expect(product.code?.intValue).to(equal(i))
                                 i += 1
                             }
 
@@ -161,7 +161,7 @@ class DBModelSpec: QuickSpec {
                             //verify Query
                             var i = 4;
                             for product in pros{
-                                expect(product.code).to(equal(NSNumber(value:i)))
+                                expect(product.code?.intValue).to(equal(i))
                                 i += 1
                             }
 

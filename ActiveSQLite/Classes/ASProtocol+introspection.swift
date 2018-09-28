@@ -30,7 +30,7 @@ public extension ASProtocol where Self:ASModel{
     //        return  "created_at"
     //    }
     //    public static var created_at:Expression<NSNumber>{
-    //        return Expression<NSNumber>(CREATE_AT_KEY)
+    //        return Expression<Int64>(CREATE_AT_KEY)
     //    }
     //
     //    public static var isSaveDefaulttimestamp:Bool {
@@ -62,16 +62,22 @@ public extension ASProtocol where Self:ASModel{
             if attributeAndValueDic.keys.contains(attribute) {
                 
                 let value = attributeAndValueDic[attribute]
+                
+                if attribute == primaryKeyAttributeName {
+                    expressions.append(Expression<Bool?>(Expression<NSNumber>(column) == value as! NSNumber))
+                    continue
+                }
+                
                 let mir = Mirror(reflecting:v)
                 
                 switch mir.subjectType {
                     
-                case _ as String.Type, _ as  ImplicitlyUnwrappedOptional<String>.Type:
+                case _ as String.Type:
                     expressions.append(Expression<Bool?>(Expression<String>(column) == value as! String))
                 case _ as String?.Type:
                     expressions.append(Expression<String?>(column) == value as! String?)
                     
-                case _ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type:
+                case _ as NSNumber.Type:
                     
                     if self.doubleTypes().contains(attribute) {
                         expressions.append(Expression<Bool?>(Expression<Double>(column) == value as! Double))
@@ -89,7 +95,7 @@ public extension ASProtocol where Self:ASModel{
                         
                     }
                     
-                case _ as NSDate.Type, _ as  ImplicitlyUnwrappedOptional<NSDate>.Type:
+                case _ as NSDate.Type:
                     expressions.append(Expression<Bool?>(Expression<NSDate>(column) == value as! NSDate))
                 case _ as NSDate?.Type:
                     expressions.append(Expression<NSDate?>(column) == value as! NSDate?)
@@ -97,6 +103,10 @@ public extension ASProtocol where Self:ASModel{
                 default: break
                     
                 }
+                
+//                if let expression = Expression<Bool?>.generate(key: column, type: v, value: value!) {
+//                    expressions.append(expression)
+//                }
                 
             }
             
@@ -128,12 +138,12 @@ public extension ASProtocol where Self:ASModel{
                 
                 switch mir.subjectType {
                     
-                case _ as String.Type, _ as  ImplicitlyUnwrappedOptional<String>.Type:
+                case _ as String.Type:
                     expressibles.append((isAsc ? Expression<String>(column).asc : Expression<String>(column).desc))
                 case _ as String?.Type:
                     expressibles.append((isAsc ? Expression<String?>(column).asc : Expression<String?>(column).desc))
                     
-                case _ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type:
+                case _ as NSNumber.Type:
                     
                     if self.doubleTypes().contains(attribute) {
                         expressibles.append((isAsc ? Expression<Double>(column).asc : Expression<Double>(column).desc))
@@ -151,7 +161,7 @@ public extension ASProtocol where Self:ASModel{
                         
                     }
                     
-                case _ as NSDate.Type, _ as  ImplicitlyUnwrappedOptional<NSDate>.Type:
+                case _ as NSDate.Type:
                     expressibles.append((isAsc ? Expression<NSDate>(column).asc : Expression<NSDate>(column).desc))
                 case _ as NSDate?.Type:
                     expressibles.append((isAsc ? Expression<NSDate?>(column).asc : Expression<NSDate?>(column).desc))
@@ -169,7 +179,81 @@ public extension ASProtocol where Self:ASModel{
     
     //MARK: - Build
     internal func buildFromRow(row:Row){
+
+        for case let (attribute?,column?, value) in recursionProperties() {
+            //            let s = "Attribute ：\(attribute) Value：\(value),   " +
+            //                    "Mirror: \(Mirror(reflecting:value)),  " +
+            //                    "Mirror.subjectType: \(Mirror(reflecting:value).subjectType),    " +
+            //                    "Mirror.displayStyle: \(String(describing: Mirror(reflecting:value).displayStyle))"
+            //            LogDebug(s)
+            //            LogDebug("assign Value-\(value) to \(attribute)-attribute of \(nameOfTable). ")
+
+            if attribute == primaryKeyAttributeName {
+                let v = try! row.get(Expression<NSNumber>(column))
+                setValue(v, forKey: attribute)
+                continue
+            }
+            
+            let mir = Mirror(reflecting:value)
+
+            switch mir.subjectType {
+
+            case _ as String.Type:
+                setValue(row[Expression<String>(column)], forKey: attribute)
+
+            case _ as String?.Type:
+                if let v = row[Expression<String?>(column)] {
+                    setValue(v, forKey: attribute)
+                }else{
+                    setValue(nil, forKey: attribute)
+                }
+
+
+            case _ as NSNumber.Type:
+
+                if self.doubleTypes().contains(attribute) {
+                    setValue(NSNumber(value:try! row.get(Expression<Double>(column))) , forKey: attribute)
+                }else{
+
+                    let v = try! row.get(Expression<NSNumber>(column))
+                    setValue(v, forKey: attribute)
+
+                }
+
+            case _ as NSNumber?.Type:
+
+                if self.doubleTypes().contains(attribute) {
+                    if let v = try! row.get(Expression<Double?>(column)) {
+                        setValue(NSNumber(value:v), forKey: attribute)
+                    }
+                }else{
+                    if let v = try! row.get(Expression<NSNumber?>(column)) {
+                        setValue(v, forKey: attribute)
+                    }else{
+                        setValue(nil, forKey: attribute)
+                    }
+                }
+
+            case _ as NSDate.Type:
+                setValue(try! row.get(Expression<NSDate>(column)), forKey: attribute)
+
+            case _ as NSDate?.Type:
+                if let v = try! row.get(Expression<NSDate?>(column)) {
+                    setValue(v, forKey: attribute)
+                }else{
+                    setValue(nil, forKey: attribute)
+                }
+
+            default: break
+
+            }
+
+        }
+    }
+    
+    internal func buildFromRowUseCodable(row:Row) -> Self{
         
+        var dic = [String:Any]()
         for case let (attribute?,column?, value) in recursionProperties() {
             //            let s = "Attribute ：\(attribute) Value：\(value),   " +
             //                    "Mirror: \(Mirror(reflecting:value)),  " +
@@ -183,50 +267,46 @@ public extension ASProtocol where Self:ASModel{
             
             switch mir.subjectType {
                 
-            case _ as String.Type, _ as  ImplicitlyUnwrappedOptional<String>.Type:
-                setValue(row[Expression<String>(column)], forKey: attribute)
-                
+            case _ as String.Type:
+                dic[attribute] = row[Expression<String>(column)]
             case _ as String?.Type:
                 if let v = row[Expression<String?>(column)] {
-                    setValue(v, forKey: attribute)
+                    dic[attribute] = v
                 }else{
-                    setValue(nil, forKey: attribute)
+//                    dic[attribute] = nil
                 }
                 
                 
-            case _ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type:
+            case _ as NSNumber.Type:
                 
                 if self.doubleTypes().contains(attribute) {
-                    setValue(NSNumber(value:try! row.get(Expression<Double>(column))) , forKey: attribute)
+                    dic[attribute] = NSNumber(value:try! row.get(Expression<Double>(column)))
                 }else{
-                    
                     let v = try! row.get(Expression<NSNumber>(column))
-                    setValue(v, forKey: attribute)
-                    
+                    dic[attribute] = v
                 }
                 
             case _ as NSNumber?.Type:
                 
                 if self.doubleTypes().contains(attribute) {
                     if let v = try! row.get(Expression<Double?>(column)) {
-                        setValue(NSNumber(value:v), forKey: attribute)
+                        dic[attribute] = NSNumber(value:v)
                     }
                 }else{
                     if let v = try! row.get(Expression<NSNumber?>(column)) {
-                        setValue(v, forKey: attribute)
+                        dic[attribute] = v
                     }else{
-                        setValue(nil, forKey: attribute)
+                        //                    dic[attribute] = nil
                     }
                 }
                 
-            case _ as NSDate.Type, _ as  ImplicitlyUnwrappedOptional<NSDate>.Type:
-                setValue(try! row.get(Expression<NSDate>(column)), forKey: attribute)
-                
+            case _ as NSDate.Type:
+                dic[attribute] = try! row.get(Expression<NSDate>(column))
             case _ as NSDate?.Type:
                 if let v = try! row.get(Expression<NSDate?>(column)) {
-                    setValue(v, forKey: attribute)
+                    dic[attribute] = v
                 }else{
-                    setValue(nil, forKey: attribute)
+                    //                    dic[attribute] = nil
                 }
                 
             default: break
@@ -234,6 +314,12 @@ public extension ASProtocol where Self:ASModel{
             }
             
         }
+        
+        if let jsonData = try? JSONSerialization.data(withJSONObject: dic, options: JSONSerialization.WritingOptions.prettyPrinted){
+//            return try! JSONDecoder().decode(type(of: self), from: jsonData)
+        }
+        
+        return type(of: self).init() 
     }
     
     func recursionPropertiesOnlyColumn() -> [(String?,Any)]{
@@ -243,24 +329,12 @@ public extension ASProtocol where Self:ASModel{
         repeat {
             for case let (key?, value) in mirror!.children {
                 
-                let mir = Mirror(reflecting:value)
-                
-                switch mir.subjectType {
-                    
-                case _ as String.Type, _ as  ImplicitlyUnwrappedOptional<String>.Type,_ as String?.Type,_ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type,_ as NSNumber?.Type,
-                     _ as NSDate.Type, _ as ImplicitlyUnwrappedOptional<NSDate>.Type,_ as NSDate?.Type:
-                    
+                if isSupportTypes(value){
                     if let column = mapper()[key] {
                         properties.append((column, value))
                     }else{
                         properties.append((key, value))
                     }
-                    
-                    
-                    break
-                    
-                default: break
-                    
                 }
                 
             }
@@ -286,25 +360,12 @@ public extension ASProtocol where Self:ASModel{
                     continue
                 }
                 
-                let mir = Mirror(reflecting:value)
-                
-                switch mir.subjectType {
-                    
-                case _ as String.Type, _ as  ImplicitlyUnwrappedOptional<String>.Type,_ as String?.Type,_ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type,_ as NSNumber?.Type,
-                     _ as NSDate.Type, _ as ImplicitlyUnwrappedOptional<NSDate>.Type,_ as NSDate?.Type:
-                    
-                    
+                if isSupportTypes(value) {
                     if let column = mapper()[attribute] {
                         properties.append((attribute, column, value))
                     }else{
                         properties.append((attribute, attribute, value))
                     }
-                    
-                    
-                    break
-                    
-                default: break
-                    
                 }
                 
             }
@@ -330,24 +391,12 @@ public extension ASProtocol where Self:ASModel{
                     continue
                 }
                 
-                let mir = Mirror(reflecting:value)
-                
-                switch mir.subjectType {
-                    
-                case _ as String.Type, _ as  ImplicitlyUnwrappedOptional<String>.Type,_ as String?.Type,_ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type,_ as NSNumber?.Type,
-                     _ as NSDate.Type, _ as ImplicitlyUnwrappedOptional<NSDate>.Type,_ as NSDate?.Type:
-                    
+                if isSupportTypes(value){
                     if let column = mapper()[key] {
                         pcMap[key] = column
                     }else{
                         pcMap[key] = key
                     }
-                    
-                    
-                    break
-                    
-                default: break
-                    
                 }
                 
             }

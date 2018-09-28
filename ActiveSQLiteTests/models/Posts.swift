@@ -12,14 +12,14 @@ import SQLite
 
 class Posts:ASModel{
     
-    @objc var title:String!
-    @objc var user_id:NSNumber!
+    @objc var title:String = ""
+    @objc var user_id:NSNumber = NSNumber(value:0)
     
     static let title = Expression<String>("title")
     static let user_id = Expression<NSNumber>("user_id")
     
-    override class var isSaveDefaulttimestamp:Bool{
-        return true
-    }
+//    override class var isSaveDefaulttimestamp:Bool{
+//        return true
+//    }
     
 }

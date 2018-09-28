@@ -44,14 +44,14 @@ class AlterSpec: QuickSpec {
             expect(ProductM.addColumn(["type"])).to(equal(true))
             
             //3.Tests
-            let product = ProductM.findFirst("id", value: NSNumber(value: 1))!
+            let product = ProductM.findFirst("id", value: 1)!
             XCTAssertNil(product.type)
             
-            product.type = NSNumber(value:3)
+            product.type = 3
             product.save()
             
-            let p = ProductM.findFirst("type",value:NSNumber(value: 3))!
-            XCTAssertTrue(p.id.intValue == 1)
+            let p = ProductM.findFirst("type",value: 3)!
+            XCTAssertTrue(p.id == 1)
  
              */
 

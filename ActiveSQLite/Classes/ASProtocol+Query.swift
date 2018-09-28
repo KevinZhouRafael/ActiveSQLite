@@ -29,7 +29,7 @@ public extension ASProtocol where Self:ASModel{
     //        return  "created_at"
     //    }
     //    public static var created_at:Expression<NSNumber>{
-    //        return Expression<NSNumber>(CREATE_AT_KEY)
+    //        return Expression<Int64>(CREATE_AT_KEY)
     //    }
     //
     //    public static var isSaveDefaulttimestamp:Bool {
@@ -131,7 +131,7 @@ public extension ASProtocol where Self:ASModel{
         do{
             for row in try db.prepare(query) {
                 let model = self.init()
-                model.buildFromRow(row: row)
+                model.buildFromRow(row: row) //TODO:codable
                 results.append(model)
             }
         }catch{
@@ -197,9 +197,7 @@ public extension ASProtocol where Self:ASModel{
             for row in try db.prepare(query) {
                 
                 let model = self.init()
-                
-                model.buildFromRow(row: row)
-                
+                model.buildFromRow(row: row) //TODO:Codable
                 
                 results.append(model)
             }
@@ -218,9 +216,7 @@ public extension ASProtocol where Self:ASModel{
             for row in try type(of: self).db.prepare(query!) {
                 
                 let model = type(of: self).init()
-                
-                model.buildFromRow(row: row)
-                
+                model.buildFromRow(row: row) //TODO:Codable
                 
                 results.append(model)
             }
@@ -239,7 +235,7 @@ public extension ASProtocol where Self:ASModel{
     
     
     //MARK: - Query
-    var query:QueryType?{
+    var query:QueryType?{ //TODO:Codable
         set{
             _query = newValue
         }
@@ -248,6 +244,7 @@ public extension ASProtocol where Self:ASModel{
                 _query =  getTable()
             }
             return _query
+//            return nil
         }
     }
     
@@ -363,6 +360,7 @@ public extension ASProtocol where Self:ASModel{
     //MARK: delete
     //MARK: - Delete
     func runDelete()throws{
+        
         do {
             if try type(of: self).db.run(query!.delete()) > 0 {
                 LogInfo("Delete rows of \(nameOfTable) success")
@@ -378,7 +376,7 @@ public extension ASProtocol where Self:ASModel{
     }
     
     func delete() throws{
-        guard id != nil else {
+        guard let id = id else {
             return
         }
         
@@ -408,7 +406,7 @@ public extension ASProtocol where Self:ASModel{
                     if model.id == nil {
                         continue
                     }
-                    ids.append(model.id)
+                    ids.append(model.id!)
                 }
                 
                 let query = getTable().where(ids.contains(id))

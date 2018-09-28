@@ -25,7 +25,7 @@ class NSDateSpec: QuickSpec {
                 
                 let p = ProductM()
                 p.name = "Book"
-                p.price = NSNumber(value: 99)
+                p.price = 99
                 let currentDate = Date()
                 //下一个月
                 p.publish_date = NSDate(timeInterval: 3600 * 24 * 31, since: currentDate)

@@ -38,8 +38,8 @@ import ActiveSQLite
 
 class Product:ASModel{
 
-    @objc var name:String!
-    @objc var price:NSNumber!
+    @objc var name:String = ""
+    @objc var price:NSNumber = NSNumber(value:0.0)
     @objc var desc:String?
     @objc var publish_date:NSDate?
 
@@ -92,14 +92,14 @@ You must set default db path.
 
 ## Building Type-Safe SQL
 
-| ActiveSQLite<br />Swift Type    | SQLite.swift<br />Swift Type    | SQLite<br /> SQLite Type      |
-| --------------- | --------------- | ----------- |
-| `NSNumber `     | `Int64`         | `INTEGER`   |
-| `NSNumber `     | `Double`        | `REAL`      |
-| `String`        | `String`        | `TEXT`      |
-| `nil`           | `nil`           | `NULL`      |
-|                 | `SQLite.Blob`   | `BLOB`      |
-| `NSDate`        | `Int64`         | `INTEGER`   |
+| ActiveSQLite<br />Swift Type    | SQLite.swift<br />Swift Type    | SQLite<br /> SQLite Type      | SQLite Default Value<br /> If not use optionl property |
+| --------------- | --------------- | ----------- | ---------- |
+| `NSNumber `     | `Int64`         | `INTEGER`   | `0`|
+| `NSNumber `     | `Double`        | `REAL`      |`0.0`|
+| `String`        | `String`        | `TEXT`      |`""`|
+| `nil`           | `nil`           | `NULL`      |`NULL`|
+|                 | `SQLite.Blob`   | `BLOB`      ||
+| `NSDate`        | `Int64`         | `INTEGER`   |`0`|
 
 
 
@@ -108,8 +108,8 @@ The NSNumber Type maps with two SQLite.swift's Swift Type. they are Int64 ans Do
 ``` swift
 class Product:ASModel{
 
-    @objc var name:String!
-    @objc var price:NSNumber!
+    @objc var name:String = ""
+    @objc var price:NSNumber = NSNumber(value:0.0)
     @objc var desc:String?
     @objc var publish_date:NSDate?
 
@@ -118,8 +118,9 @@ class Product:ASModel{
   }
   
 }
-
 ```
+
+
 ActiviteSQLite map NSDate to Int64 of SQLite.swift. You can map NSDate to String by looking [Custom Types of Documentaion](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#custom-types) of SQLite.swift
 
 
@@ -145,6 +146,20 @@ try db.run(products.create { t in
   
 ```
 The unit of "created\_at" and "updated\_at" columns is ms.
+
+###From ActiveSQLite0.4.0 to 0.4.1
+
+ActiveSQLite0.4.0 can use 3 types to define property: T, T!, T?.<br>
+ActiveSQLite0.4.1 use 2 types to define property: T, T?.
+
+| type		|  0.4.0    | 0.4.1    |
+| --------------- | --------------- | ----------- |
+| `T `    | `not nil`        | `not nil`   |
+| `T! `   | `not nil`        | `can be nil. use T? replace`|
+| `T?`    | `can be nil`     | `can be nil`|
+| `pirmary key id` | `is T! type`	|` is T? type.`|
+
+If you want find the db column default value to see the first table in this document.
 
 
 ### Mapper
@@ -227,8 +242,8 @@ If you want custom columns by yourself, you just set model implements CreateColu
 ```swift
 
 class Users:ASModel,CreateColumnsProtocol{
-    @objc var name:String!
-    @objc var email:String!
+    @objc var name:String = ""
+    @objc var email:String = ""
     @objc var age:Int?
    
     func createColumns(t: TableBuilder) {

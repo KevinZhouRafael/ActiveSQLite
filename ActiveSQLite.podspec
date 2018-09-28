@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ActiveSQLite'
-  s.version          = '0.4.0'
+  s.version          = '0.4.1'
   s.summary          = 'ActiveSQLite is an helper of SQLite.Swift. It can let you use SQLite.swift easily.'
 
 # This description is used to generate tags and improve search results.
@@ -28,7 +28,7 @@ ActiveSQLite is an helper of SQLite.Swift. It can let you use SQLite.swift easil
   s.source           = { :git => 'https://github.com/KevinZhouRafael/ActiveSQLite.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
-  s.swift_version = '4.1'
+  s.swift_version = '4.2'
   s.ios.deployment_target = '8.0'
 
   s.source_files = 'ActiveSQLite/Classes/**/*'

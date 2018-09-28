@@ -21,11 +21,11 @@ import SQLite
  */
 
 
-@objc open class ASModel: NSObject,ASProtocol{
+open class ASModel:NSObject,ASProtocol{
     
-    @objc public var id:NSNumber! //id primary key
-    @objc public var created_at:NSNumber! //Create Time, ms
-    @objc public var updated_at:NSNumber! // Update Time，ms
+    @objc internal(set) var id:NSNumber? //id primary key
+    @objc public var created_at:NSNumber = NSNumber(value:Date().timeIntervalSince1970) //Create Time, ms
+    @objc public var updated_at:NSNumber = NSNumber(value:Date().timeIntervalSince1970) // Update Time，ms
     
     public static var id = Expression<NSNumber>(PRIMARY_KEY)
     public static var created_at = Expression<NSNumber>(CREATE_AT_KEY)
@@ -34,10 +34,15 @@ import SQLite
     public static var CREATE_AT_KEY:String = "created_at"
     public static var UPDATE_AT_KEY:String = "updated_at"
     
-    internal var _query:QueryType?
+    internal var _query:QueryType? //TODO:codable
     
     required override public init() {
         super.init()
+    }
+    
+    public convenience init(id:Int64) {
+        self.init()
+        self.id = NSNumber(value: id)
     }
     
     //MARK: override
@@ -71,7 +76,7 @@ import SQLite
     //T! == ImplicitlyUnwrappedOptional<T>
     public var created_date:NSDate! {
         set{
-            created_at = NSNumber(value:newValue.timeIntervalSince1970 * 1000)
+            created_at = NSNumber(value:Int64(newValue.timeIntervalSince1970 * 1000))
         }
         get{
             return NSDate(timeIntervalSince1970: TimeInterval(created_at.int64Value/1000))
@@ -79,7 +84,7 @@ import SQLite
     }
     public var updated_date:NSDate! {
         set{
-            updated_at = NSNumber(value:newValue.timeIntervalSince1970 * 1000)
+            updated_at = NSNumber(value:Int64(newValue.timeIntervalSince1970 * 1000))
         }
         get{
             return NSDate(timeIntervalSince1970: TimeInterval(updated_at.int64Value/1000))
@@ -121,29 +126,20 @@ import SQLite
     }
     
     //MARK: - utils
-    @objc open override func setValue(_ value: Any?, forKey key: String) {
-        super.setValue(value, forKey: key)
-    }
-    
-    @objc open override func value(forKey key: String) -> Any? {
-        return super.value(forKey: key)
-    }
-    
-    
-    override open var description: String{
-        var des = "**DB Model**：" + super.description + "->"
-        //        var des = "**DB Model**" + NSStringFromClass(type(of: self)) + "-> "
-        
-        for case let (attribute?, column?, value) in recursionProperties(){
-            //            if attribute == "created_at" || attribute == "updated_at" {
-            //                des += "\(attribute) = \((value as! NSNumber).int64Value), "
-            //            }else{
-            des += "\(attribute) = \(value), "
-            //            }
-            
-        }
-        return des
-    }
+//    override open var description: String{
+//        var des = "**DB Model**：" + super.description + "->"
+//        //        var des = "**DB Model**" + NSStringFromClass(type(of: self)) + "-> "
+//        
+//        for case let (attribute?, column?, value) in recursionProperties(){
+//            //            if attribute == "created_at" || attribute == "updated_at" {
+//            //                des += "\(attribute) = \((value as! NSNumber).int64Value), "
+//            //            }else{
+//            des += "\(attribute) = \(value), "
+//            //            }
+//            
+//        }
+//        return des
+//    }
     
 }
 

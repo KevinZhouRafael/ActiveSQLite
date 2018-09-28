@@ -11,8 +11,8 @@ import SQLite
 @testable import ActiveSQLite
 
 class City: ASModel {
-    @objc var code:String!
-    @objc var name:String!
+    @objc var code:String = ""
+    @objc var name:String = ""
     
     override class var isSaveDefaulttimestamp:Bool{
         return true

@@ -52,17 +52,23 @@ public extension ASProtocol where Self:ASModel{
     internal  func autoCreateColumns(_ t:TableBuilder){
         for case let (attribute?,column?, value) in self.recursionProperties() {
             
+            //check primaryKey
+            if attribute == primaryKeyAttributeName {
+                t.column(Expression<NSNumber>(column), primaryKey: .autoincrement)
+                continue
+            }
+            
             let mir = Mirror(reflecting:value)
             
             switch mir.subjectType {
                 
-            case _ as String.Type, _ as  ImplicitlyUnwrappedOptional<String>.Type:
+            case _ as String.Type:
                 t.column(Expression<String>(column), defaultValue: "")
             case _ as String?.Type:
                 t.column(Expression<String?>(column))
                 
                 
-            case _ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type:
+            case _ as NSNumber.Type:
                 
                 if doubleTypes().contains(attribute) {
                     t.column(Expression<Double>(column), defaultValue: 0.0)
@@ -84,7 +90,7 @@ public extension ASProtocol where Self:ASModel{
                     t.column(Expression<NSNumber?>(column))
                 }
                 
-            case _ as NSDate.Type, _ as  ImplicitlyUnwrappedOptional<NSDate>.Type:
+            case _ as NSDate.Type:
                 t.column(Expression<NSDate>(column), defaultValue: NSDate(timeIntervalSince1970: 0))
             case _ as NSDate?.Type:
                 t.column(Expression<NSDate?>(column))
@@ -154,13 +160,13 @@ public extension ASProtocol where Self:ASModel{
             
             switch mir.subjectType {
                 
-            case _ as String.Type, _ as  ImplicitlyUnwrappedOptional<String>.Type:
+            case _ as String.Type:
                 return t.addColumn(Expression<String>(column), defaultValue: "")
             case _ as String?.Type:
                 return t.addColumn(Expression<String?>(column))
                 
                 
-            case _ as NSNumber.Type, _ as  ImplicitlyUnwrappedOptional<NSNumber>.Type:
+            case _ as NSNumber.Type:
                 
                 if doubleTypes().contains(attribute) {
                     return t.addColumn(Expression<Double>(column), defaultValue: 0.0)
@@ -182,7 +188,7 @@ public extension ASProtocol where Self:ASModel{
                     return t.addColumn(Expression<NSNumber?>(column))
                 }
                 
-            case _ as NSDate.Type, _ as  ImplicitlyUnwrappedOptional<NSDate>.Type:
+            case _ as NSDate.Type:
                 return t.addColumn(Expression<NSDate>(column), defaultValue: NSDate(timeIntervalSince1970: 0))
             case _ as NSDate?.Type:
                 return t.addColumn(Expression<NSDate?>(column))

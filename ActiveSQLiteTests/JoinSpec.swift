@@ -22,6 +22,11 @@ class JoinSpec: QuickSpec {
             try? Users.dropTable()
             try? Posts.dropTable()
             
+            let p = Posts()
+            p.user_id = 888
+            p.title = "Title999"
+            try! p.save()
+            
             
             let u = Users()
             u.name = "Peter"
@@ -34,9 +39,9 @@ class JoinSpec: QuickSpec {
             for i in 0 ..< 5{
                 let p = Posts()
                 if i < 2{
-                    p.user_id = u.id
+                    p.user_id = u.id!
                 }else{
-                    p.user_id = u2.id
+                    p.user_id = u2.id!
                 }
                 p.title = "Title\(i)"
                 try! p.save()
@@ -48,7 +53,7 @@ class JoinSpec: QuickSpec {
                 let posts = Table("Posts")
                 
 //                users.join(posts, on: Posts.user_id == users[Expression<Int64>("id")])
-                let query = users.join(posts, on: Posts.user_id == users.namespace(Users.id)).filter(Posts.user_id == u.id)
+                let query = users.join(posts, on: Posts.user_id == users.namespace(Users.id)).filter(Posts.user_id == u.id!)
                 
                 
                 let db = ASConfigration.getDefaultDB()

@@ -24,32 +24,7 @@ func getClass(name:String) ->AnyClass?{
 }
 
 //MARK: - Extension
-extension NSNumber : SQLite.Value {
-    public static var declaredDatatype: String {
-        return Int64.declaredDatatype
-    }
-    
-    public static func fromDatatypeValue(_ datatypeValue: Int64) -> NSNumber {
-        return NSNumber(value:datatypeValue)
-    }
-    public var datatypeValue: Int64 {
-        return Int64(truncating: self)
-    }
-    
-}
 
-//Date -- Tnteger
-extension NSDate: SQLite.Value {
-    public static var declaredDatatype: String {
-        return Int64.declaredDatatype
-    }
-    public static func fromDatatypeValue(_ intValue: Int64) -> NSDate {
-        return NSDate(timeIntervalSince1970: TimeInterval(intValue))
-    }
-    public var datatypeValue: Int64 {
-        return  Int64(timeIntervalSince1970)
-    }
-}
 
 
 func recusionProperties(_ obj:Any) -> Dictionary<String,Any> {

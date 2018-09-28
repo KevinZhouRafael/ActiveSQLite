@@ -39,8 +39,8 @@ import ActiveSQLite
 //定义model和table
 class Product:ASModel{
 
-    @objc var name:String!
-    @objc var price:NSNumber!
+    @objc var name:String = ""
+    @objc var price:NSNumber = NSNumber(value:0.0)
     @objc var desc:String?
     @objc var publish_date:NSDate?
 
@@ -91,14 +91,14 @@ DBConfigration.setDB(path: "other db file path", name: "other db name")
 
 ## 支持的数据类型
 
-| ActiveSQLite<br />Swift Type    | SQLite.swift<br />Swift Type    | SQLite<br /> SQLite Type      |
-| --------------- | --------------- | ----------- |
-| `NSNumber `     | `Int64`         | `INTEGER`   |
-| `NSNumber `     | `Double`        | `REAL`      |
-| `String`        | `String`        | `TEXT`      |
-| `nil`           | `nil`           | `NULL`      |
-|                 | `SQLite.Blob`   | `BLOB`      |
-| `NSDate`        | `Int64`         | `INTEGER`   |
+| ActiveSQLite<br />Swift Type    | SQLite.swift<br />Swift Type    | SQLite<br /> SQLite Type      | 表字段默认值<br /> 模型属性不用可选类型的情况下 |
+| --------------- | --------------- | ----------- | ---------- |
+| `NSNumber `     | `Int64`         | `INTEGER`   | `0`|
+| `NSNumber `     | `Double`        | `REAL`      |`0.0`|
+| `String`        | `String`        | `TEXT`      |`""`|
+| `nil`           | `nil`           | `NULL`      |`NULL`|
+|                 | `SQLite.Blob`   | `BLOB`      ||
+| `NSDate`        | `Int64`         | `INTEGER`   |`0`|
 
 
 
@@ -107,8 +107,8 @@ NSNumber类型对应SQLite.swift的两种类型（Int64和Double)。NSNumber默�
 ``` swift
 class Product:ASModel{
 
-    @objc var name:String!
-    @objc var price:NSNumber!
+    @objc var name:String = ""
+    @objc var price:NSNumber = NSNumber(value:0.0)
     @objc var desc:String?
     @objc var publish_date:NSDate?
 
@@ -145,6 +145,19 @@ try db.run(products.create { t in
 ```
 "created\_at"和"updated\_at"字段的单位是毫秒ms。
 
+###从 ActiveSQLite0.4.0 升级到 0.4.1
+
+ActiveSQLite0.4.0 用3种类型定义属性: T, T!, T?.<br>
+ActiveSQLite0.4.1 用两种类型定义属性: T, T?.
+
+| 类型		|  0.4.0    | 0.4.1    |
+| --------------- | --------------- | ----------- |
+| `T `    | `不为空`     | `不为空`   |
+| `T! `   | `不为空`     | `可为空。使用T?替换`|
+| `T?`    | `可为空`     | `可为空`|
+| `主键 id` | `是 T! 类型`	|`是 T? 类型`|
+
+【数据库字段的默认值参考本文档第一张表】。
 
 ### 映射
 你可以自定义表的名字, 列的名字，还可以设置瞬时属性不存在数据库中。
@@ -226,8 +239,8 @@ override class var isSaveDefaulttimestamp:Bool{
 ```swift
 
 class Users:ASModel,CreateColumnsProtocol{
-    @objc var name:String!
-    @objc var email:String!
+    @objc var name:String = ""
+    @objc var email:String = ""
     @objc var age:Int?
    
     func createColumns(t: TableBuilder) {

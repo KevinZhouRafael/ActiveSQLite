@@ -1,11 +1,11 @@
 PODS:
-  - Nimble (7.1.2)
-  - Quick (1.3.0)
+  - Nimble (7.3.1)
+  - Quick (1.3.2)
   - SQLite.swift/standalone (0.11.5):
     - sqlite3
-  - sqlite3 (3.24.0):
-    - sqlite3/common (= 3.24.0)
-  - sqlite3/common (3.24.0)
+  - sqlite3 (3.25.1):
+    - sqlite3/common (= 3.25.1)
+  - sqlite3/common (3.25.1)
 
 DEPENDENCIES:
   - Nimble
@@ -13,18 +13,18 @@ DEPENDENCIES:
   - SQLite.swift/standalone
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  https://github.com/cocoapods/specs.git:
     - Nimble
     - Quick
     - SQLite.swift
     - sqlite3
 
 SPEC CHECKSUMS:
-  Nimble: 3835ba9f459daa6b347f8a8e110aaae8ca1920a8
-  Quick: 03278013f71aa05fe9ecabc94fbcc6835f1ee76f
+  Nimble: 04f732da099ea4d153122aec8c2a88fd0c7219ae
+  Quick: 2623cb30d7a7f41ca62f684f679586558f483d46
   SQLite.swift: 6e5356850bb1791459f8c16d6ee9195b28714a2e
-  sqlite3: 3ba3b687e159a637b40df3438b860f7b3fe60a96
+  sqlite3: 857193fd2643d82c65ed5e0764c9e84085f1ad7f
 
 PODFILE CHECKSUM: 62f1b91c3442620984d9c0a6fbefeb2f4b12378e
 
-COCOAPODS: 1.5.0
+COCOAPODS: 1.5.3
