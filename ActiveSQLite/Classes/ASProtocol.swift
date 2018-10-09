@@ -3,7 +3,7 @@
 //  ActiveSQLite
 //
 //  Created by kai zhou on 2018/5/28.
-//  Copyright © 2018 hereigns. All rights reserved.
+//  Copyright © 2018 wumingapie@gmail.com. All rights reserved.
 //
 
 import Foundation

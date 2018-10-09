@@ -37,12 +37,10 @@ To run the ActiveSQLiteTests target of project.
 import ActiveSQLite
 
 class Product:ASModel{
-
-    @objc var name:String = ""
-    @objc var price:NSNumber = NSNumber(value:0.0)
-    @objc var desc:String?
-    @objc var publish_date:NSDate?
-
+    var name:String = ""
+    var price:NSNumber = NSNumber(value:0.0)
+    var desc:String?
+    var publish_date:NSDate?
 }
 
 //save
@@ -108,10 +106,10 @@ The NSNumber Type maps with two SQLite.swift's Swift Type. they are Int64 ans Do
 ``` swift
 class Product:ASModel{
 
-    @objc var name:String = ""
-    @objc var price:NSNumber = NSNumber(value:0.0)
-    @objc var desc:String?
-    @objc var publish_date:NSDate?
+    var name:String = ""
+    var price:NSNumber = NSNumber(value:0.0)
+    var desc:String?
+    var publish_date:NSDate?
 
   override func doubleTypes() -> [String]{
       return ["price"]
@@ -242,9 +240,9 @@ If you want custom columns by yourself, you just set model implements CreateColu
 ```swift
 
 class Users:ASModel,CreateColumnsProtocol{
-    @objc var name:String = ""
-    @objc var email:String = ""
-    @objc var age:Int?
+    var name:String = ""
+    var email:String = ""
+    var age:Int?
    
     func createColumns(t: TableBuilder) {
         t.column(Expression<NSNumber>("id"), primaryKey: true)
@@ -453,9 +451,9 @@ ActiveSQLite.saveAsync also contains one transcation function.
 
 ```swift
 class Product{
-	@objc var name:String!
+	var name:String!
 	
-	@objc var newColumn:String!
+	var newColumn:String!
 	override class var nameOfTable: String{
     	return "newTableName"
 	}

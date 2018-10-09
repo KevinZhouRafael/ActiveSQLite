@@ -38,12 +38,10 @@ import ActiveSQLite
 
 //定义model和table
 class Product:ASModel{
-
-    @objc var name:String = ""
-    @objc var price:NSNumber = NSNumber(value:0.0)
-    @objc var desc:String?
-    @objc var publish_date:NSDate?
-
+    var name:String = ""
+    var price:NSNumber = NSNumber(value:0.0)
+    var desc:String?
+    var publish_date:NSDate?
 }
 
 //保存
@@ -107,10 +105,10 @@ NSNumber类型对应SQLite.swift的两种类型（Int64和Double)。NSNumber默�
 ``` swift
 class Product:ASModel{
 
-    @objc var name:String = ""
-    @objc var price:NSNumber = NSNumber(value:0.0)
-    @objc var desc:String?
-    @objc var publish_date:NSDate?
+    var name:String = ""
+    var price:NSNumber = NSNumber(value:0.0)
+    var desc:String?
+    var publish_date:NSDate?
 
   override func doubleTypes() -> [String]{
       return ["price"]
@@ -239,9 +237,9 @@ override class var isSaveDefaulttimestamp:Bool{
 ```swift
 
 class Users:ASModel,CreateColumnsProtocol{
-    @objc var name:String = ""
-    @objc var email:String = ""
-    @objc var age:Int?
+    var name:String = ""
+    var email:String = ""
+    var age:Int?
    
     func createColumns(t: TableBuilder) {
         t.column(Expression<NSNumber>("id"), primaryKey: true)

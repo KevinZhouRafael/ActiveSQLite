@@ -12,7 +12,7 @@ import SQLite
 
 class Users:ASModel,CreateColumnsProtocol{
     
-    @objc var name:String = "String"
+    var name:String = "String"
         
     static let name = Expression<String>("name")
 

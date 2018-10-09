@@ -21,7 +21,7 @@ import SQLite
  */
 
 
-open class ASModel:NSObject,ASProtocol{
+@objcMembers open class ASModel:NSObject,ASProtocol{
     
     @objc internal(set) var id:NSNumber? //id primary key
     @objc public var created_at:NSNumber = NSNumber(value:Date().timeIntervalSince1970) //Create Time, ms

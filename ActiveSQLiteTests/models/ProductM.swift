@@ -12,13 +12,13 @@ import SQLite
 
 class ProductM:ASModel{
     
-    @objc var name:String = ""
-    @objc var price:NSNumber = NSNumber(value:0.0)
-    @objc var desc:String?
-    @objc var code:NSNumber?
-    @objc var publish_date:NSDate?
+    var name:String = ""
+    var price:NSNumber = NSNumber(value:0.0)
+    var desc:String?
+    var code:NSNumber?
+    var publish_date:NSDate?
     
-    @objc var version:NSNumber?
+    var version:NSNumber?
 
     static let name = Expression<String>("product_name")
     static let price = Expression<Double>("product_price")
@@ -27,7 +27,7 @@ class ProductM:ASModel{
     
     
     //Tests add column
-    @objc var type:NSNumber?
+    var type:NSNumber?
     static let type = Expression<NSNumber?>("type")
     
 
