@@ -23,9 +23,9 @@ import SQLite
 
 @objcMembers open class ASModel:NSObject,ASProtocol{
     
-    @objc internal(set) var id:NSNumber? //id primary key
-    @objc public var created_at:NSNumber = NSNumber(value:Date().timeIntervalSince1970) //Create Time, ms
-    @objc public var updated_at:NSNumber = NSNumber(value:Date().timeIntervalSince1970) // Update Time，ms
+    @objc public internal(set) var id:NSNumber? //id primary key
+    @objc public var created_at:NSNumber = NSNumber(value:Date().timeIntervalSince1970 * 1000) //Create Time, ms
+    @objc public var updated_at:NSNumber = NSNumber(value:Date().timeIntervalSince1970 * 1000) // Update Time，ms
     
     public static var id = Expression<NSNumber>(PRIMARY_KEY)
     public static var created_at = Expression<NSNumber>(CREATE_AT_KEY)
