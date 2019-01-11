@@ -79,10 +79,10 @@ import ActiveSQLite
 ### Connecting to a Database
 
 ``` swift
-DBConfigration.setDefaultDB(path:"db file path", name: "default db name")
+ASConfigration.setDefaultDB(path:"db file path", name: "default db name")
 
 //If you want a other db
-DBConfigration.setDB(path: "other db file path", name: "other db name")
+ASConfigration.setDB(path: "other db file path", name: "other db name")
 
 ```
 You must set default db path.
@@ -168,8 +168,8 @@ If you use one db, only setDefaultDB(path:name:),, you needn't do anything. If y
 
 ``` swift
 
-DBConfigration.setDefaultDB(path:"db file path", name: "default db name")
-DBConfigration.setDB(path: "other db file path", name: "other db name")
+ASConfigration.setDefaultDB(path:"db file path", name: "default db name")
+ASConfigration.setDB(path: "other db file path", name: "other db name")
 
 override class var dbName:String?{
     return "other db name"
@@ -502,10 +502,10 @@ The default log level is info. Setting log level like this:
 
 ```swift
 //1. Set log level
-DBConfigration.logLevel = .debug
+ASConfigration.logLevel = .debug
 
 //2. Set db path
-DBConfigration.dbPath = "..."
+ASConfigration.dbPath = "..."
 ```
 Make sure setting log level before setting database path.
 
