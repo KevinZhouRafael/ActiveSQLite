@@ -79,10 +79,10 @@ import ActiveSQLite
 ### 连接数据库
 
 ``` swift
-DBConfigration.setDefaultDB(path:"db file path", name: "default db name")
+ASConfigration.setDefaultDB(path:"db file path", name: "default db name")
 
 //If you want a other db
-DBConfigration.setDB(path: "other db file path", name: "other db name")
+ASConfigration.setDB(path: "other db file path", name: "other db name")
 
 ```
 必须设置 setDefaultDB 。
@@ -166,8 +166,8 @@ ActiveSQLite0.4.1 用两种类型定义属性: T, T?.
 
 ``` swift
 
-DBConfigration.setDefaultDB(path:"db file path", name: "default db name")
-DBConfigration.setDB(path: "other db file path", name: "other db name")
+ASConfigration.setDefaultDB(path:"db file path", name: "default db name")
+ASConfigration.setDB(path: "other db file path", name: "other db name")
 
 override class var dbName:String?{
     return "other db name"
@@ -500,10 +500,10 @@ Product.dropTable()
 
 ```swift
 //1. 设置日志级别
-DBConfigration.logLevel = .debug
+ASConfigration.logLevel = .debug
 
 //2. 设置数据库路径
-DBConfigration.dbPath = "..."
+ASConfigration.dbPath = "..."
 ```
 保证首先设置日志级别，后设置数据库路径。
 
