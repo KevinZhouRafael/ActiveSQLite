@@ -50,6 +50,10 @@ import SQLite
         return nil
     }
     
+    open class var nameOfTable: String{
+        return NSStringFromClass(self).components(separatedBy: ".").last!
+    }
+    
     open class var PRIMARY_KEY:String{
         return "id"
     }
@@ -89,10 +93,6 @@ import SQLite
         get{
             return NSDate(timeIntervalSince1970: TimeInterval(updated_at.int64Value/1000))
         }
-    }
-    
-    public class var nameOfTable: String{
-        return NSStringFromClass(self).components(separatedBy: ".").last!
     }
     
     public var nameOfTable:String{

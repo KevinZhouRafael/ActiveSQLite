@@ -159,11 +159,11 @@ extension Row {
 }
 
 let avatar = Expression<UIImage?>("avatar")
-users[avatar]           // fails to compile
+users[avatar]           // failed to compile
 users.namespace(avatar) // "users"."avatar"
 
 let user = users.first!
-user[avatar]            // fails to compile
+user[avatar]            // failed to compile
 user.get(avatar)        // UIImage?
 */
 */

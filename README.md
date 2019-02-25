@@ -424,7 +424,7 @@ I suggest that you should put all insert, update, delete and alter tables codes 
             }, completion: { (error) in
                 
                 if error != nil {
-                    debugPrint("transtion fails \(error)")
+                    debugPrint("transtion failed \(error)")
                 }else{
                     debugPrint("transtion success")
                 }
