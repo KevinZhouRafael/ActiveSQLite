@@ -63,7 +63,7 @@ public  func saveAsync(db:Connection? = nil, _ block: @escaping ()throws -> Void
 
 public extension Connection {
     //userVersion Database
-    public var userVersion: Int32 {
+    var userVersion: Int32 {
         get { return Int32(try! scalar("PRAGMA user_version") as! Int64)}
         set { try! run("PRAGMA user_version = \(newValue)") }
     }

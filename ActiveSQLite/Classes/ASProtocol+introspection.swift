@@ -315,7 +315,7 @@ public extension ASProtocol where Self:ASModel{
             
         }
         
-        if let jsonData = try? JSONSerialization.data(withJSONObject: dic, options: JSONSerialization.WritingOptions.prettyPrinted){
+        if (try? JSONSerialization.data(withJSONObject: dic, options: JSONSerialization.WritingOptions.prettyPrinted)) != nil{
 //            return try! JSONDecoder().decode(type(of: self), from: jsonData)
         }
         

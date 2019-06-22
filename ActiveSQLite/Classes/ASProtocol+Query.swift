@@ -176,7 +176,7 @@ public extension ASProtocol where Self:ASModel{
         return findAll(orders:[order])
     }
     
-    public static func findAll(_ predicate: SQLite.Expression<Bool?>? = nil,orders: [Expressible]? = nil)->Array<Self>{
+    static func findAll(_ predicate: SQLite.Expression<Bool?>? = nil,orders: [Expressible]? = nil)->Array<Self>{
         
         var results:Array<Self> = Array<Self>()
         var query = getTable()
@@ -249,29 +249,29 @@ public extension ASProtocol where Self:ASModel{
     }
     
     
-    public func join(_ table: QueryType, on condition: Expression<Bool>) -> Self {
+    func join(_ table: QueryType, on condition: Expression<Bool>) -> Self {
         query = query?.join(table, on: condition)
         return self
     }
     
-    public func join(_ table: QueryType, on condition: Expression<Bool?>) -> Self {
+    func join(_ table: QueryType, on condition: Expression<Bool?>) -> Self {
         query = query?.join(table, on: condition)
         return self
     }
     
-    public func join(_ type: JoinType, _ table: QueryType, on condition: Expression<Bool>) -> Self {
+    func join(_ type: JoinType, _ table: QueryType, on condition: Expression<Bool>) -> Self {
         query = query?.join(type, table, on: condition)
         return self
     }
     
     
-    public func join(_ type: JoinType, _ table: QueryType, on condition: Expression<Bool?>) -> Self {
+    func join(_ type: JoinType, _ table: QueryType, on condition: Expression<Bool?>) -> Self {
         query = query?.join(type, table, on: condition)
         return self
     }
     
     
-    public func `where`(_ attribute: String, value:Any?)->Self{
+    func `where`(_ attribute: String, value:Any?)->Self{
         
         if let expression = buildExpression(attribute, value: value) {
             return self.where(expression)
@@ -279,7 +279,7 @@ public extension ASProtocol where Self:ASModel{
         return self
     }
     
-    public func `where`(_ attributeAndValueDic:Dictionary<String,Any?>)->Self{
+    func `where`(_ attributeAndValueDic:Dictionary<String,Any?>)->Self{
         
         if let expression = buildExpression(attributeAndValueDic) {
             return self.where(expression)
@@ -287,71 +287,71 @@ public extension ASProtocol where Self:ASModel{
         return self
     }
     
-    public func `where`(_ predicate: SQLite.Expression<Bool>)->Self{
+    func `where`(_ predicate: SQLite.Expression<Bool>)->Self{
         query = query?.where(predicate)
         return self
     }
     
-    public func `where`(_ predicate: SQLite.Expression<Bool?>)->Self{
+    func `where`(_ predicate: SQLite.Expression<Bool?>)->Self{
         query = query?.where(predicate)
         return self
     }
     
-    public func group(_ by: Expressible...) -> Self {
+    func group(_ by: Expressible...) -> Self {
         query = query?.group(by)
         return self
     }
     
-    public func group(_ by: [Expressible]) -> Self {
+    func group(_ by: [Expressible]) -> Self {
         query = query?.group(by)
         return self
     }
     
-    public func group(_ by: Expressible, having: Expression<Bool>) -> Self {
+    func group(_ by: Expressible, having: Expression<Bool>) -> Self {
         query = query?.group(by, having: having)
         return self
     }
-    public func group(_ by: Expressible, having: Expression<Bool?>) -> Self {
-        query = query?.group(by, having: having)
-        return self
-    }
-    
-    public func group(_ by: [Expressible], having: Expression<Bool>) -> Self {
+    func group(_ by: Expressible, having: Expression<Bool?>) -> Self {
         query = query?.group(by, having: having)
         return self
     }
     
-    public func group(_ by: [Expressible], having: Expression<Bool?>) -> Self {
+    func group(_ by: [Expressible], having: Expression<Bool>) -> Self {
         query = query?.group(by, having: having)
         return self
     }
     
-    public func orderBy(_ sorted:String, asc:Bool = true)->Self{
+    func group(_ by: [Expressible], having: Expression<Bool?>) -> Self {
+        query = query?.group(by, having: having)
+        return self
+    }
+    
+    func orderBy(_ sorted:String, asc:Bool = true)->Self{
         query = query?.order(buildExpressiblesForOrder([sorted:asc]))
         return self
     }
     
-    public func orderBy(_ sorted:[String:Bool])->Self{
+    func orderBy(_ sorted:[String:Bool])->Self{
         query = query?.order(buildExpressiblesForOrder(sorted))
         return self
     }
     
-    public func order(_ by: Expressible...) -> Self {
+    func order(_ by: Expressible...) -> Self {
         query = query?.order(by)
         return self
     }
     
-    public func order(_ by: [Expressible]) -> Self {
+    func order(_ by: [Expressible]) -> Self {
         query = query?.order(by)
         return self
     }
     
-    public func limit(_ length: Int?) -> Self {
+    func limit(_ length: Int?) -> Self {
         query = query?.limit(length)
         return self
     }
     
-    public func limit(_ length: Int, offset: Int) -> Self {
+    func limit(_ length: Int, offset: Int) -> Self {
         query = query?.limit(length, offset: offset)
         return self
     }

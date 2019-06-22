@@ -149,7 +149,7 @@ public extension ASProtocol where Self:ASModel{
                 
                 LogInfo(" Update row in \(rowid) from \(nameOfTable) Table success ")
             } else {
-                LogWarn(" Update \(nameOfTable) table failure，can't not found id:\(id) 。")
+                LogWarn(" Update \(nameOfTable) table failure，can't not found id:\(String(describing: id)) 。")
             }
         } catch {
             LogError(" Update \(nameOfTable) table failure: \(error)")
@@ -191,7 +191,7 @@ public extension ASProtocol where Self:ASModel{
                 
                 LogInfo(" Update row in \(rowid) from \(nameOfTable) Table success ")
             } else {
-                LogWarn(" Update \(nameOfTable) table failure，can't not found id:\(id) 。")
+                LogWarn(" Update \(nameOfTable) table failure，can't not found id:\(String(describing: id)) 。")
             }
         } catch {
             LogError(" Update \(nameOfTable) table failure: \(error)")
