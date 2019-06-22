@@ -510,8 +510,8 @@ ASConfigration.dbPath = "..."
 
 ## 硬件需求
 - iOS 8.0+  
-- Xcode 10
-- Swift 4.2
+- Xcode 10.2
+- Swift 5
 
 ## 安装
 
