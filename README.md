@@ -512,7 +512,7 @@ Make sure setting log level before setting database path.
 
 ## Requirements
 - iOS 8.0+  
-- Xcode 10。2
+- Xcode 10.2
 - Swift 5
 
 ## Installation
@@ -532,9 +532,8 @@ pod "ActiveSQLite"
 Kevin Zhou
 
 - Email me: <wumingapie@gmail.com>
-- Follow me on **Twitter**: [**@wumingapie**](https://twitter.com/wumingapie)
 - Contact me on **Facebook**: [**wumingapie**](https://www.facebook.com/wumingapie)
-- Contact me on **LinkedIn**: [**Rafael**](https://www.linkedin.com/in/rafael-zhou-7230943a/)
+- Contact me on **WeChat&QQ**: 358545592
 
 ## License
 

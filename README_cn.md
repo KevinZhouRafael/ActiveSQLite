@@ -528,9 +528,8 @@ pod "ActiveSQLite"
 Kevin Zhou
 
 - 邮件: <wumingapie@gmail.com>
-- **Twitter**: [**@wumingapie**](https://twitter.com/wumingapie)
 - **Facebook**: [**wumingapie**](https://www.facebook.com/wumingapie)
-- **LinkedIn**: [**Rafael**](https://www.linkedin.com/in/rafael-zhou-7230943a/)
+- **微信&QQ**: 458545592
 
 ## License
 
