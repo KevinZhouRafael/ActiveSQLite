@@ -50,7 +50,7 @@ public extension ASProtocol where Self:ASModel{
                 updated_at = timeinterval
             }
             
-            LogInfo("Insert row of \(rowid) into \(nameOfTable) table success ")
+            LogDebug("Insert row of \(rowid) into \(nameOfTable) table success ")
         }catch{
             LogError("Insert row into \(nameOfTable) table failure: \(error)")
             throw error
@@ -147,7 +147,7 @@ public extension ASProtocol where Self:ASModel{
                     updated_at = timeinterval
                 }
                 
-                LogInfo(" Update row in \(rowid) from \(nameOfTable) Table success ")
+                LogDebug(" Update row in \(rowid) from \(nameOfTable) Table success ")
             } else {
                 LogWarn(" Update \(nameOfTable) table failure，can't not found id:\(String(describing: id)) 。")
             }
@@ -189,7 +189,7 @@ public extension ASProtocol where Self:ASModel{
             if rowid > 0 {
                 try self.refreshSelf()
                 
-                LogInfo(" Update row in \(rowid) from \(nameOfTable) Table success ")
+                LogDebug(" Update row in \(rowid) from \(nameOfTable) Table success ")
             } else {
                 LogWarn(" Update \(nameOfTable) table failure，can't not found id:\(String(describing: id)) 。")
             }
@@ -284,7 +284,7 @@ public extension ASProtocol where Self:ASModel{
             let rowid = try db.run(table.update(buildUpdateSetters(setters)))
             
             if rowid > 0 {
-                LogInfo(" Update row in \(rowid) from \(nameOfTable) Table success ")
+                LogDebug(" Update row in \(rowid) from \(nameOfTable) Table success ")
             } else {
                 LogWarn(" Update \(nameOfTable) table failure，can't not found id:\(id) 。")
             }
@@ -304,7 +304,7 @@ public extension ASProtocol where Self:ASModel{
             let rowid = try db.run(getTable().update(buildUpdateSetters(setters)))
             
             if rowid > 0 {
-                LogInfo(" Update row in \(rowid) from \(nameOfTable) Table success ")
+                LogDebug(" Update row in \(rowid) from \(nameOfTable) Table success ")
             } else {
                 LogWarn(" Update \(nameOfTable) table failure，can't not found id:\(id) 。")
             }
@@ -348,7 +348,7 @@ public extension ASProtocol where Self:ASModel{
                 created_at = created_at_value
                 updated_at = updated_at_value
             }
-            LogInfo("Insert row of \(rowid) into \(nameOfTable) table success ")
+            LogDebug("Insert row of \(rowid) into \(nameOfTable) table success ")
         }catch{
             LogError("Insert into \(nameOfTable) table failure: \(error)")
             throw error

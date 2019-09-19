@@ -6,8 +6,8 @@
 [![Platform](https://img.shields.io/cocoapods/p/ActiveSQLite.svg?style=flat)](http://cocoapods.org/pods/ActiveSQLite)
 
 
-ActiveSQLite is an helper of [SQLite.Swift](https://github.com/stephencelis/SQLite.swift). It can let you use SQLite.swift easily.
-
+ActiveSQLite is an helper of [SQLite.Swift](https://github.com/stephencelis/SQLite.swift). It can let you use SQLite.swift easily.<p>
+There is a project named [Reed downloader](https://github.com/KevinZhouRafael/Reed) used ActiveSQLite.<p>
 [**中文说明**](README_cn.md)
 
 ## Features

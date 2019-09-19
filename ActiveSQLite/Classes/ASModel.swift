@@ -147,12 +147,12 @@ import SQLite
 //public extension ASModel{
 
 //MARK: - Generic Type
-//    func findAll<T:DBModel>(_ predicate: SQLite.Expression<Bool>, toT t:T)->Array<T>{
+//    func findAll<T:ASModel>(_ predicate: SQLite.Expression<Bool>, toT t:T)->Array<T>{
 //
 //        return findAll(Expression<Bool?>(predicate),toT:t)
 //    }
 //
-//    func findAll<T:DBModel>(_ predicate: SQLite.Expression<Bool?>, toT t:T)->Array<T>{
+//    func findAll<T:ASModel>(_ predicate: SQLite.Expression<Bool?>, toT t:T)->Array<T>{
 //
 //        var results:[T] = [T]()
 //
@@ -178,7 +178,7 @@ import SQLite
 //        return results
 //    }
 //
-//    func findAll<T:DBModel>(_ predicate: SQLite.Expression<Bool?>)->Array<T>{
+//    func findAll<T:ASModel>(_ predicate: SQLite.Expression<Bool?>)->Array<T>{
 //
 //        var results:[T] = [T]()
 //
@@ -205,7 +205,7 @@ import SQLite
 //        return results
 //    }
 
-//    internal func findAll<T:DBModel>(_ predicate: SQLite.Expression<Bool?>) -> [T] where T : ASModel{
+//    internal func findAll<T:ASModel>(_ predicate: SQLite.Expression<Bool?>) -> [T] where T : ASModel{
 //
 //        var results:[T] = [T]()
 //

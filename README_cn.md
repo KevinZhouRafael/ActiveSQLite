@@ -6,7 +6,8 @@
 [![Platform](https://img.shields.io/cocoapods/p/ActiveSQLite.svg?style=flat)](http://cocoapods.org/pods/ActiveSQLite)
 
 
-ActiveSQLite 是一个 [SQLite.Swift](https://github.com/stephencelis/SQLite.swift) 的封装和扩展。 目的是让你使用SQLite.swift更加简单。
+ActiveSQLite 是一个 [SQLite.Swift](https://github.com/stephencelis/SQLite.swift) 的封装和扩展。 目的是让你使用SQLite.swift更加简单。<p>
+使用ActiveSQLite的一个例子是[Reed downloader](https://github.com/KevinZhouRafael/Reed)。
 
 [**English Version**](README.md)
 
