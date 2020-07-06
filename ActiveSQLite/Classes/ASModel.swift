@@ -95,7 +95,7 @@ import SQLite
         }
     }
     
-    public var nameOfTable:String{
+    open var nameOfTable:String{
         get{
             return type(of: self).nameOfTable
         }
@@ -122,7 +122,8 @@ import SQLite
     }
     
     public func getTable() -> Table{
-        return type(of: self).getTable()
+//        return type(of: self).getTable()
+        return Table(nameOfTable)
     }
     
     //MARK: - utils
