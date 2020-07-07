@@ -42,7 +42,7 @@ public extension ASProtocol where Self:ASModel{
                 settersInsert.append(type(of: self).id <- id!)
             }
             
-            let rowid = try db.run(getTable().insert(settersInsert))
+            let rowid = try getDB().run(getTable().insert(settersInsert))
             id = NSNumber(value:rowid)
             
             if type(of: self).isSaveDefaulttimestamp {
@@ -50,9 +50,9 @@ public extension ASProtocol where Self:ASModel{
                 updated_at = timeinterval
             }
             
-            LogDebug("Insert row of \(rowid) into \(nameOfTable) table success ")
+            Log.d("Insert row of \(rowid) into \(nameOfTable) table success ")
         }catch{
-            LogError("Insert row into \(nameOfTable) table failure: \(error)")
+            Log.e("Insert row into \(nameOfTable) table failure: \(error)")
             throw error
         }
         
@@ -68,7 +68,7 @@ public extension ASProtocol where Self:ASModel{
             try createTable()
             
             //            try db.transaction {
-            try db.savepoint("savepointname_\(nameOfTable)_insertbatch_\(NSDate().timeIntervalSince1970 * 1000)", block: {
+            try getDB().savepoint("savepointname_\(nameOfTable)_insertbatch_\(NSDate().timeIntervalSince1970 * 1000)", block: {
                 for model in models{
                     
                     let timeinterval = NSNumber(value:Int64(NSDate().timeIntervalSince1970 * 1000))
@@ -93,7 +93,7 @@ public extension ASProtocol where Self:ASModel{
                         settersInsert.append(Expression<NSNumber>(PRIMARY_KEY) <- model.id!)
                     }
                     
-                    let rowid = try self.db.run(getTable().insert(settersInsert))
+                    let rowid = try self.getDB().run(getTable().insert(settersInsert))
                     let id = NSNumber(value:rowid)
                     
                     autoInsertValues.append((id,timeinterval,timeinterval))
@@ -111,10 +111,10 @@ public extension ASProtocol where Self:ASModel{
                 //            }
             })
             
-            LogInfo("Batch insert rows(\(models)) into \(nameOfTable) table success")
+            Log.i("Batch insert rows(\(models)) into \(nameOfTable) table success")
             
         }catch{
-            LogError("Batch insert rows into \(nameOfTable) table failure:\(error)")
+            Log.e("Batch insert rows into \(nameOfTable) table failure:\(error)")
             throw error
             
         }
@@ -125,7 +125,7 @@ public extension ASProtocol where Self:ASModel{
     //MARK: - Update one By id
     func update() throws {
         guard id != nil else {
-            LogError(" Update \(nameOfTable) table failure: id must not be nil.")
+            Log.e(" Update \(nameOfTable) table failure: id must not be nil.")
             return
         }
         
@@ -140,19 +140,19 @@ public extension ASProtocol where Self:ASModel{
             
             
             let table = getTable().where(type(of: self).id == id!)
-            let rowid = try db.run(table.update(settersUpdate))
+            let rowid = try getDB().run(table.update(settersUpdate))
             
             if rowid > 0 {
                 if type(of: self).isSaveDefaulttimestamp {
                     updated_at = timeinterval
                 }
                 
-                LogDebug(" Update row in \(rowid) from \(nameOfTable) Table success ")
+                Log.d(" Update row in \(rowid) from \(nameOfTable) Table success ")
             } else {
-                LogWarn(" Update \(nameOfTable) table failure，can't not found id:\(String(describing: id)) 。")
+                Log.w(" Update \(nameOfTable) table failure，can't not found id:\(String(describing: id)) 。")
             }
         } catch {
-            LogError(" Update \(nameOfTable) table failure: \(error)")
+            Log.e(" Update \(nameOfTable) table failure: \(error)")
             throw error
         }
         
@@ -175,7 +175,7 @@ public extension ASProtocol where Self:ASModel{
     
     func update(_ setters:[Setter])throws{
         guard id != nil else {
-            LogError(" Update \(nameOfTable) table failure: id must not be nil.")
+            Log.e(" Update \(nameOfTable) table failure: id must not be nil.")
             return
         }
         
@@ -184,17 +184,17 @@ public extension ASProtocol where Self:ASModel{
             let settersUpdate = (type(of: self)).buildUpdateSetters(setters)
             
             let table = getTable().where(type(of: self).id == id!)
-            let rowid = try db.run(table.update(settersUpdate))
+            let rowid = try getDB().run(table.update(settersUpdate))
             
             if rowid > 0 {
                 try self.refreshSelf()
                 
-                LogDebug(" Update row in \(rowid) from \(nameOfTable) Table success ")
+                Log.d(" Update row in \(rowid) from \(nameOfTable) Table success ")
             } else {
-                LogWarn(" Update \(nameOfTable) table failure，can't not found id:\(String(describing: id)) 。")
+                Log.w(" Update \(nameOfTable) table failure，can't not found id:\(String(describing: id)) 。")
             }
         } catch {
-            LogError(" Update \(nameOfTable) table failure: \(error)")
+            Log.e(" Update \(nameOfTable) table failure: \(error)")
             throw error
         }
         
@@ -206,12 +206,12 @@ public extension ASProtocol where Self:ASModel{
         //updated_at
         var autoUpdateValues = [(NSNumber)]()
         do{
-            try db.savepoint("savepointname_\(nameOfTable)_updateBatch\(NSDate().timeIntervalSince1970 * 1000)", block: {
+            try getDB().savepoint("savepointname_\(nameOfTable)_updateBatch\(NSDate().timeIntervalSince1970 * 1000)", block: {
                 //            try db.transaction {
                 for model in models{
                     
                     if model.id == nil {
-                        LogError(" Update \(nameOfTable) table failure: id must not be nil.")
+                        Log.e(" Update \(nameOfTable) table failure: id must not be nil.")
                         continue
                     }
                     
@@ -225,7 +225,7 @@ public extension ASProtocol where Self:ASModel{
                     
                     
                     let table = model.getTable().where(id == model.id!)
-                    try self.db.run(table.update(settersUpdate))
+                    try self.getDB().run(table.update(settersUpdate))
                     
                     if isSaveDefaulttimestamp{
                         autoUpdateValues.append((timeinterval))
@@ -240,10 +240,10 @@ public extension ASProtocol where Self:ASModel{
                 }
  
             })
-            LogInfo("batch Update \(models) on \(nameOfTable) table success")
+            Log.i("batch Update \(models) on \(nameOfTable) table success")
             
         }catch{
-            LogError("batch Update \(nameOfTable) table failure\(error)")
+            Log.e("batch Update \(nameOfTable) table failure\(error)")
             throw error
         }
         
@@ -281,15 +281,15 @@ public extension ASProtocol where Self:ASModel{
             
             let table = getTable().where(predicate)
             
-            let rowid = try db.run(table.update(buildUpdateSetters(setters)))
+            let rowid = try getDB().run(table.update(buildUpdateSetters(setters)))
             
             if rowid > 0 {
-                LogDebug(" Update row in \(rowid) from \(nameOfTable) Table success ")
+                Log.d(" Update row in \(rowid) from \(nameOfTable) Table success ")
             } else {
-                LogWarn(" Update \(nameOfTable) table failure，can't not found id:\(id) 。")
+                Log.w(" Update \(nameOfTable) table failure，can't not found id:\(id) 。")
             }
         } catch {
-            LogError(" Update \(nameOfTable) table failure: \(error)")
+            Log.e(" Update \(nameOfTable) table failure: \(error)")
             throw error
         }
         
@@ -301,15 +301,15 @@ public extension ASProtocol where Self:ASModel{
     static func update(_ setters:[Setter])throws{
         do {
             
-            let rowid = try db.run(getTable().update(buildUpdateSetters(setters)))
+            let rowid = try getDB().run(getTable().update(buildUpdateSetters(setters)))
             
             if rowid > 0 {
-                LogDebug(" Update row in \(rowid) from \(nameOfTable) Table success ")
+                Log.d(" Update row in \(rowid) from \(nameOfTable) Table success ")
             } else {
-                LogWarn(" Update \(nameOfTable) table failure，can't not found id:\(id) 。")
+                Log.w(" Update \(nameOfTable) table failure，can't not found id:\(id) 。")
             }
         } catch {
-            LogError(" Update \(nameOfTable) table failure: \(error)")
+            Log.e(" Update \(nameOfTable) table failure: \(error)")
             throw error
         }
         
@@ -342,15 +342,15 @@ public extension ASProtocol where Self:ASModel{
                 settersInsert.append(type(of: self).id <- id!)
             }
             
-            let rowid = try db.run(getTable().insert(or: .replace, settersInsert))
+            let rowid = try getDB().run(getTable().insert(or: .replace, settersInsert))
             id = NSNumber(value:rowid)
             if type(of: self).isSaveDefaulttimestamp{
                 created_at = created_at_value
                 updated_at = updated_at_value
             }
-            LogDebug("Insert row of \(rowid) into \(nameOfTable) table success ")
+            Log.d("Insert row of \(rowid) into \(nameOfTable) table success ")
         }catch{
-            LogError("Insert into \(nameOfTable) table failure: \(error)")
+            Log.e("Insert into \(nameOfTable) table failure: \(error)")
             throw error
         }
     }
@@ -368,7 +368,7 @@ public extension ASProtocol where Self:ASModel{
         query = query.limit(1)
         
         
-        for row in try db.prepare(query) {
+        for row in try getDB().prepare(query) {
             self.buildFromRow(row: row) //TODO:编码
         }
     }

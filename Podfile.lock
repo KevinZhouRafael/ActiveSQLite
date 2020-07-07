@@ -1,4 +1,7 @@
 PODS:
+  - CocoaLumberjack (3.6.1):
+    - CocoaLumberjack/Core (= 3.6.1)
+  - CocoaLumberjack/Core (3.6.1)
   - Nimble (8.1.1)
   - Quick (3.0.0)
   - SQLite.swift (0.12.2):
@@ -6,21 +9,24 @@ PODS:
   - SQLite.swift/standard (0.12.2)
 
 DEPENDENCIES:
+  - CocoaLumberjack
   - Nimble
   - Quick
   - SQLite.swift (= 0.12.2)
 
 SPEC REPOS:
   trunk:
+    - CocoaLumberjack
     - Nimble
     - Quick
     - SQLite.swift
 
 SPEC CHECKSUMS:
+  CocoaLumberjack: b17ae15142558d08bbacf69775fa10c4abbebcc9
   Nimble: 5f8a2fb6fa343a7242dfdd9d42f7267419d464b2
   Quick: 6d9559f40647bc4d510103842ef2fdd882d753e2
   SQLite.swift: d2b4642190917051ce6bd1d49aab565fe794eea3
 
-PODFILE CHECKSUM: d40c03df5b3f647e42c897dd130f86fbe60bcc79
+PODFILE CHECKSUM: cdc1a270f911d61db77be0d8f819983a3850eb29
 
 COCOAPODS: 1.9.3

@@ -16,47 +16,86 @@ open class ASConfigration {
     private static var dbMap:Dictionary<String,Connection> = Dictionary<String,Connection>()
     
     private static var defaultDB:Connection!
+    private static var defaultDBName:String?
     
-    public static func setDB(path:String,name:String){
-        
-//        guard dbMap[name] == nil else {
-//            return
-//        }
-        let db = try! Connection(path)
-        dbMap[name] = db
-        
-        //        #if DEBUG
-        //            ASModel.db.trace{ debugPrint($0)}
-        //        #endif
-        
-        if logLevel == .debug {
-            db.trace{ print($0)}
+    /// 创建数据库
+    ///
+    /// - Parameters:
+    ///   - path: 文件路径
+    ///   - name: 数据库名字
+    ///   - isAutoCreate: 文件不存在时候，是否自动创建文件。默认true
+        public static func setDB(path:String,name:String,isAutoCreate:Bool = true){
+            
+    //        guard dbMap[name] == nil else {
+    //            return
+    //        }
+            if isAutoCreate || fileExists( path){
+                do{
+                    
+                    let db = try Connection(path)
+                    dbMap[name] = db
+                }catch{
+                    Log.e(error)
+                }
+               
+            }
+            
+            //        #if DEBUG
+            //            DBModel.db.trace{ debugPrint($0)}
+            //        #endif
+            
+    //        if logLevel == .debug {
+    //            db.trace{ print($0)}
+    //        }
         }
-    }
     
-    public static func setDefaultDB(path:String,name:String){
-        
-        guard dbMap[name] == nil else {
-            return
+        public static func setDefaultDB(path:String,name:String){
+            
+            guard dbMap[name] == nil else {
+                return
+            }
+            
+            defaultDBName = name
+            
+            do{
+                let db = try Connection(path)
+                dbMap[name] = db
+                
+                defaultDB = db
+            }catch{
+                Log.e(error)
+            }
+            
+    //        if logLevel == .debug {
+    //            db.trace{ print($0)}
+    //        }
         }
         
-        let db = try! Connection(path)
-        dbMap[name] = db
-        
-        if logLevel == .debug {
-            db.trace{ print($0)}
+        public static func getDefaultDB() throws -> Connection{
+            if let db = defaultDB{
+                return db
+            }else{
+                throw ASError.dbNotFound(dbName:defaultDBName ?? "默认数据库")
+            }
         }
         
-        defaultDB = db
-    }
-    
-    public static func getDefaultDB() -> Connection{
-        return defaultDB
-    }
-    
-    public static func getDB(name:String) -> Connection{
-        return dbMap[name]!
-    }
+        public static func getDB(name:String) throws -> Connection{
+            if let db = dbMap[name]{
+                return db
+            }else{
+                throw ASError.dbNotFound(dbName:name)
+            }
+            
+        }
+        
+        private static func fileExists(_ path:String) -> Bool{
+            var isDir:ObjCBool = false
+            let exists = FileManager.default.fileExists(atPath: path, isDirectory: &isDir)
+            if exists && !isDir.boolValue {
+                return true
+            }
+            return false
+        }
     
 }
 

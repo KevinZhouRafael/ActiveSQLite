@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ActiveSQLite'
-  s.version          = '0.5.2'
+  s.version          = '0.5.3'
   s.summary          = 'ActiveSQLite is an helper of SQLite.Swift. It can let you use SQLite.swift easily.'
 
 # This description is used to generate tags and improve search results.
@@ -42,4 +42,5 @@ ActiveSQLite is an helper of SQLite.Swift. It can let you use SQLite.swift easil
   # s.dependency 'SQLite.swift' , '~> 0.12.0'
   s.dependency 'SQLite.swift' , '0.12.2'
   # s.dependency 'SQLite.swift/standalone' , '~> 0.12.0'
+  # s.dependency 'CocoaLumberjack/Swift'
 end

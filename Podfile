@@ -3,6 +3,7 @@ use_frameworks!
 
 target ‘ActiveSQLite’ do
 
+   pod 'CocoaLumberjack'
    pod 'SQLite.swift', '0.12.2'
 #pod 'SQLite.swift/standalone' #  , '~> 0.12.0'
 #   pod 'SQLite.swift/SQLCipher'

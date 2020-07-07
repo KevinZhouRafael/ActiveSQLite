@@ -18,7 +18,7 @@ class MultiTableNameSpec: QuickSpec {
             
             ASConfigration.setDefaultDB(path: getTestDBPath()!, name: DBDefaultName)
             
-            let db = ASConfigration.getDefaultDB()
+            let db = try! ASConfigration.getDefaultDB()
             try? db.run(Table("BookTable1").drop(ifExists: true))
             try? db.run(Table("BookTable2").drop(ifExists: true))
             

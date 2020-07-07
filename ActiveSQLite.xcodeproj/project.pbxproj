@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0A616B4E2417F2CA000BCB02 /* Book.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A616B4D2417F2CA000BCB02 /* Book.swift */; };
 		0A616B502417F3D4000BCB02 /* MultiTableNameSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A616B4F2417F3D4000BCB02 /* MultiTableNameSpec.swift */; };
+		0A67779324B4251B00FBF054 /* ASError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A67779224B4251B00FBF054 /* ASError.swift */; };
 		0CF8AE6A64F509D2283E1560 /* Pods_ActiveSQLiteTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C816C51A35B43ECA48BDF1C4 /* Pods_ActiveSQLiteTests.framework */; };
 		4B543B5247EBA6F1607A1422 /* Pods_ActiveSQLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CA31C07CCF30E66E5EDC423 /* Pods_ActiveSQLite.framework */; };
 		56A778061F02561F00829FDF /* ActiveSQLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 56A777FC1F02561F00829FDF /* ActiveSQLite.framework */; };
@@ -56,6 +57,7 @@
 /* Begin PBXFileReference section */
 		0A616B4D2417F2CA000BCB02 /* Book.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Book.swift; sourceTree = "<group>"; };
 		0A616B4F2417F3D4000BCB02 /* MultiTableNameSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiTableNameSpec.swift; sourceTree = "<group>"; };
+		0A67779224B4251B00FBF054 /* ASError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASError.swift; sourceTree = "<group>"; };
 		45F6AAA00336A44ED8A66005 /* Pods-ActiveSQLiteTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActiveSQLiteTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActiveSQLiteTests/Pods-ActiveSQLiteTests.debug.xcconfig"; sourceTree = "<group>"; };
 		56A777FC1F02561F00829FDF /* ActiveSQLite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ActiveSQLite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		56A777FF1F02561F00829FDF /* ActiveSQLite.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActiveSQLite.h; sourceTree = "<group>"; };
@@ -192,6 +194,7 @@
 				56A7781B1F02567900829FDF /* ASModel.swift */,
 				CF6CD53020119022009BA3C9 /* ASUtils.swift */,
 				CF5EF0BE21213BAF002F01BF /* Types.swift */,
+				0A67779224B4251B00FBF054 /* ASError.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -378,12 +381,14 @@
 				"${PODS_ROOT}/Target Support Files/Pods-ActiveSQLiteTests/Pods-ActiveSQLiteTests-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Nimble/Nimble.framework",
 				"${BUILT_PRODUCTS_DIR}/Quick/Quick.framework",
+				"${BUILT_PRODUCTS_DIR}/CocoaLumberjack/CocoaLumberjack.framework",
 				"${BUILT_PRODUCTS_DIR}/SQLite.swift/SQLite.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Nimble.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Quick.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaLumberjack.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SQLite.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -400,6 +405,7 @@
 			files = (
 				CFED5E2F20BBDF4E00520F14 /* ASProtocol.swift in Sources */,
 				56A778201F02567900829FDF /* ASModel.swift in Sources */,
+				0A67779324B4251B00FBF054 /* ASError.swift in Sources */,
 				56D0EF851F0BAB9000167862 /* ASLogger.swift in Sources */,
 				56A7781D1F02567900829FDF /* ASProtocol+introspection.swift in Sources */,
 				56A7781C1F02567900829FDF /* ASConfigration.swift in Sources */,
