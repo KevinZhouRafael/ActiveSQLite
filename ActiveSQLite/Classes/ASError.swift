@@ -26,7 +26,7 @@ extension ASError: LocalizedError{
 
 extension ASError:CustomNSError{
     public static var errorDomain: String {
-        return "com.kaochong.easysqlite"
+        return "com.hereigns.ios.activesqlite"
     }
     public var errorCode: Int{
         switch self {
