@@ -1,15 +1,13 @@
-platform:ios,'8.0'
+platform:ios,'10.0'
 use_frameworks!
 
-target ‘ActiveSQLite’ do
+target ‘ZKORM’ do
 
    pod 'CocoaLumberjack'
-   pod 'SQLite.swift', '0.12.2'
-#pod 'SQLite.swift/standalone' #  , '~> 0.12.0'
-#   pod 'SQLite.swift/SQLCipher'
+   pod 'GRDB.swift', '4.14.0'
 end
 
-target ‘ActiveSQLiteTests' do
+target ‘ZKORMTests' do
     pod 'Quick'
     pod 'Nimble'
 # pod 'SQLite.swift/standalone' #, '~> 0.12.0'
