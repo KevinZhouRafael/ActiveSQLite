@@ -1,11 +1,12 @@
 //
-//  UpdateSpec.swift
-//  ZKORM
+//  UpdateConvenientSpec.swift
+//  ZKORMTests
 //
-//  Created by Kevin Zhou on 05/07/2017.
-//  Copyright © 2017 wumingapie@gmail.com. All rights reserved.
+//  Created by Kevin Zhou on 2020/8/8.
+//  Copyright © 2020 hereigns. All rights reserved.
 //
 
+import Foundation
 import Quick
 import Nimble
 import GRDB
@@ -23,18 +24,6 @@ class UpdateSpec: QuickSpec {
             
             try! ProductM.createTable()
             describe("save one product") {
-                //1、ZKORM.save放在Transcation中测试。
-                //2、ZKORM.save中不能使用自定义方法。只能使用参数带db的方法。
-                
-//                ZKORM.save({db in
-//                    p.name = "House"
-//                    p.price = 9999.99
-//                    try p.save()
-//                }, completion: { (error) in
-//                    expect(error).to(beNil())
-//                    //                let p = ProductM.findFirst("id", value: 1)!
-//                    expect(p.name).to(equal("House"))
-//                })
                     p.name = "House"
                     p.price = 9999.99
                     try! p.save()
@@ -50,14 +39,23 @@ class UpdateSpec: QuickSpec {
             describe("update by updateChanges") {
                 try! ProductM.write { db in
                     try p.updateChanges(db){
-                        $0.name = "apartment"
-                        $0.price = 77.77
+                        $0.name = "apartment0"
+                        $0.price = 55.55
                     }
+                }
+                
+                expect(p.name).to(equal("apartment0"))
+                expect(p.price.doubleValue).to(equal(55.55))
+            }
+            
+            describe("update by updateChanges") {
+                try! p.updateChanges{
+                  $0.name = "apartment"
+                  $0.price = 77.77
                 }
                 
                 expect(p.name).to(equal("apartment"))
                 expect(p.price.doubleValue).to(equal(77.77))
-                
             }
         }
         
@@ -96,12 +94,12 @@ class UpdateSpec: QuickSpec {
             }
             
             describe("update by columns") {
+                
                 ZKORM.save( { (db) in
                     for i in 3 ..< 7 {
                         try! ProductM
                                 .filter(ZKORMModel.Columns.id == (i + 1))
                                 .updateAll(db,ProductM.Columns.desc.set(to: "说明\(i)"), ProductM.Columns.price.set(to: Double(i*3)))
-                        
                     }
                 }) { (error) in
                     expect(error).to(beNil())
@@ -154,6 +152,27 @@ class UpdateSpec: QuickSpec {
                     }
                 })
 
+            }
+            
+            describe("update -- convenient") {
+                
+                for i in 3 ..< 7 {
+                    try! ProductM.updateAll(ProductM.Columns.desc.set(to: "描述\(i)"), ProductM.Columns.price.set(to: Double(i*3)), filter: ZKORMModel.Columns.id == (i + 1))
+                }
+                let ps = try! ProductM.read { (db)  in
+                     try ProductM
+                        .order(ZKORMModel.Columns.id.asc)
+                        .filter(ZKORMModel.Columns.id > Double(3))
+                        .fetchAll(db)
+                }
+                
+                for i in 0 ..< 4 {
+                    let p = ps[i]
+                    expect(p.desc).to(equal("描述\(i+3)"))
+                    expect(p.price.doubleValue).to(equal(Double((i+3)*3)))
+                }
+                
+                
             }
 
 

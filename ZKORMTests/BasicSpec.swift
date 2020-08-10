@@ -32,39 +32,41 @@ class BasicSpec: QuickSpec {
                     
                     try! ProductM.createTable()
                     
-                    
-                    describe(" insert", {
+                    describe("Basic tests") {
+                        describe(" insert", {
+                            
+                            model.name = "iPhone 7"
+                            model.price = 1.2
+                            try! model.insert()
+                            debugPrint(model)
+                        })
                         
-                        model.name = "iPhone 7"
-                        model.price = 1.2
-                        try! model.insert()
-                        debugPrint(model)
-                    })
-                    
-                    describe(" Update ", {
-                        
-                        model.name = "iMac"
-                        model.price = 99.99
-                        try! model.update()
-                        debugPrint(model)
-                    })
+                        describe(" Update ", {
+                            
+                            model.name = "iMac"
+                            model.price = 99.99
+                            try! model.update()
+                            debugPrint(model)
+                        })
 
-                    describe(" Update -save", {
-                        
-                        model.name = "iPad"
-                        model.price = 55.99
-                        try! model.save()
-                        debugPrint(model)
+                        describe(" Update -save", {
+                            
+                            model.name = "iPad"
+                            model.price = 55.99
+                            try! model.save()
+                            debugPrint(model)
 
-                    })
-                    
-                    describe(" insert-save", {
-                        // insert
-                        let m2 = ProductM()
-                        m2.name = "iWatch"
-                        m2.price = 10000
-                        try! m2.save()
-                    })
+                        })
+                        
+                        describe(" insert-save", {
+                            // insert
+                            let m2 = ProductM()
+                            m2.name = "iWatch"
+                            m2.price = 10000
+                            try! m2.save()
+                        })
+                    }
+
                     
                     //必须创建唯一索引。
 //                    describe("Query- use Map", {
@@ -94,23 +96,39 @@ class BasicSpec: QuickSpec {
                         expect(p.price).to(equal(10000))
                         expect(p.name).to(equal("iWatch"))
                         
-                        //filter等复杂操作不提供类似fetchOne的简便方法
                         let p2 = try! ProductM.read { (db) in
                             try ProductM.filter(ProductM.Columns.name == "iWatch" && ZKORMModel.Columns.id == 2).fetchOne(db)!
                         }
-                        
                         expect(p2.price).to(equal(10000))
                         expect(p2.name).to(equal("iWatch"))
                         expect(p2.id).to(equal(2))
-                    })
-                    
-                    describe("Query", {
-                        let p = try! ProductM.read { (db) in
+                        
+                        
+                        let p3 = try! ProductM.read { (db) in
                             try ProductM.filter(ProductM.Columns.name == "iWatch" && ZKORMModel.Columns.id > 1).fetchOne(db)!
                         }
-                        expect(p.price).to(equal(10000))
-                        expect(p.id).to(equal(2))
+                        expect(p3.price).to(equal(10000))
+                        expect(p3.id).to(equal(2))
+                    })
+                    
+                    describe("Query- use convenient find methods", {
                         
+                        let p =  try! ProductM.findOne(ProductM.Columns.name == "iWatch")!
+                        expect(p.price).to(equal(10000))
+                        expect(p.name).to(equal("iWatch"))
+                        
+                        let p2 = try! ProductM.findOne(ProductM.Columns.name == "iWatch" && ZKORMModel.Columns.id == 2)!
+                        expect(p2.price).to(equal(10000))
+                        expect(p2.name).to(equal("iWatch"))
+                        expect(p2.id).to(equal(2))
+                        
+                        let p3 = try! ProductM.findOne(ProductM.Columns.name == "iWatch" && ZKORMModel.Columns.id > 1)!
+                        expect(p3.price).to(equal(10000))
+                        expect(p3.id).to(equal(2))
+                    })
+                    
+                    describe("Query -- Chain Order limit", {
+
                         
                         // insert 10 rows
                         for i in 0..<10{
@@ -121,7 +139,7 @@ class BasicSpec: QuickSpec {
                             try! m.save()
                         }
                         
-                        describe("Expressible Order", {
+                        describe("Chain Order limit", {
                             //Query order
                             let products = try! ProductM.read { (db) in
                                 try ProductM.filter(ProductM.Columns.code > 3)
@@ -129,6 +147,18 @@ class BasicSpec: QuickSpec {
                                     .limit(5)
                                     .fetchAll(db)  //TODO: 进行db植入？！？！
                             }
+                            
+                            //verify Query
+                            var i = 4;
+                            for product in products{
+                                expect(product.code).to(equal(i))
+                                i += 1
+                            }
+                        })
+                        
+                        describe("Chain Order limit -- use convenient find methods", {
+                            //Query order
+                            let products = try! ProductM.findAll(ProductM.Columns.code > 3, order:[ProductM.Columns.code], limit:5)
                             
                             //verify Query
                             var i = 4;
@@ -149,16 +179,25 @@ class BasicSpec: QuickSpec {
 //                    })
                     
                     describe("Delete", {
-                        try! ProductM.write({ db in
-                            try! ProductM.filter(ProductM.Columns.name == "iWatch").deleteAll(db)
+//                        try! ProductM.write({ db in
+//                            try! ProductM.filter(ProductM.Columns.name == "iWatch").deleteAll(db)
+//                        })
+                        
+                        try! ProductM.deleteAll(ProductM.Columns.name == "iWatch")
+                        
+                        describe("count", {
+                            let count = try! ProductM.read { (db) in
+                                try ProductM.filter(ProductM.Columns.name == "iWatch")
+                                    .fetchCount(db)
+                            }
+                            expect(count).to(equal(0))
                         })
                         
-                        let count = try! ProductM.read { (db) in
-                            try ProductM.filter(ProductM.Columns.name == "iWatch")
-                                .fetchCount(db)
-                        }
-                        expect(count).to(equal(0))
-                      
+                        describe("count -- use find ", {
+                            let count = try! ProductM.findCount(ProductM.Columns.name == "iWatch")
+                            expect(count).to(equal(0))
+                        })
+                        
                     })
                 })
 

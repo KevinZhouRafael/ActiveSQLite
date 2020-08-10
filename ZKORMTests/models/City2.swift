@@ -44,6 +44,12 @@ class City2: ZKORMModel {
     override func encode(to container: inout PersistenceContainer) {
         container[Column("name")] = name
         container[Column("code")] = code
+//        for column in Columns.allCases{
+//            //column.rawValue也可以
+////            if String(describing: column) != column.name {
+//                container[column] = name
+////            }
+//        }
         super.encode(to: &container)
     }
     

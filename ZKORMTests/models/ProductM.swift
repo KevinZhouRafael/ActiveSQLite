@@ -70,6 +70,7 @@ class ProductM:ZKORMModel{
         container[Columns.code] = code
         container[Columns.type] = type
         container[Columns.publish_date] = publish_date
+        
         super.encode(to: &container)
     }
 

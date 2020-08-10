@@ -8,19 +8,14 @@
 
 import Foundation
 import GRDB
+//TODO: 通过keyPath参数查询, 支持链式调用chain query
 
 //MARK: Query
 public extension ZKORMProtocol where Self:ZKORMModel{
     
-    static func findAll() throws -> [Self]{
+    static func findAll2() throws -> [Self]{
         return try getDBQueue().read{ db in
             try self.fetchAll(db)
-        }
-    }
-    
-    static func findAll2() throws -> [Self]{
-        try getDBQueue().read{ db in
-            return try self.fetchAll(db)
         }
     }
     
@@ -35,6 +30,36 @@ public extension ZKORMProtocol where Self:ZKORMModel{
         }
     }
     
+    
+    static func findAll(_ predicate: GRDB.SQLExpressible,order orderings: [GRDB.SQLOrderingTerm]? = nil,limit: Int? = nil, offset: Int? = nil) throws -> [Self]{
+        return try getDBQueue().read{ db in
+            var request = filter(predicate)
+            if let os = orderings{
+                request = request.order(os)
+            }
+            if let l = limit{
+                request = request.limit(l, offset: offset)
+            }
+            return try request.fetchAll(db)
+        }
+    }
+    
+    static func findOne(_ predicate: GRDB.SQLExpressible,order orderings: [GRDB.SQLOrderingTerm]? = nil) throws -> Self?{
+        return try getDBQueue().read{ db in
+            var request = filter(predicate)
+            if let os = orderings{
+                request = request.order(os)
+            }
+            return try request.fetchOne(db)
+        }
+    }
+    
+    static func findCount(_ predicate: GRDB.SQLExpressible) throws -> Int{
+        return try getDBQueue().read{ db in
+            try filter(predicate)
+            .fetchCount(db)
+        }
+    }
 }
 
 
@@ -42,25 +67,25 @@ public extension ZKORMProtocol where Self:ZKORMModel{
 // 必须加唯一索引才可查询。否则使用filter column，再fetch，即不使用key value。 TODO:把key value 转化成column。
 public extension ZKORMProtocol where Self:ZKORMModel, Self:TableRecord{
     
-    static func fetchCursor() throws -> RecordCursor<Self> {
+    static func findCursor() throws -> RecordCursor<Self> {
         try getDBQueue().read({ db in
             return try fetchCursor(db)
         })
     }
     
-    static func fetchAll() throws -> [Self] {
+    static func findAll() throws -> [Self] {
         try getDBQueue().read({ db in
             return try fetchAll(db)
         })
     }
     
-    static func fetchOne() throws -> Self? {
+    static func findOne() throws -> Self? {
         try getDBQueue().read({ db in
             return try fetchOne(db)
         })
     }
     
-    static func fetchCursor<Sequence>(keys: Sequence)
+    static func findCursor<Sequence>(keys: Sequence)
         throws -> RecordCursor<Self>
         where Sequence: Swift.Sequence, Sequence.Element: DatabaseValueConvertible
     {
@@ -69,7 +94,7 @@ public extension ZKORMProtocol where Self:ZKORMModel, Self:TableRecord{
         })
     }
     
-    static func fetchAll<Sequence>( keys: Sequence)
+    static func findAll<Sequence>( keys: Sequence)
         throws -> [Self]
         where Sequence: Swift.Sequence, Sequence.Element: DatabaseValueConvertible {
         try getDBQueue().read({ db in
@@ -77,7 +102,7 @@ public extension ZKORMProtocol where Self:ZKORMModel, Self:TableRecord{
         })
     }
     
-    static func fetchOne<PrimaryKeyType>(key: PrimaryKeyType?)
+    static func findOne<PrimaryKeyType>(key: PrimaryKeyType?)
         throws -> Self?
         where PrimaryKeyType: DatabaseValueConvertible
     {
@@ -86,7 +111,7 @@ public extension ZKORMProtocol where Self:ZKORMModel, Self:TableRecord{
         })
     }
     
-    static func fetchCursor(keys: [[String: DatabaseValueConvertible?]])
+    static func findCursor(keys: [[String: DatabaseValueConvertible?]])
         throws -> RecordCursor<Self>
     {
         try getDBQueue().read({ db in
@@ -94,13 +119,13 @@ public extension ZKORMProtocol where Self:ZKORMModel, Self:TableRecord{
         })
     }
 
-    static func fetchAll(keys: [[String: DatabaseValueConvertible?]]) throws -> [Self] {
+    static func findAll(keys: [[String: DatabaseValueConvertible?]]) throws -> [Self] {
         try getDBQueue().read({ db in
             return try fetchAll(db, keys: keys)
         })
     }
 
-    static func fetchOne(key: [String: DatabaseValueConvertible?]?) throws -> Self? {
+    static func findOne(key: [String: DatabaseValueConvertible?]?) throws -> Self? {
         try getDBQueue().read({ db in
             return try fetchOne(db, key: key)
         })

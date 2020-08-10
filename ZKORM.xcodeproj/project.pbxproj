@@ -10,7 +10,6 @@
 		0A2B592824D7B55700FBAED9 /* ZKORMProtocol+Query.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2B592724D7B55600FBAED9 /* ZKORMProtocol+Query.swift */; };
 		0A67779324B4251B00FBF054 /* ZKORMError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A67779224B4251B00FBF054 /* ZKORMError.swift */; };
 		0A84663424DA563F0025F654 /* ZKORMProtocol+Save.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A84663324DA563F0025F654 /* ZKORMProtocol+Save.swift */; };
-		0A84663524DA85FA0025F654 /* UpdateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56D0EF881F0C962600167862 /* UpdateSpec.swift */; };
 		0A84663624DBD85B0025F654 /* BatchSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56A778221F02568200829FDF /* BatchSpec.swift */; };
 		0A84663824DBDBAC0025F654 /* Users.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56A7782A1F02568200829FDF /* Users.swift */; };
 		0A84663924DBDBB30025F654 /* TranscationSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56D0EF821F0B41B700167862 /* TranscationSpec.swift */; };
@@ -18,6 +17,7 @@
 		0A84663B24DBF8390025F654 /* MultiDBSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF6CD558201231AA009BA3C9 /* MultiDBSpec.swift */; };
 		0A84663C24DBF9850025F654 /* City.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF6CD55A2012321C009BA3C9 /* City.swift */; };
 		0A84663D24DBF98A0025F654 /* City2.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF6CD55C20123256009BA3C9 /* City2.swift */; };
+		0A84663F24DDB61B0025F654 /* UpdateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A84663E24DDB61B0025F654 /* UpdateSpec.swift */; };
 		56A778061F02561F00829FDF /* ZKORM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 56A777FC1F02561F00829FDF /* ZKORM.framework */; };
 		56A7780B1F02561F00829FDF /* ZKORMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56A7780A1F02561F00829FDF /* ZKORMTests.swift */; };
 		56A7780D1F02561F00829FDF /* ZKORM.h in Headers */ = {isa = PBXBuildFile; fileRef = 56A777FF1F02561F00829FDF /* ZKORM.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -55,6 +55,7 @@
 		0A67779224B4251B00FBF054 /* ZKORMError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZKORMError.swift; sourceTree = "<group>"; };
 		0A67779424B43B8100FBF054 /* ErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorTests.swift; sourceTree = "<group>"; };
 		0A84663324DA563F0025F654 /* ZKORMProtocol+Save.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ZKORMProtocol+Save.swift"; sourceTree = "<group>"; };
+		0A84663E24DDB61B0025F654 /* UpdateSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateSpec.swift; sourceTree = "<group>"; };
 		1FAB30A7D6EE168D6E65A478 /* Pods_ZKORM.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZKORM.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		45F6AAA00336A44ED8A66005 /* Pods-ActiveSQLiteTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActiveSQLiteTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActiveSQLiteTests/Pods-ActiveSQLiteTests.debug.xcconfig"; sourceTree = "<group>"; };
 		530CEE48DCA32607259D96C1 /* Pods-ZKORM.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZKORM.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ZKORM/Pods-ZKORM.debug.xcconfig"; sourceTree = "<group>"; };
@@ -81,7 +82,6 @@
 		56D0EF7F1F0B3F2300167862 /* ZKORM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZKORM.swift; sourceTree = "<group>"; };
 		56D0EF821F0B41B700167862 /* TranscationSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TranscationSpec.swift; sourceTree = "<group>"; };
 		56D0EF841F0BAB9000167862 /* ZKORMLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZKORMLogger.swift; sourceTree = "<group>"; };
-		56D0EF881F0C962600167862 /* UpdateSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateSpec.swift; sourceTree = "<group>"; };
 		7429F113C8806133664CE661 /* Pods-ActiveSQLite.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActiveSQLite.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActiveSQLite/Pods-ActiveSQLite.release.xcconfig"; sourceTree = "<group>"; };
 		7E5D2340B6AFF8B1A0387F07 /* Pods-ZKORM.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZKORM.release.xcconfig"; path = "Pods/Target Support Files/Pods-ZKORM/Pods-ZKORM.release.xcconfig"; sourceTree = "<group>"; };
 		7EDE12BD8C74D4DC1C4D27E7 /* Pods_ZKORMTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZKORMTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -166,7 +166,7 @@
 				56A7780C1F02561F00829FDF /* Info.plist */,
 				56A778271F02568200829FDF /* models */,
 				56A778251F02568200829FDF /* BasicSpec.swift */,
-				56D0EF881F0C962600167862 /* UpdateSpec.swift */,
+				0A84663E24DDB61B0025F654 /* UpdateSpec.swift */,
 				56A778221F02568200829FDF /* BatchSpec.swift */,
 				56A7782B1F02568200829FDF /* DateSpec.swift */,
 				56D0EF821F0B41B700167862 /* TranscationSpec.swift */,
@@ -426,6 +426,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A84663F24DDB61B0025F654 /* UpdateSpec.swift in Sources */,
 				0A84663924DBDBB30025F654 /* TranscationSpec.swift in Sources */,
 				0A84663824DBDBAC0025F654 /* Users.swift in Sources */,
 				0A84663C24DBF9850025F654 /* City.swift in Sources */,
@@ -436,7 +437,6 @@
 				56A7780B1F02561F00829FDF /* ZKORMTests.swift in Sources */,
 				CF348CA42010FADC00126A31 /* Utils.swift in Sources */,
 				0A84663B24DBF8390025F654 /* MultiDBSpec.swift in Sources */,
-				0A84663524DA85FA0025F654 /* UpdateSpec.swift in Sources */,
 				56A7782E1F02568200829FDF /* CommonConfiguration.swift in Sources */,
 				56A778301F02568200829FDF /* BasicSpec.swift in Sources */,
 			);
