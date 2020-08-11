@@ -128,13 +128,16 @@ public extension ZKORMProtocol where Self:ZKORMModel{
                 }
             
             case _ as Double.Type,
-                 _ as Float.Type,
-                 _ as Float80.Type:
+                 _ as Float.Type:
                 t.column(column, .double).notNull().defaults(to: 0.0)
             case _ as Double?.Type,
-                 _ as Float?.Type,
-                 _ as Float80?.Type:
+                 _ as Float?.Type:
                 t.column(column, .double)
+                
+            case _ as Bool.Type:
+                t.column(column, .boolean).notNull().defaults(to: false)
+            case _ as Bool?.Type:
+                t.column(column, .boolean)
                 
             case _ as Date.Type:
                 t.column(column, .datetime).notNull().defaults(to: Date(timeIntervalSince1970: 0))

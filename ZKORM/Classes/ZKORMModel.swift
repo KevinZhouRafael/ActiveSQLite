@@ -9,18 +9,6 @@
 import Foundation
 import GRDB
 
-
-/*
- Model Type    SQLite.swift Type      SQLite Type
- NSNumber    Int64(Int,Bool)         INTEGER
- NSNumber    Double                  REAL
- String      String                  TEXT
- nil         nil                     NULL
- --------    SQLite.Blob†             BLOB
- NSDate      Int64                   INTEGER
- */
-
-
 open class ZKORMModel:Record,ZKORMProtocol{
 
     public internal(set) var id:Int64? //id primary key
@@ -32,7 +20,6 @@ open class ZKORMModel:Record,ZKORMProtocol{
     
 //    public static var db:Database! //createtable之后，赋值。如果保存，使用时候会错误： database was not used on current thread.
 
-    
     required public init(from decoder: Decoder) throws {
         fatalError("init(from:) has not been implemented")
     }
@@ -58,7 +45,7 @@ open class ZKORMModel:Record,ZKORMProtocol{
     open override class var databaseTableName: String { nameOfTable }
     
     /// The table columns
-    enum Columns: String, ColumnExpression,CaseIterable {
+    public enum Columns: String, ColumnExpression,CaseIterable {
         case id, created_at, updated_at
     }
     
