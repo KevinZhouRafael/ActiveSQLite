@@ -31,15 +31,19 @@ public extension ZKORMProtocol where Self:ZKORMModel{
     }
     
     
-    static func findAll(_ predicate: GRDB.SQLExpressible,order orderings: [GRDB.SQLOrderingTerm]? = nil,limit: Int? = nil, offset: Int? = nil) throws -> [Self]{
+    static func findAll(_ predicate: GRDB.SQLExpressible? = nil,order orderings: [GRDB.SQLOrderingTerm]? = nil,limit: Int? = nil, offset: Int? = nil) throws -> [Self]{
         return try getDBQueue().read{ db in
-            var request = filter(predicate)
+            var request = all()
+            if let p = predicate{
+                request = request.filter(p)
+            }
             if let os = orderings{
                 request = request.order(os)
             }
             if let l = limit{
                 request = request.limit(l, offset: offset)
             }
+            
             return try request.fetchAll(db)
         }
     }

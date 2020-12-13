@@ -33,6 +33,10 @@ public extension ZKORMProtocol where Self:ZKORMModel{
         try self.init().createTable()
     }
     
+    static func createTable(_ db:GRDB.Database) throws{
+        try self.init().createTable(db)
+    }
+    
     func createTable(_ db:GRDB.Database) throws{
         if try !db.tableExists(nameOfTable){
             try db.create(table: nameOfTable,ifNotExists:true){ t in
@@ -80,8 +84,13 @@ public extension ZKORMProtocol where Self:ZKORMModel{
     }
     
     internal  func autoCreateColumns(_ t:TableDefinition){
+        //        let uniques = uniqueProperties()
+                
         for case let (propertyName,column, value) in self.recursionProperties() {
-            
+                    
+        //            let isUnique:Bool = uniqueProperties().contains(propertyName)
+        //            var columnDefinition:ColumnDefinition!
+                    
             //check primaryKey
             if propertyName == primaryKeyPropertyName {
                 t.autoIncrementedPrimaryKey(column)
@@ -109,7 +118,11 @@ public extension ZKORMProtocol where Self:ZKORMModel{
                 if propertyName == primaryKeyPropertyName {
                      t.autoIncrementedPrimaryKey(column)
                 }else{
-                    t.column(column, .integer).notNull().defaults(to: 0)
+//                    if uniqueProperties().contains(propertyName) {
+//                        t.column(column, .integer).notNull().defaults(to: 0).unique()
+//                    }else{
+                        t.column(column, .integer).notNull().defaults(to: 0)
+//                    }
                 }
             case _ as Int?.Type,
                 _ as Int8?.Type,

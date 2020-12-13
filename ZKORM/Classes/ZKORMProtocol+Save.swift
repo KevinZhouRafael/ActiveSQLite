@@ -77,12 +77,30 @@ public extension ZKORMProtocol where Self:ZKORMModel{
         })
     }
     
+    
     func save() throws{
         try getDBQueue().inDatabase {[weak self] db in
             try self?.createTable(db)
             try self?.save(db)
         }
     }
+    
+    static func save(models:[Self]) throws{
+        try getDBQueue().inDatabase({ db in
+            try save(db, models: models)
+        })
+    }
+    
+    static func save(_ db: Database, models: [Self]) throws {
+        try db.inSavepoint {
+            for m in models{
+                try m.createTable(db)
+                try m.save(db)
+            }
+            return .commit
+        }
+    }
+    
     func delete() throws{
         try getDBQueue().inDatabase {[weak self] db in
             _ = try self?.delete(db)

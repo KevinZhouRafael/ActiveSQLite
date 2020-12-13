@@ -21,9 +21,12 @@ public  func save(dbQueue:DatabaseQueue? = nil, _ block: @escaping (GRDB.Databas
         
         let excuteQueue = (dbQueue != nil ? dbQueue! : try ZKORMConfigration.getDefaultDBQueue())
         
-        try excuteQueue.write({ db in
-            try block(db)
-        })
+        try excuteQueue.inDatabase { (db) in
+            try db.inTransaction {
+                try block(db)
+                return .commit
+            }
+        }
         
         Log.i("Transcation success")
         completion?(nil)
@@ -38,43 +41,63 @@ public  func save(dbQueue:DatabaseQueue? = nil, _ block: @escaping (GRDB.Databas
 public  func saveAsync(dbQueue:DatabaseQueue? = nil, _ block: @escaping (GRDB.Database)throws -> Void,
                              completion: ((_ error:Error?)->Void)? = nil) -> Void  {
     
-    DispatchQueue.global().async {
-        
-        do{
-            let excuteQueue = (dbQueue != nil ? dbQueue! : try ZKORMConfigration.getDefaultDBQueue())
-            
-            //            try excuteDB.transaction(.exclusive, block: {
-            //                try block()
-            //            })
-            try excuteQueue.asyncWrite({ db in
+    let excuteQueue = (dbQueue != nil ? dbQueue! : try! ZKORMConfigration.getDefaultDBQueue())
+    
+    excuteQueue.asyncWriteWithoutTransaction { db in
+        do {
+            try db.inTransaction {
                 try block(db)
-            }, completion: { (db: Database, result: Result<Void, Error>) in
-                switch result {
-                case let .success:
-                    Log.i("Transcation success")
-                    
-                    DispatchQueue.main.async {
-                        completion?(nil)
-                    }
-                case let .failure(error):
-                    Log.i("Transcation failure:\(error)")
-                    
-                    DispatchQueue.main.async {
-                        completion?(error)
-                    }
-                }
-            })
-            
-            
-        }catch{
-            Log.e("Transcation failure:\(error)")
+                return .commit
+            }
+            Log.i("Transcation success")
+        } catch {
+
+            Log.i("Transcation failure:\(error)")
             
             DispatchQueue.main.async {
                 completion?(error)
             }
         }
-        
     }
+    
+//    DispatchQueue.global().async {
+//
+//        do{
+//            let excuteQueue = (dbQueue != nil ? dbQueue! : try DBConfigration.getDefaultDBQueue())
+//
+//            //            try excuteDB.transaction(.exclusive, block: {
+//            //                try block()
+//            //            })
+//
+//            try excuteQueue.asyncWrite({ db in
+//                try block(db)
+//            }, completion: { (db: Database, result: Result<Void, Error>) in
+//                switch result {
+//                case let .success:
+//                    Log.i("Transcation success")
+//
+//                    DispatchQueue.main.async {
+//                        completion?(nil)
+//                    }
+//                case let .failure(error):
+//                    Log.i("Transcation failure:\(error)")
+//
+//                    DispatchQueue.main.async {
+//                        completion?(error)
+//                    }
+//                }
+//            })
+//
+//
+//        }catch{
+//            Log.e("Transcation failure:\(error)")
+//
+//            DispatchQueue.main.async {
+//                completion?(error)
+//            }
+//        }
+//
+//    }
     
 }
 

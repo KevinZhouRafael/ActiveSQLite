@@ -31,6 +31,9 @@ public extension ZKORMProtocol where Self:ZKORMModel{
         }
     }
 
+    func uniqueProperties() -> [String]{
+        return [String]()
+    }
     
     //MARK: Utils
     static func read<T>(_ block: (Database) throws-> T) throws  -> T{
