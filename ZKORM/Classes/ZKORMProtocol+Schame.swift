@@ -74,12 +74,26 @@ public extension ZKORMProtocol where Self:ZKORMModel{
     }
     
     internal func autoCreateIndexs(_ db:GRDB.Database) throws{
+        let indexProperties = needAddIndexProperties()
+        guard indexProperties.count > 0 else {
+            return
+        }
+
         for case let (propertyName,columnName, value) in self.recursionProperties() {
             if propertyName == primaryKeyPropertyName {
                 continue
             }
-            try db.create(index: "indexBy\(propertyName)On\(nameOfTable)", on: nameOfTable, columns: [columnName])
-//            try db.create(index: "indexBy\(propertyName)", on: nameOfTable, columns: [columnName],unique: true)
+            if [DBModel.CREATE_AT_KEY,DBModel.UPDATE_AT_KEY].contains(propertyName){
+                try db.create(index: "indexBy\(propertyName)On\(nameOfTable)", on: nameOfTable, columns: [columnName])
+                continue
+            }
+            
+            for indexProperty in indexProperties {
+                if indexProperty == propertyName {
+                    try db.create(index: "indexBy\(propertyName)On\(nameOfTable)", on: nameOfTable, columns: [columnName])
+        //            try db.create(index: "indexBy\(propertyName)", on: nameOfTable, columns: [columnName],unique: true)
+                }
+            }
         }
     }
     

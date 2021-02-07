@@ -13,6 +13,7 @@ import GRDB
 //MARK: Query
 public extension ZKORMProtocol where Self:ZKORMModel{
     
+    //TODO:删除
     static func findAll2() throws -> [Self]{
         return try getDBQueue().read{ db in
             try self.fetchAll(db)

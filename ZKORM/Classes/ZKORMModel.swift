@@ -126,6 +126,10 @@ open class ZKORMModel:Record,ZKORMProtocol{
         return [String]()
     }
     
+    open func needAddIndexProperties() -> [String]{
+        return []
+    }
+    
     open var nameOfTable:String{
         get{
             return type(of: self).nameOfTable
