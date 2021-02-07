@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ZKORM'
-  s.version          = '0.6.0'
+  s.version          = '0.6.1'
   s.summary          = 'ZKORM is an helper of GRDB.Swift. It can let you use GRDB.swift easily.'
 
 # This description is used to generate tags and improve search results.
@@ -39,6 +39,6 @@ ZKORM is an helper of GRDB.Swift. It can let you use GRDB.swift easily..
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
-  s.dependency 'GRDB.swift' , '5.0.1'
+  s.dependency 'GRDB.swift' , '5.3.0'
   # s.dependency 'CocoaLumberjack/Swift'
 end

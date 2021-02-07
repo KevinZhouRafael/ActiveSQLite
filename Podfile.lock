@@ -1,16 +1,16 @@
 PODS:
-  - CocoaLumberjack (3.6.1):
-    - CocoaLumberjack/Core (= 3.6.1)
-  - CocoaLumberjack/Core (3.6.1)
-  - GRDB.swift (4.14.0):
-    - GRDB.swift/standard (= 4.14.0)
-  - GRDB.swift/standard (4.14.0)
-  - Nimble (8.1.1)
-  - Quick (3.0.0)
+  - CocoaLumberjack (3.7.0):
+    - CocoaLumberjack/Core (= 3.7.0)
+  - CocoaLumberjack/Core (3.7.0)
+  - GRDB.swift (5.3.0):
+    - GRDB.swift/standard (= 5.3.0)
+  - GRDB.swift/standard (5.3.0)
+  - Nimble (9.0.0)
+  - Quick (3.1.0)
 
 DEPENDENCIES:
   - CocoaLumberjack
-  - GRDB.swift (= 4.14.0)
+  - GRDB.swift
   - Nimble
   - Quick
 
@@ -22,11 +22,11 @@ SPEC REPOS:
     - Quick
 
 SPEC CHECKSUMS:
-  CocoaLumberjack: b17ae15142558d08bbacf69775fa10c4abbebcc9
-  GRDB.swift: 8cc3ab7c8b8b4ac1761deb8dca4b51c1c9d429f8
-  Nimble: 5f8a2fb6fa343a7242dfdd9d42f7267419d464b2
-  Quick: 6d9559f40647bc4d510103842ef2fdd882d753e2
+  CocoaLumberjack: e8955b9d337ac307103b0a34fd141c32f27e53c5
+  GRDB.swift: 6d44795b19d716e9f09f19018c3bde5b71b67ae9
+  Nimble: 3b4ec3fd40f1dc178058e0981107721c615643d8
+  Quick: c723104474cdb9d47787d64d1198d0246dffec94
 
-PODFILE CHECKSUM: 801061a3b6baf544ce4db540cccda435b1c04f76
+PODFILE CHECKSUM: bd74c6fd2a2b5bb156e04232db54a1d0fd5bb7d7
 
 COCOAPODS: 1.9.3

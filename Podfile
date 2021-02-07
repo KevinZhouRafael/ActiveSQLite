@@ -4,7 +4,7 @@ use_frameworks!
 target ‘ZKORM’ do
 
    pod 'CocoaLumberjack'
-   pod 'GRDB.swift'#, '5.0.1'
+   pod 'GRDB.swift'#, '5.3.0'
 end
 
 target ‘ZKORMTests' do
