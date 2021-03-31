@@ -50,6 +50,9 @@ public  func saveAsync(dbQueue:DatabaseQueue? = nil, _ block: @escaping (GRDB.Da
                 return .commit
             }
             Log.i("Transcation success")
+            DispatchQueue.main.async {
+                completion?(nil)
+            }
         } catch {
 
             Log.i("Transcation failure:\(error)")
