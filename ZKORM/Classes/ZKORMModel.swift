@@ -11,7 +11,8 @@ import GRDB
 
 open class ZKORMModel:Record,ZKORMProtocol{
 
-    public internal(set) var id:Int64? //id primary key
+//    public internal(set) var id:Int64? //id primary key
+    public var id:Int64? //id primary key
     public var created_at:Date? //Create Time, ms
     public var updated_at:Date? // Update Time，ms
     
