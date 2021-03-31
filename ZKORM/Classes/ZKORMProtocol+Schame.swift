@@ -83,7 +83,7 @@ public extension ZKORMProtocol where Self:ZKORMModel{
             if propertyName == primaryKeyPropertyName {
                 continue
             }
-            if [DBModel.CREATE_AT_KEY,DBModel.UPDATE_AT_KEY].contains(propertyName){
+            if [ZKORMModel.CREATE_AT_KEY,ZKORMModel.UPDATE_AT_KEY].contains(propertyName){
                 try db.create(index: "indexBy\(propertyName)On\(nameOfTable)", on: nameOfTable, columns: [columnName])
                 continue
             }
