@@ -9,7 +9,7 @@
 import Foundation
 import GRDB
 
-public protocol ZKORMProtocol:class {
+public protocol ZKORMProtocol:AnyObject {
     
 }
 

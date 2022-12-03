@@ -7,9 +7,11 @@
 //
 
 import Quick
+import GRDB
+import Foundation
 
 class CommonConfiguration: QuickConfiguration {
-    override class func configure(_ configuration: Configuration) {
-
+    override class func configure(_ configuration: QCKConfiguration!) {
+        
     }
 }

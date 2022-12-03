@@ -10,6 +10,10 @@ import Foundation
 import GRDB
 @testable import ZKORM
 
+//TODO: 把下列函数自动化。
+//遍历属性，然后除去临时属性，
+//required init(row: Row) throws{
+//override func encode(to container: inout PersistenceContainer) {
 class ProductM:ZKORMModel{
     
     //必须显示指名，否则Columns的'CodingKeys' is inaccessible due to 'private' protection level
@@ -45,8 +49,8 @@ class ProductM:ZKORMModel{
     var version:Int8?
     
     
-    required init(row: Row) {
-        super.init(row: row)
+    required init(row: Row) throws{
+        try super.init(row: row)
         name = row[Columns.name]
         price = row[Columns.price]
         desc = row[Columns.desc]

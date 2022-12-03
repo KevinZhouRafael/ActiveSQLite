@@ -51,11 +51,11 @@ open class ZKORMModel:Record,ZKORMProtocol{
     }
     
     /// Creates a record from a database row
-    required public init(row: Row) {
+    required public init(row: Row) throws{
         id = row[Columns.id]
         created_at = row[Columns.created_at]
         updated_at = row[Columns.updated_at]
-        super.init(row: row)
+        try super.init(row: row)
     }
     
     /// The values persisted in the database
@@ -66,11 +66,12 @@ open class ZKORMModel:Record,ZKORMProtocol{
     }
     
     // Update auto-incremented id upon successful insertion
-    open override func didInsert(with rowID: Int64, for column: String?) {
-        id = rowID
+    open override func didInsert(_ inserted: InsertionSuccess) {
+//        super.didInsert(inserted)
+        id = inserted.rowID
     }
     
-    public override func insert(_ db: Database) throws {
+    open override func willInsert(_ db: Database) throws {
 //        try validate()
         
         let currentDateInterval = Date()
@@ -81,10 +82,10 @@ open class ZKORMModel:Record,ZKORMProtocol{
             updated_at = currentDateInterval
         }
         
-        try performInsert(db)
+//        try performInsert(db)
     }
     
-    public override func update(_ db: Database, columns: Set<String>) throws {
+    open override func willUpdate(_ db: Database, columns: Set<String>) throws {
 //        try validate()
         
         updated_at = Date()
@@ -94,7 +95,7 @@ open class ZKORMModel:Record,ZKORMProtocol{
             toUpdateColumns.insert(Self.UPDATE_AT_KEY)
         }
             
-        try performUpdate(db, columns: toUpdateColumns)
+//        try performUpdate(db, columns: toUpdateColumns)
     }
     
     //MARK: override

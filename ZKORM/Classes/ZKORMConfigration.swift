@@ -29,15 +29,12 @@ open class ZKORMConfigration {
     //        guard dbQueueMap[name] == nil else {
     //            return
     //        }
-            if isAutoCreate || fileExists( path){
-                do{
-                    
-                    let db = try DatabaseQueue(path:path)
-                    dbQueueMap[name] = db
-                }catch{
-                    Log.e(error)
-                }
-               
+
+            do{
+                let db = try DatabaseQueue(path:path)
+                dbQueueMap[name] = db
+            }catch{
+                Log.e(error)
             }
             
             if logLevel == .debug {

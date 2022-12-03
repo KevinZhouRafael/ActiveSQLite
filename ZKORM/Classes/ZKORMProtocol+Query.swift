@@ -32,7 +32,7 @@ public extension ZKORMProtocol where Self:ZKORMModel{
     }
     
     
-    static func findAll(_ predicate: GRDB.SQLExpressible? = nil,order orderings: [GRDB.SQLOrderingTerm]? = nil,limit: Int? = nil, offset: Int? = nil) throws -> [Self]{
+    static func findAll(_ predicate: GRDB.SQLSpecificExpressible? = nil,order orderings: [GRDB.SQLOrderingTerm]? = nil,limit: Int? = nil, offset: Int? = nil) throws -> [Self]{
         return try getDBQueue().read{ db in
             var request = all()
             if let p = predicate{
@@ -49,7 +49,7 @@ public extension ZKORMProtocol where Self:ZKORMModel{
         }
     }
     
-    static func findOne(_ predicate: GRDB.SQLExpressible,order orderings: [GRDB.SQLOrderingTerm]? = nil) throws -> Self?{
+    static func findOne(_ predicate: GRDB.SQLSpecificExpressible,order orderings: [GRDB.SQLOrderingTerm]? = nil) throws -> Self?{
         return try getDBQueue().read{ db in
             var request = filter(predicate)
             if let os = orderings{
@@ -59,7 +59,7 @@ public extension ZKORMProtocol where Self:ZKORMModel{
         }
     }
     
-    static func findCount(_ predicate: GRDB.SQLExpressible) throws -> Int{
+    static func findCount(_ predicate: GRDB.SQLSpecificExpressible) throws -> Int{
         return try getDBQueue().read{ db in
             try filter(predicate)
             .fetchCount(db)

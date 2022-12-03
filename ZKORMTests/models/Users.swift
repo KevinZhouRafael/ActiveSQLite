@@ -25,8 +25,8 @@ class Users:ZKORMModel,CreateColumnsProtocol{
         return true
     }
     
-    required init(row: Row) {
-        super.init(row: row)
+    required init(row: Row) throws{
+        try super.init(row: row)
         name = row["name"]
     }
     

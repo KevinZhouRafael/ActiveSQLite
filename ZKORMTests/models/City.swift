@@ -19,8 +19,8 @@ class City: ZKORMModel {
         case code
     }
     
-    required init(row: Row) {
-        super.init(row: row)
+    required init(row: Row)throws {
+        try super.init(row: row)
         name = row[Columns.name]
         code = row[Columns.code]
         

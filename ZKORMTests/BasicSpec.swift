@@ -21,55 +21,55 @@ class BasicSpec: QuickSpec {
             
             let model: ProductM = ProductM()
 
-            describe("create Database ", {
+            describe("create Database " ){
                 
-                describe("Delete Table ", {
+                describe("Delete Table " ){
                     
                     try? ProductM.dropTable()
-                })
+                }
                 
-                describe("create Table ", {
+                describe("create Table " ){
                     
                     try! ProductM.createTable()
                     
                     describe("Basic tests") {
-                        describe(" insert", {
+                        describe(" insert" ){
                             
                             model.name = "iPhone 7"
                             model.price = 1.2
                             try! model.insert()
                             debugPrint(model)
-                        })
+                        }
                         
-                        describe(" Update ", {
+                        describe(" Update " ){
                             
                             model.name = "iMac"
                             model.price = 99.99
                             try! model.update()
                             debugPrint(model)
-                        })
+                        }
 
-                        describe(" Update -save", {
+                        describe(" Update -save" ){
                             
                             model.name = "iPad"
                             model.price = 55.99
                             try! model.save()
                             debugPrint(model)
 
-                        })
+                        }
                         
-                        describe(" insert-save", {
+                        describe(" insert-save" ){
                             // insert
                             let m2 = ProductM()
                             m2.name = "iWatch"
                             m2.price = 10000
                             try! m2.save()
-                        })
+                        }
                     }
 
                     
                     //必须创建唯一索引。
-//                    describe("Query- use Map", {
+//                    describe("Query- use Map" ){
 //
 ////                        let p = try? ProductM.findOne { (db) in
 ////                            try ProductM.fetchOne(db, key: ["product_name":"iWatch"])
@@ -87,7 +87,7 @@ class BasicSpec: QuickSpec {
 //                    })
                     
                     
-                    describe("Query- use Column", {
+                    describe("Query- use Column" ){
                         
                         let p = try! ProductM.read { (db) in
                             try ProductM.filter(ProductM.Columns.name == "iWatch").fetchOne(db)!
@@ -109,9 +109,9 @@ class BasicSpec: QuickSpec {
                         }
                         expect(p3.price).to(equal(10000))
                         expect(p3.id).to(equal(2))
-                    })
+                    }
                     
-                    describe("Query- use convenient find methods", {
+                    describe("Query- use convenient find methods" ){
                         
                         let p =  try! ProductM.findOne(ProductM.Columns.name == "iWatch")!
                         expect(p.price).to(equal(10000))
@@ -125,9 +125,9 @@ class BasicSpec: QuickSpec {
                         let p3 = try! ProductM.findOne(ProductM.Columns.name == "iWatch" && ZKORMModel.Columns.id > 1)!
                         expect(p3.price).to(equal(10000))
                         expect(p3.id).to(equal(2))
-                    })
+                    }
                     
-                    describe("Query -- Chain Order limit", {
+                    describe("Query -- Chain Order limit"){
 
                         
                         // insert 10 rows
@@ -139,7 +139,7 @@ class BasicSpec: QuickSpec {
                             try! m.save()
                         }
                         
-                        describe("Chain Order limit", {
+                        describe("Chain Order limit" ){
                             //Query order
                             let products = try! ProductM.read { (db) in
                                 try ProductM.filter(ProductM.Columns.code > 3)
@@ -154,9 +154,9 @@ class BasicSpec: QuickSpec {
                                 expect(product.code).to(equal(i))
                                 i += 1
                             }
-                        })
+                        }
                         
-                        describe("Chain Order limit -- use convenient find methods", {
+                        describe("Chain Order limit -- use convenient find methods" ){
                             //Query order
                             let products = try! ProductM.findAll(ProductM.Columns.code > 3, order:[ProductM.Columns.code], limit:5)
                             
@@ -166,10 +166,10 @@ class BasicSpec: QuickSpec {
                                 expect(product.code).to(equal(i))
                                 i += 1
                             }
-                        })
-                    })
+                        }
+                    }
 
-//                    describe("Delete", {
+//                    describe("Delete" ){
 //                        try! ProductM.write({ db in
 //                            try! ProductM.filter(key: ["product_name":"iWatch"]).deleteAll(db)
 //                            let count = try! ProductM.filter(key: ["product_name":"iWatch"]).fetchCount(db)
@@ -178,30 +178,30 @@ class BasicSpec: QuickSpec {
 //
 //                    })
                     
-                    describe("Delete", {
-//                        try! ProductM.write({ db in
-//                            try! ProductM.filter(ProductM.Columns.name == "iWatch").deleteAll(db)
-//                        })
+                    describe("Delete" ){
+                        try! ProductM.write({ db in
+                            try! ProductM.filter(ProductM.Columns.name == "iWatch").deleteAll(db)
+                        })
+
+//                        try! ProductM.deleteAll(ProductM.Columns.name == "iWatch")
                         
-                        try! ProductM.deleteAll(ProductM.Columns.name == "iWatch")
-                        
-                        describe("count", {
+                        describe("count" ){
                             let count = try! ProductM.read { (db) in
                                 try ProductM.filter(ProductM.Columns.name == "iWatch")
                                     .fetchCount(db)
                             }
                             expect(count).to(equal(0))
-                        })
+                        }
                         
-                        describe("count -- use find ", {
+                        describe("count -- use find " ){
                             let count = try! ProductM.findCount(ProductM.Columns.name == "iWatch")
                             expect(count).to(equal(0))
-                        })
+                        }
                         
-                    })
-                })
+                    }
+                }
 
-            })
+            }
 
         }
     }

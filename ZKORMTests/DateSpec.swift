@@ -19,7 +19,7 @@ class DateSpec: QuickSpec {
         ZKORMConfigration.setDefaultDB(path: getTestDBPath()!, name: DBDefaultName)
         
         describe("Test Column of NSDate。 ") {
-            describe("Save", {
+            describe("Save") {
                 
                 try? ProductM.dropTable()
                 
@@ -32,7 +32,7 @@ class DateSpec: QuickSpec {
                 try! p.save()
                 
                 
-                describe("Query", closure: {
+                describe("Query"){
                     let p = try! ProductM.read { (db) in
                         try ProductM.filter(ProductM.Columns.name == "Book").fetchOne(db)!
                     }
@@ -43,7 +43,7 @@ class DateSpec: QuickSpec {
                     let dateString = formater.string(from: p.publish_date!)
                     debugPrint("Time is：\(dateString)")
                         
-                    describe("Verify", closure: {
+                    describe("Verify"){
                         
                         let calender  = NSCalendar.current
                         
@@ -55,11 +55,11 @@ class DateSpec: QuickSpec {
                             expect(components2.month).to(equal(components1.month! + 1))
                         }
                         
-                    })
+                    }
                     
 
-                })
-            })
+                }
+            }
             
             
         }

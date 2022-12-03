@@ -56,26 +56,28 @@ public extension ZKORMProtocol where Self:ZKORMModel{
         }
     }
     
-    static func updateAll(onConflict conflictResolution: Database.ConflictResolution? = nil,
-        _ assignment: ColumnAssignment,
-        _ otherAssignments: ColumnAssignment...,
-        filter predicate: GRDB.SQLExpressible)
-        throws
-    {
-        return try getDBQueue().inDatabase({ db in
-            try db.inSavepoint {
-                try filter(predicate).updateAll(db, onConflict: conflictResolution,[assignment] + otherAssignments)
-                return .commit
-            }
-        })
-    }
+//    static func updateAll(onConflict conflictResolution: Database.ConflictResolution? = nil,
+//        _ assignment: ColumnAssignment,
+//        _ otherAssignments: ColumnAssignment...,
+//        filter predicate: GRDB.SQLExpressible)
+//        throws
+//    {
+//        return try getDBQueue().inDatabase({ db in
+//            try db.inSavepoint {
+//                try filter(predicate).updateAll(db, onConflict: conflictResolution,[assignment] + otherAssignments)
+//                return .commit
+//            }
+//        })
+//    }
     
-    @discardableResult
-    func updateChanges(with change: (Self) throws -> Void) throws -> Bool {
-        try getDBQueue().inDatabase({ (db) in
-            try updateChanges(db, with: change)
-        })
-    }
+//    @discardableResult
+//    func updateChanges(
+//        onConflict conflictResolution: Database.ConflictResolution? = nil,
+//        modify: (inout Self) throws -> Void) throws -> Bool{
+//        try getDBQueue().write({ db in
+//            try updateChanges(db, onConflict: conflictResolution,modify: modify)
+//        })
+//    }
     
     
     func save() throws{
@@ -107,11 +109,11 @@ public extension ZKORMProtocol where Self:ZKORMModel{
         }
     }
     
-    @discardableResult
-    static func deleteAll(_ predicate: GRDB.SQLExpressible) throws  -> Int{
-        try getDBQueue().write({ (db) in
-            try filter(predicate).deleteAll(db)
-        })
-    }
+//    @discardableResult
+//    static func deleteAll(_ predicate: GRDB.SQLExpressible) throws  -> Int{
+//        try getDBQueue().write({ (db) in
+//            try filter(predicate).deleteAll(db)
+//        })
+//    }
 
 }

@@ -32,17 +32,17 @@ class BatchSpec: QuickSpec {
             for (index,product) in products.enumerated(){
                 XCTAssertTrue(product.id! > 0)
                 XCTAssertEqual(product.name, "Product name \(index)")
-                XCTAssertEqual(product.price.doubleValue, Double(index))
+                XCTAssertEqual(product.price, Double(index))
             }
             
-            describe("batch Update ", { 
+            describe("batch Update ") {
                 
                 let products = try! ProductM.findAll()
                 
                 for (index,product) in products.enumerated(){
                     XCTAssertEqual(product.id!, Int64(index + 1))
                     XCTAssertEqual(product.name, "Product name \(index)")
-                    XCTAssertEqual(product.price.doubleValue, Double(index))
+                    XCTAssertEqual(product.price, Double(index))
                     
                     product.name = "new name \(index)"
                 }
@@ -53,7 +53,7 @@ class BatchSpec: QuickSpec {
                     XCTAssertEqual(product.name, "new name \(index)")
                 }
                 
-            })
+            }
         }
     }
 }
