@@ -13,8 +13,9 @@ public func dbQueue() throws -> DatabaseQueue{
     try ZKORMConfigration.getDefaultDBQueue()
 }
 
-public  func save(dbQueue:DatabaseQueue? = nil, _ block: @escaping (GRDB.Database)throws -> Void,
-                        completion: ((_ error:Error?)->Void)? = nil) -> Void  {
+public func save(dbQueue:DatabaseQueue? = nil,
+                 _ block: @escaping (GRDB.Database)throws -> Void,
+             completion: ((_ error:Error?)->Void)? = nil) -> Void  {
     
     do{
         

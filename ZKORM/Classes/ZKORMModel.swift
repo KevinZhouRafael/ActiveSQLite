@@ -50,19 +50,112 @@ open class ZKORMModel:Record,ZKORMProtocol{
         case id, created_at, updated_at
     }
     
+//    open class var isAutoCreateRecordFromDB: Bool { true }
+    
     /// Creates a record from a database row
     required public init(row: Row) throws{
         id = row[Columns.id]
-        created_at = row[Columns.created_at]
-        updated_at = row[Columns.updated_at]
+        if Self.isSaveDefaulttimestamp{
+            created_at = row[Columns.created_at]
+            updated_at = row[Columns.updated_at]
+        }
+        
+        //无法自动设置属性；除非用oc技术。
+//        if Self.isAutoCreateRecordFromDB{
+//            for case let (propertyName,column, value) in self.recursionProperties() {
+//
+//            }
+//        }
         try super.init(row: row)
     }
     
+    
+    /// Auto Map func encode(to container: inout PersistenceContainer).
+    /// if value is true, ignoe 'enum Columns: String, ColumnExpression,CaseIterable {' in sub class of ZKORMModel.
+    open class var isAutoMapColumnPersistedInDB: Bool { true }
     /// The values persisted in the database
     open override func encode(to container: inout PersistenceContainer) {
         container[Columns.id] = id
-        container[Columns.created_at] = created_at
-        container[Columns.updated_at] = updated_at
+        if Self.isSaveDefaulttimestamp{
+            container[Columns.created_at] = created_at
+            container[Columns.updated_at] = updated_at
+        }
+        
+        if Self.isAutoMapColumnPersistedInDB{
+            for case let (propertyName,column, value) in self.recursionProperties() {
+                let mir = Mirror(reflecting:value)
+                switch mir.subjectType {
+                    
+                case _ as String.Type:
+                    container[column] = value as! String
+                case _ as String?.Type:
+                    container[column] = value as? String
+                    
+                case _ as Int.Type:
+                    container[column] = value as! Int
+                case _ as Int?.Type:
+                    container[column] = value as? Int
+                case _ as Int8.Type:
+                    container[column] = value as! Int8
+                case _ as Int8?.Type:
+                    container[column] = value as? Int8
+                case _ as Int16.Type:
+                    container[column] = value as! Int16
+                case _ as Int16?.Type:
+                    container[column] = value as? Int16
+                case _ as Int32.Type:
+                    container[column] = value as! Int32
+                case _ as Int32?.Type:
+                    container[column] = value as? Int32
+                case _ as Int64.Type:
+                    container[column] = value as! Int64
+                case _ as Int64?.Type:
+                    container[column] = value as? Int64
+                    
+                case _ as UInt.Type:
+                    container[column] = value as! UInt
+                case _ as UInt?.Type:
+                    container[column] = value as? UInt
+                case _ as UInt8.Type:
+                    container[column] = value as! UInt8
+                case _ as UInt8?.Type:
+                    container[column] = value as? UInt8
+                case _ as UInt16.Type:
+                    container[column] = value as! UInt16
+                case _ as UInt16?.Type:
+                    container[column] = value as? UInt16
+                case _ as UInt32.Type:
+                    container[column] = value as! UInt32
+                case _ as UInt32?.Type:
+                    container[column] = value as? UInt32
+                case _ as UInt64.Type:
+                    container[column] = value as! UInt64
+                case _ as UInt64?.Type:
+                    container[column] = value as? UInt64
+
+                case _ as Double.Type:
+                    container[column] = value as! Double
+                case _ as Double?.Type:
+                    container[column] = value as? Double
+                case _ as Float.Type:
+                    container[column] = value as! Float
+                case _ as Float?.Type:
+                    container[column] = value as? Float
+                    
+                case _ as Bool.Type:
+                    container[column] = value as! Bool
+                case _ as Bool?.Type:
+                    container[column] = value as? Bool
+                case _ as Date.Type:
+                    container[column] = value as! Date
+                case _ as Date?.Type:
+                    container[column] = value as? Date
+                    
+                default: break
+                    
+                }
+            }
+        }
     }
     
     // Update auto-incremented id upon successful insertion
@@ -124,11 +217,15 @@ open class ZKORMModel:Record,ZKORMProtocol{
         return [String:String]()
     }
     
-    open func transientTypes() -> [String]{
+    open func transientProperties() -> [String]{
         return [String]()
     }
     
     open func needAddIndexProperties() -> [String]{
+        return []
+    }
+    
+    open func uniqueProperties() -> [String]{
         return []
     }
     

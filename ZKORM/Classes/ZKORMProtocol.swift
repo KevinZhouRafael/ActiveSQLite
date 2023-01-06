@@ -25,15 +25,15 @@ public extension ZKORMProtocol where Self:ZKORMModel{
     
     internal func noSavedProperties() -> [String]{
         if type(of: self).isSaveDefaulttimestamp{
-            return transientTypes()
+            return transientProperties()
         }else{
-            return transientTypes() + [type(of: self).CREATE_AT_KEY,type(of: self).UPDATE_AT_KEY]
+            return transientProperties() + [type(of: self).CREATE_AT_KEY,type(of: self).UPDATE_AT_KEY]
         }
     }
 
-    func uniqueProperties() -> [String]{
-        return [String]()
-    }
+//    func uniqueProperties() -> [String]{
+//        return [String]()
+//    }
     
     //MARK: Utils
     static func read<T>(_ block: (Database) throws-> T) throws  -> T{

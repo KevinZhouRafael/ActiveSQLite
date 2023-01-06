@@ -23,7 +23,7 @@ class City: ZKORMModel {
         try super.init(row: row)
         name = row[Columns.name]
         code = row[Columns.code]
-        
+
     }
     
     required init() {
@@ -34,12 +34,6 @@ class City: ZKORMModel {
         fatalError("init(from:) has not been implemented")
     }
     
-    override func encode(to container: inout PersistenceContainer) {
-        container[Columns.name] = name
-        container[Columns.code] = code
-        
-        super.encode(to: &container)
-    }
     override class var isSaveDefaulttimestamp:Bool{
         return true
     }

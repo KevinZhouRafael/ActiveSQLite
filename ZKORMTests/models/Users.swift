@@ -38,8 +38,4 @@ class Users:ZKORMModel,CreateColumnsProtocol{
         fatalError("init(from:) has not been implemented")
     }
     
-    override func encode(to container: inout PersistenceContainer) {
-        container["name"] = name
-        super.encode(to: &container)
-    }
 }

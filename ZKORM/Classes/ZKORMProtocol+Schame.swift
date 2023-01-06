@@ -102,8 +102,7 @@ public extension ZKORMProtocol where Self:ZKORMModel{
                 
         for case let (propertyName,column, value) in self.recursionProperties() {
                     
-        //            let isUnique:Bool = uniqueProperties().contains(propertyName)
-        //            var columnDefinition:ColumnDefinition!
+            var columnDefinition:ColumnDefinition!
                     
             //check primaryKey
             if propertyName == primaryKeyPropertyName {
@@ -115,9 +114,9 @@ public extension ZKORMProtocol where Self:ZKORMModel{
             switch mir.subjectType {
                 
             case _ as String.Type:
-                t.column(column, .text).notNull().defaults(to: "")
+                columnDefinition = t.column(column, .text).notNull().defaults(to: "")
             case _ as String?.Type:
-                t.column(column, .text)
+                columnDefinition = t.column(column, .text)
                 
             case _ as Int.Type,
                  _ as Int8.Type,
@@ -130,12 +129,12 @@ public extension ZKORMProtocol where Self:ZKORMModel{
                  _ as UInt32.Type,
                  _ as UInt64.Type:
                 if propertyName == primaryKeyPropertyName {
-                     t.autoIncrementedPrimaryKey(column)
+                    columnDefinition = t.autoIncrementedPrimaryKey(column)
                 }else{
 //                    if uniqueProperties().contains(propertyName) {
 //                        t.column(column, .integer).notNull().defaults(to: 0).unique()
 //                    }else{
-                        t.column(column, .integer).notNull().defaults(to: 0)
+                    columnDefinition = t.column(column, .integer).notNull().defaults(to: 0)
 //                    }
                 }
             case _ as Int?.Type,
@@ -149,32 +148,36 @@ public extension ZKORMProtocol where Self:ZKORMModel{
                 _ as UInt32?.Type,
                 _ as UInt64?.Type:
                 if propertyName == primaryKeyPropertyName {
-                     t.autoIncrementedPrimaryKey(column)
+                    columnDefinition = t.autoIncrementedPrimaryKey(column)
                 }else{
-                    t.column(column, .integer)
+                    columnDefinition = t.column(column, .integer)
                 }
             
             case _ as Double.Type,
                  _ as Float.Type:
-                t.column(column, .double).notNull().defaults(to: 0.0)
+                columnDefinition = t.column(column, .double).notNull().defaults(to: 0.0)
             case _ as Double?.Type,
                  _ as Float?.Type:
-                t.column(column, .double)
+                columnDefinition = t.column(column, .double)
                 
             case _ as Bool.Type:
-                t.column(column, .boolean).notNull().defaults(to: false)
+                columnDefinition = t.column(column, .boolean).notNull().defaults(to: false)
             case _ as Bool?.Type:
-                t.column(column, .boolean)
+                columnDefinition = t.column(column, .boolean)
                 
             case _ as Date.Type:
-                t.column(column, .datetime).notNull().defaults(to: Date(timeIntervalSince1970: 0))
+                columnDefinition = t.column(column, .datetime).notNull().defaults(to: Date(timeIntervalSince1970: 0))
             case _ as Date?.Type:
-                t.column(column, .datetime)
+                columnDefinition = t.column(column, .datetime)
                 
             default: break
                 
             }
             
+            let isUnique:Bool = uniqueProperties().contains(propertyName)
+            if isUnique{
+                columnDefinition.unique()
+            }
         }
     }
     

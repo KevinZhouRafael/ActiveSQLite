@@ -27,6 +27,10 @@ class City2: ZKORMModel {
         return true
     }
     
+//    override class var isAutoMapColumnPersistedInDB: Bool{
+//        return false
+//    }
+    
     required init(row: Row) throws{
         try super.init(row: row)
         name = row[Column("name")]
@@ -41,16 +45,16 @@ class City2: ZKORMModel {
         fatalError("init(from:) has not been implemented")
     }
     
-    override func encode(to container: inout PersistenceContainer) {
-        container[Column("name")] = name
-        container[Column("code")] = code
-//        for column in Columns.allCases{
-//            //column.rawValue也可以
-////            if String(describing: column) != column.name {
-//                container[column] = name
-////            }
-//        }
-        super.encode(to: &container)
-    }
+//    override func encode(to container: inout PersistenceContainer) {
+//        container[Column("name")] = name
+//        container[Column("code")] = code
+////        for column in Columns.allCases{
+////            //column.rawValue也可以
+//////            if String(describing: column) != column.name {
+////                container[column] = name
+//////            }
+////        }
+//        super.encode(to: &container)
+//    }
     
 }

@@ -11,9 +11,7 @@ import GRDB
 @testable import ZKORM
 
 //TODO: 把下列函数自动化。
-//遍历属性，然后除去临时属性，
 //required init(row: Row) throws{
-//override func encode(to container: inout PersistenceContainer) {
 class ProductM:ZKORMModel{
     
     //必须显示指名，否则Columns的'CodingKeys' is inaccessible due to 'private' protection level
@@ -24,6 +22,11 @@ class ProductM:ZKORMModel{
 //        case code
 //        case type
 //    }
+    
+    //如果定一个enum Columns 有自定义表达式匹配，就必须isAutoMapColumnPersistedInDB false，否则encode(to container: inout PersistenceContainer会不对。
+    override class var isAutoMapColumnPersistedInDB: Bool{
+        false
+    }
     enum Columns: String, ColumnExpression,CaseIterable {
         case name = "product_name"
         case price = "product_price"
@@ -98,7 +101,7 @@ class ProductM:ZKORMModel{
         return enumNameMap
     }
     
-    override func transientTypes() -> [String]{
+    override func transientProperties() -> [String]{
         return ["version"]
     }
 
