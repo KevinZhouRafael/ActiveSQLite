@@ -229,6 +229,10 @@ open class ZKORMModel:Record,ZKORMProtocol{
         return []
     }
     
+    open func uniqueIndices() -> [[String]]{
+        return [[]]
+    }
+    
     open var nameOfTable:String{
         get{
             return type(of: self).nameOfTable

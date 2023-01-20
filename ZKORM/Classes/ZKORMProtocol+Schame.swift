@@ -60,6 +60,7 @@ public extension ZKORMProtocol where Self:ZKORMModel{
                 
             }else{
                 try! autoCreateIndexs(db)
+                try! autoCreateUniqueIndices(db)
             }
         }
     }
@@ -70,30 +71,6 @@ public extension ZKORMProtocol where Self:ZKORMModel{
     static func dropTable() throws{
         try getDBQueue().inDatabase { db in
             try db.drop(table: nameOfTable)
-        }
-    }
-    
-    internal func autoCreateIndexs(_ db:GRDB.Database) throws{
-        let indexProperties = needAddIndexProperties()
-        guard indexProperties.count > 0 else {
-            return
-        }
-
-        for case let (propertyName,columnName, value) in self.recursionProperties() {
-            if propertyName == primaryKeyPropertyName {
-                continue
-            }
-            if [ZKORMModel.CREATE_AT_KEY,ZKORMModel.UPDATE_AT_KEY].contains(propertyName){
-                try db.create(index: "indexBy\(propertyName)On\(nameOfTable)", on: nameOfTable, columns: [columnName])
-                continue
-            }
-            
-            for indexProperty in indexProperties {
-                if indexProperty == propertyName {
-                    try db.create(index: "indexBy\(propertyName)On\(nameOfTable)", on: nameOfTable, columns: [columnName])
-        //            try db.create(index: "indexBy\(propertyName)", on: nameOfTable, columns: [columnName],unique: true)
-                }
-            }
         }
     }
     
@@ -181,6 +158,51 @@ public extension ZKORMProtocol where Self:ZKORMModel{
         }
     }
     
+    internal func autoCreateIndexs(_ db:GRDB.Database) throws{
+        let indexProperties = needAddIndexProperties()
+        guard indexProperties.count > 0 else {
+            return
+        }
+
+        for case let (propertyName,columnName, value) in self.recursionProperties() {
+            if propertyName == primaryKeyPropertyName {
+                continue
+            }
+            if [ZKORMModel.CREATE_AT_KEY,ZKORMModel.UPDATE_AT_KEY].contains(propertyName){
+                try db.create(index: "indexBy\(propertyName)On\(nameOfTable)", on: nameOfTable, columns: [columnName])
+                continue
+            }
+            
+            for indexProperty in indexProperties {
+                if indexProperty == propertyName {
+                    try db.create(index: "indexBy\(propertyName)On\(nameOfTable)", on: nameOfTable, columns: [columnName])
+        //            try db.create(index: "indexBy\(propertyName)", on: nameOfTable, columns: [columnName],unique: true)
+                }
+            }
+        }
+    }
+    
+    internal func autoCreateUniqueIndices(_ db:GRDB.Database) throws{
+        let indicesProperties = uniqueIndices()
+        guard indicesProperties.count > 0 else {
+            return
+        }
+
+        let propertyColumnDic = propertyColumnDic()
+        for oneIndex in indicesProperties{
+            let indexName = oneIndex.joined(separator: "_")
+            let colunmNames = oneIndex.compactMap{propertyColumnDic[$0]}
+            try db.create(index: "uniqueIndicesBy\(indexName)On\(nameOfTable)", on: nameOfTable, columns: colunmNames,unique: true)
+        }
+    }
+    
+    internal func propertyColumnDic() -> [String:String]{
+        var dic = [String:String]()
+        for case let (propertyName,columnName, value) in self.recursionProperties() {
+            dic[propertyName] = columnName
+        }
+        return dic
+    }
 }
 
 
